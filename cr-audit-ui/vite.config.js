@@ -11,7 +11,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://creative-audit-api.vercel.app/',
+        target: 'http://localhost:4000',
         changeOrigin: true,
         // secure: false
       },
