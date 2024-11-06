@@ -5,7 +5,7 @@ export const serverConfig = (app) => {
   app.use(express.json());
   app.use(
     cors({
-      origin: ["https://cr-audit-front.vercel.app"],
+      origin: ["https://creative-audit-ui.vercel.app"],
       methods: ["POST", "GET"],
       credentials: true,
     })
