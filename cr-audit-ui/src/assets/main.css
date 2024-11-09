@@ -1,3 +1,4 @@
+@import '../../node_modules/bootstrap';
 :root {
   --custom-color: #6366f1 !important;
   --custom-height: 38px;
