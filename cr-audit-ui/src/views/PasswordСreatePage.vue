@@ -15,26 +15,18 @@ const onCreatePassword = async () => {
   const successStore = useSuccessStore()
   successStore.setSuccess('')
   const passwordStore = usePasswordStore()
-  const passwordInfo =  passwordStore.getPassword()
+  const passwordInfo = passwordStore.getPassword()
   const userId = JSON.parse(localStorage.getItem('userId'))
 
   try {
-    await axios.patch(
-      `https://596b6b27365a5903.mokky.dev/users/${userId.userId}`,
-      {
-        password: passwordInfo,
-      },
-    )
+    await axios.patch(`https://596b6b27365a5903.mokky.dev/users/${userId.userId}`, {
+      password: passwordInfo,
+    })
     successStore.setSuccess('Ваш новый пароль был успешно сохранён')
-    localStorage.removeItem('userId');
-   
+    localStorage.removeItem('userId')
   } catch (error) {
-    switch (error.response.data.statusCode) {
-      default:
-        errorStore.setError('Ошибка сохранения пароля')
-        break
-    }
-    throw new Error(error)
+    errorStore.setError('Ошибка сохранения пароля')
+    console.error('Ошибка сохранения пароля:', error.message)
   }
 }
 </script>

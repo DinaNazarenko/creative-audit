@@ -25,17 +25,10 @@ export const useAuthStore = defineStore('auth', () => {
         JSON.stringify({ token: userInfo.token }),
       )
     } catch (error) {
-      switch (error.response.data.statusCode) {
-        case 401:
           errorStore.setError(
             'Ошибка аутентификации: неверный email или пароль, попробуйте снова',
           )
-          break
-        default:
-          errorStore.setError('Ошибка аутентификации')
-          break
-      }
-      throw new Error(error)
+          console.error('Ошибка аутентификации:', error.message)
     }
   }
   return { auth }

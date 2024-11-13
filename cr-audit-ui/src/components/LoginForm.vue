@@ -41,7 +41,7 @@ const handleButtonClick = () => {
   }
   if (props.isCreate) {
     emits('onCreatePassword')
-    router.push('/')
+      router.push('/')
   }
   if (!props.isReset && !props.isCreate) {
     handleAuth()
@@ -98,14 +98,14 @@ const handleButtonClick = () => {
       </div>
       <a class="btn-link link_custom" href="/password-reset">Забыл(а) пароль</a>
     </div>
-      <button
-        type="submit"
-        class="btn btn-primary mb-3 btn_custom"
-        @click="handleButtonClick"
-        @click.prevent="handleClick"
-      >
-        {{ btn }}
-      </button>
+    <button
+      type="submit"
+      class="btn btn-primary mb-3 btn_custom"
+      @click="handleButtonClick"
+      @click.prevent="handleClick"
+    >
+      {{ btn }}
+    </button>
     <SelectLanguage />
   </form>
 </template>

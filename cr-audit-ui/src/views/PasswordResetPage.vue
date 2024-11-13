@@ -38,29 +38,16 @@ const onResetPassword = async () => {
           JSON.stringify({ userId: userInfo.user_id }),
         )
       } catch (error) {
-        switch (error.response.data.statusCode) {
-          default:
-            errorStore.setError(
-              'Ошибка отправки письма для восстановления пароля',
-            )
-            break
-        }
-        throw new Error(error)
+        errorStore.setError('Ошибка отправки письма для восстановления пароля')
+        console.error('Ошибка отправки письма:', error.message)
       }
     }
     if (data.length === 0) {
       errorStore.setError('Пользователь с таким email не найден')
     }
   } catch (error) {
-    switch (error.response.data.statusCode) {
-      case 404:
-        errorStore.setError('Пользователь с таким email не найден')
-        break
-      default:
-        errorStore.setError('Ошибка восстановления пароля')
-        break
-    }
-    throw new Error(error)
+    errorStore.setError('Пользователь с таким email не найден')
+    console.error('Пользователь с таким email не найден:', error.message)
   }
 }
 </script>

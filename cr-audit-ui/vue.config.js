@@ -2,18 +2,6 @@ import { defineConfig } from '@vue/cli-service'
 
 export default defineConfig({
   transpileDependencies: ['v-tooltip'],
-  devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:4000',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '',
-        },
-      },
-    },
-  },
-  publicPath: '/',
   chainWebpack: config => {
     config.plugin('define').tap(args => {
       args[0]['process.env'] = {

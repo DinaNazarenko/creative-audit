@@ -4,13 +4,13 @@ import { useEmailStore } from '@/stores/email'
 import { usePasswordStore } from '@/stores/password'
 import { watchEffect, watch, ref } from 'vue'
 
-const errorStore = useErrorStore()
 const passwordStore = usePasswordStore()
 const emailStore = useEmailStore()
+const errorStore = useErrorStore()
 
-const errorInfo = ref('')
 const storedEmail = ref('')
 const storedPassword = ref('')
+const errorInfo = ref('')
 
 watchEffect(() => {
   storedEmail.value = emailStore.getEmail()
@@ -30,7 +30,7 @@ watch(storedPassword, () => {
 })
 </script>
 <template>
-  <div v-if="errorStore.errorInfo" class="d-flex justify-content-center">
+  <div v-if="errorInfo" class="d-flex justify-content-center">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
         <path
@@ -49,7 +49,7 @@ watch(storedPassword, () => {
       >
         <use xlink:href="#exclamation-triangle-fill" />
       </svg>
-      <div>{{ errorStore.errorInfo }}</div>
+      <div>{{ errorInfo }}</div>
     </div>
   </div>
 </template>
