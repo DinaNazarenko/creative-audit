@@ -1,29 +1,14 @@
 <script setup>
-import { GROUP_FIELDS } from '@/lib/constants'
-import { onMounted, ref } from 'vue'
 // import { v4 as uuidv4 } from "uuid";
-import axios from 'axios'
 
-const creatives = ref([])
-const fields = ref([])
-
-onMounted(async () => {
-  try {
-    const { data } = await axios.get(
-      `https://596b6b27365a5903.mokky.dev/creatives`,
-    )
-    creatives.value = data
-    fields.value = [...Object.keys(data[0]).slice(1)].map(
-      field => GROUP_FIELDS[field],
-    )
-  } catch (error) {
-    console.error('Ошибка получения креативов:', error.message)
-  }
-})
+defineProps({
+  fields: Array,
+  creatives: Array
+});
 </script>
 <template>
-  <div>
-    <table class="table table-hover">
+  <div class="v-auto-animate">
+    <table class="table table-hover mt-3">
       <thead>
         <tr>
           <th v-for="item in fields" :key="item">
