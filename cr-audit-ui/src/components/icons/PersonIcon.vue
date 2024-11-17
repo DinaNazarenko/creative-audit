@@ -6,7 +6,7 @@
     height="32"
     fill="none"
     class="bi bi-person-circle"
-    viewBox="0 4 16 32"
+    viewBox="0 4 17 32"
   >
     <rect y="8" width="24" height="24" rx="12" fill="#ADB5BD" />
     <path

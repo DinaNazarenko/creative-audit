@@ -65,7 +65,19 @@ onMounted(async () => {
         <tr v-for="item in creatives" :key="item.id">
           <td>{{ item.idApplication }}</td>
           <td>{{ item.nameAdGroup }}</td>
-          <td class="border_custom">{{ item.status }}</td>
+          <td class="border_custom">
+            <span
+              :class="{
+                'badge rounded-pill': true,
+                'text-bg-info': true,
+                'badge_success_custom': item.status === 'Согласовано',
+                'badge_danger_custom': item.status === 'Отклонено',
+                'badge_warning_custom': item.status === 'На проверке',
+                'badge_info_custom': item.status === 'Частично согласовано',
+              }"
+              >{{ item.status }}</span
+            >
+          </td>
           <td>{{ item.type }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.email }}</td>
@@ -92,5 +104,21 @@ svg:hover {
 }
 .border_custom {
   border-left-width: 1px;
+}
+.badge_success_custom {
+  background-color: #d1e7dd !important;
+  color: #198754 !important;
+}
+.badge_danger_custom {
+  background-color: #f8d7da !important;
+  color: #dc3545 !important;
+}
+.badge_warning_custom {
+  background-color: #fff3cd !important;
+  color: #ffc107 !important;
+}
+.badge_info_custom {
+  background-color: #e0cffc !important;
+  color: #6f42c1 !important;
 }
 </style>
