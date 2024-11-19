@@ -12,6 +12,7 @@ export default defineConfig({
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
+    libraryTarget: 'module'
   },
   devServer: {
     static: path.resolve(__dirname, 'dist'),

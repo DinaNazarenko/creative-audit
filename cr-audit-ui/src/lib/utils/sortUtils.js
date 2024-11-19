@@ -1,12 +1,11 @@
 export function sortArrayByObject(arr, sortConfig) {
   if (!arr || !sortConfig || !sortConfig.sortField) {
-    console.error('Invalid input:', { arr, sortConfig });
     return arr;
   }
 
   try {
     const sortedArr = [...arr];
-    
+
     if (sortConfig.sortOrder) {
       // Сортировка по убыванию
       return sortedArr.sort((a, b) => {
@@ -14,7 +13,6 @@ export function sortArrayByObject(arr, sortConfig) {
         const bValue = b[sortConfig.sortField];
         
         if (typeof aValue !== 'string' || typeof bValue !== 'string') {
-          console.warn(`Non-string values found in ${sortConfig.sortField}`);
           return 0;
         }
         
@@ -27,7 +25,6 @@ export function sortArrayByObject(arr, sortConfig) {
         const bValue = b[sortConfig.sortField];
         
         if (typeof aValue !== 'string' || typeof bValue !== 'string') {
-          console.warn(`Non-string values found in ${sortConfig.sortField}`);
           return 0;
         }
         
@@ -35,7 +32,7 @@ export function sortArrayByObject(arr, sortConfig) {
       });
     }
   } catch (error) {
-    console.error('Error during sorting:', error);
+    console.error('Ошибка сортировки:', error);
     return arr;
   }
 }
