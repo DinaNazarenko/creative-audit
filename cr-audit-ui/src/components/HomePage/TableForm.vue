@@ -1,10 +1,41 @@
 <script setup>
+import { ref, computed } from 'vue'
+import { GROUP_FIELDS } from '@/lib/constants'
+import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 // import { v4 as uuidv4 } from "uuid";
 
-defineProps({
+const props = defineProps({
   fields: Array,
-  creatives: Array
-});
+  creatives: Array,
+})
+
+const sortOrderFields = ref([])
+const selectedField = ref('')
+const sortedCreatives = computed(() => sortArrayByObject(props.creatives, findSortConfigByField(sortOrderFields.value, selectedField.value)))
+
+function onChangeSort(item) {
+  const reverseFields = Object.fromEntries(
+    Object.entries(GROUP_FIELDS).map(([k, v]) => [v, k]),
+  )
+
+  selectedField.value = reverseFields[item]
+
+  sortOrderFields.value = sortOrderFields.value.map(field => {
+    if (field.sortField === selectedField.value) {
+      return { ...field, sortOrder: !field.sortOrder }
+    }
+    return field
+  })
+
+  const existingField = sortOrderFields.value.find(
+    field => field.sortField === selectedField.value,
+  )
+  if (!existingField) {
+    sortOrderFields.value.push({ sortField: selectedField, sortOrder: true })
+  }
+  const sortConfig = findSortConfigByField(sortOrderFields.value, selectedField)
+  sortedCreatives.value = sortArrayByObject(props.creatives, sortConfig)
+}
 </script>
 <template>
   <div class="v-auto-animate">
@@ -14,6 +45,7 @@ defineProps({
           <th v-for="item in fields" :key="item">
             {{ item }}
             <svg
+              @click="onChangeSort(item)"
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"
@@ -47,7 +79,7 @@ defineProps({
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in creatives" :key="item.id">
+        <tr v-for="item in sortedCreatives" :key="item.id">
           <td>{{ item.idApplication }}</td>
           <td>{{ item.nameAdGroup }}</td>
           <td class="border_custom">
@@ -55,10 +87,10 @@ defineProps({
               :class="{
                 'badge rounded-pill': true,
                 'text-bg-info': true,
-                'badge_success_custom': item.status === 'Согласовано',
-                'badge_danger_custom': item.status === 'Отклонено',
-                'badge_warning_custom': item.status === 'На проверке',
-                'badge_info_custom': item.status === 'Частично согласовано',
+                badge_success_custom: item.status === 'Согласовано',
+                badge_danger_custom: item.status === 'Отклонено',
+                badge_warning_custom: item.status === 'На проверке',
+                badge_info_custom: item.status === 'Частично согласовано',
               }"
               >{{ item.status }}</span
             >
