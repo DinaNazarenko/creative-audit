@@ -8,6 +8,9 @@ import PersonIcon from '@/components/icons/PersonIcon.vue'
 import SidebarLogoIcon from '@/components/icons/SidebarLogoIcon.vue'
 import CaretDownFillIcon from '@/components/icons/CaretDownFillIcon.vue'
 
+ defineProps({
+  count: Number
+})
 const router = useRouter()
 const isDropdownOpen = ref(false)
 
@@ -45,7 +48,7 @@ const handleDropdown = () => {
           <ImagesIcon />
           <span
             class="position-absolute translate-middle badge rounded-pill bg-danger"
-            >3</span
+            >{{count}}</span
           >
           <use xlink:href="#home"></use>
           Креативы

@@ -12,11 +12,31 @@ import axios from 'axios'
 
 const creatives = ref([])
 const fields = ref([])
+const pendingCreativesCount = ref(0)
 
 const filters = reactive({
   sortBy: 'idApplication',
+  status: 'На проверке',
   searchQuery: '',
+  urlStatusParam: '',
 })
+
+const handleStatusSelection = event => {
+  const tempStatus = event.currentTarget.textContent
+    .replace(/[0-9]/g, '')
+    .trim()
+
+  if (tempStatus === 'На проверке') {
+    filters.status = 'На проверке'
+    filters.urlStatusParam = ''
+  } else if (tempStatus === 'Проверено') {
+    filters.status = ''
+    filters.urlStatusParam = `?status[]=Согласовано&status[]=Отклонено&status[]=Частично согласовано`
+  } else {
+    filters.status = ''
+    filters.urlStatusParam = ''
+  }
+}
 
 // const onChangeSelect = (event) => {
 //   filters.sortBy = event.target.value
@@ -27,21 +47,28 @@ const onChangeSearch = debounce(event => {
   filters.searchQuery = event.target.value
 })
 
-const fetchCreatives = async () => {
+const getCreatives = async () => {
   try {
     const params = {
       sortBy: filters.sortBy,
+      status: filters.status || undefined,
     }
+
     if (filters.searchQuery) {
       params.nameAdGroup = `*${filters.searchQuery}*`
     }
+    const url =
+      filters.urlStatusParam.length > 0
+        ? `https://596b6b27365a5903.mokky.dev/creatives${filters.urlStatusParam}`
+        : 'https://596b6b27365a5903.mokky.dev/creatives'
 
-    const { data } = await axios.get(
-      `https://596b6b27365a5903.mokky.dev/creatives`,
-      {
-        params,
-      },
-    )
+    const { data } = await axios.get(url, {
+      params,
+    })
+    if (filters.status === 'На проверке') {
+      pendingCreativesCount.value = data.length
+    }
+
     creatives.value = data
     fields.value = [...Object.keys(data[0]).slice(1)].map(
       field => GROUP_FIELDS[field],
@@ -52,28 +79,30 @@ const fetchCreatives = async () => {
 }
 
 onMounted(async () => {
-  await fetchCreatives()
+  await getCreatives()
 })
 
-watch(filters, fetchCreatives)
+watch(filters, getCreatives, pendingCreativesCount)
 </script>
 <template>
   <div v-auto-animate class="d-flex flex-nowrap">
-    <SideBar />
+    <SideBar :count="pendingCreativesCount"/>
     <div class="table_custom">
       <h2>Креативы</h2>
       <ul class="nav nav-underline nav_custom">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#"
+          <a @click="handleStatusSelection" class="nav-link" href="#"
             >На проверке
-            <span class="badge text-bg-danger rounded-circle">3</span>
+            <span class="badge text-bg-danger rounded-circle">{{pendingCreativesCount}}</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Проверено</a>
+          <a @click="handleStatusSelection" class="nav-link" href="#"
+            >Проверено</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Все</a>
+          <a @click="handleStatusSelection" class="nav-link" href="#">Все</a>
         </li>
       </ul>
       <form class="d-flex" role="search">
@@ -85,7 +114,10 @@ watch(filters, fetchCreatives)
             placeholder="Поиск по таблице"
             aria-label="Search"
           />
-          <span v-if="!filters.searchQuery" class="position-absolute top-50 end-0 translate-middle">
+          <span
+            v-if="!filters.searchQuery"
+            class="position-absolute top-50 end-0 translate-middle"
+          >
             <SearchIcon />
           </span>
         </div>
