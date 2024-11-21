@@ -8,8 +8,8 @@ import PersonIcon from '@/components/icons/PersonIcon.vue'
 import SidebarLogoIcon from '@/components/icons/SidebarLogoIcon.vue'
 import CaretDownFillIcon from '@/components/icons/CaretDownFillIcon.vue'
 
- defineProps({
-  count: Number
+defineProps({
+  count: Number,
 })
 const router = useRouter()
 const isDropdownOpen = ref(false)
@@ -24,10 +24,12 @@ const handleDropdown = () => {
 }
 </script>
 <template>
-  <div class="d-flex flex-column flex-shrink-0 bg-body-tertiary vh-100">
+  <div
+    class="d-flex flex-column flex-shrink-0 bg-body-tertiary vh-100 sidebar_custom"
+  >
     <a
       href="#"
-      class="d-block p-3 link-body-emphasis text-decoration-none d-flex align-items-center justify-content-center a_custom"
+      class="d-block p-3 link-body-emphasis text-decoration-none d-flex align-items-center justify-content-center border-bottom a_custom"
       data-bs-toggle="tooltip"
       data-bs-placement="right"
       data-bs-original-title="Icon-only"
@@ -48,7 +50,7 @@ const handleDropdown = () => {
           <ImagesIcon />
           <span
             class="position-absolute translate-middle badge rounded-pill bg-danger"
-            >{{count}}</span
+            >{{ count }}</span
           >
           <use xlink:href="#home"></use>
           Креативы
@@ -97,12 +99,6 @@ const handleDropdown = () => {
       <ul
         v-if="isDropdownOpen"
         class="dropdown-menu text-small shadow show dropdown-menu-custom"
-        style="
-          position: absolute;
-          inset: auto auto 0px 0px;
-          margin: 0px;
-          transform: translate(0px, -58px);
-        "
         data-popper-placement="top-start"
         data-popper-reference-hidden=""
       >
@@ -118,6 +114,9 @@ const handleDropdown = () => {
 </template>
 <style scoped>
 @import '../../assets/main.css';
+.sidebar_custom {
+  background-color: #ffffff !important;
+}
 .li_custom {
   width: 91px;
   height: 78px;
@@ -128,14 +127,18 @@ const handleDropdown = () => {
 a {
   color: black;
 }
-a:hover,
-a:active {
+a:active,
+a:focus {
   background-color: var(--custom-color);
   border-color: var(--custom-color);
   color: white;
 }
 .dropdown-menu-custom {
   min-width: 91px !important;
+  position: absolute;
+  inset: auto auto 0px 0px;
+  margin: 0px;
+  transform: translate(0px, -58px);
 }
 .dropdown-item {
   font-size: 12px;
@@ -157,7 +160,8 @@ span {
   padding: 0;
 }
 .a_custom:hover,
-.a_custom:active {
+.a_custom:active,
+.a_custom:focus {
   background-color: initial !important;
   border-color: initial !important;
   color: initial !important;

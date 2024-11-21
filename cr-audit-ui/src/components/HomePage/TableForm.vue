@@ -38,11 +38,11 @@ function onChangeSort(item) {
 }
 </script>
 <template>
-  <div class="v-auto-animate">
-    <table class="table table-hover mt-3">
+  <div class="table_custom v-auto-animate">
+    <table class="table table-hover overflow-hidden">
       <thead>
         <tr>
-          <th v-for="item in fields" :key="item">
+          <th v-for="item in fields" :key="item" class="text-truncate">
             {{ item }}
             <svg
               @click="onChangeSort(item)"
@@ -80,9 +80,9 @@ function onChangeSort(item) {
       </thead>
       <tbody>
         <tr v-for="item in sortedCreatives" :key="item.id">
-          <td>{{ item.idApplication }}</td>
-          <td>{{ item.nameAdGroup }}</td>
-          <td class="border_custom">
+          <td class="text-truncate">{{ item.idApplication }}</td>
+          <td class="text-truncate">{{ item.nameAdGroup }}</td>
+          <td class="text-truncate border_custom">
             <span
               :class="{
                 'badge rounded-pill': true,
@@ -95,18 +95,18 @@ function onChangeSort(item) {
               >{{ item.status }}</span
             >
           </td>
-          <td>{{ item.type }}</td>
-          <td>{{ item.name }}</td>
-          <td>{{ item.email }}</td>
-          <td>{{ item.cabinet }}</td>
-          <td>{{ item.advertiser }}</td>
-          <td>{{ item.timeToConfirm }}</td>
-          <td>{{ item.dateStart }}</td>
-          <td>{{ item.dateCreat }}</td>
-          <td>{{ item.dateAudit }}</td>
-          <td>{{ item.timeBeforeStart }}</td>
-          <td>{{ item.comment }}</td>
-          <td>{{ item.link }}</td>
+          <td class="text-truncate">{{ item.type }}</td>
+          <td class="text-truncate">{{ item.name }}</td>
+          <td class="text-truncate">{{ item.email }}</td>
+          <td class="text-truncate">{{ item.cabinet }}</td>
+          <td class="text-truncate">{{ item.advertiser }}</td>
+          <td class="text-truncate">{{ item.timeToConfirm }}</td>
+          <td class="text-truncate">{{ item.dateStart }}</td>
+          <td class="text-truncate">{{ item.dateCreat }}</td>
+          <td class="text-truncate">{{ item.dateAudit }}</td>
+          <td class="text-truncate">{{ item.timeBeforeStart }}</td>
+          <td class="text-truncate">{{ item.comment }}</td>
+          <td class="text-truncate">{{ item.link }}</td>
           <td class="border_custom"></td>
         </tr>
       </tbody>
@@ -115,6 +115,12 @@ function onChangeSort(item) {
 </template>
 
 <style scoped>
+.table_custom {
+  min-height: calc(100vh - 286px);;
+  max-width: 95vw;
+  min-width: 95vw;
+  overflow-y: auto;
+}
 svg:hover {
   color: var(--custom-color);
   cursor: pointer;

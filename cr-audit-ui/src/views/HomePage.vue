@@ -3,8 +3,7 @@ import TableForm from '@/components/HomePage/TableForm.vue'
 import SideBar from '@/components/HomePage/SideBar.vue'
 import DownloadIcon from '@/components/icons/DownloadIcon.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
-import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
-import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
+import FooterForm from '@/components/HomePage/FooterForm.vue'
 import { GROUP_FIELDS } from '@/lib/constants'
 import { onMounted, ref, reactive, watch } from 'vue'
 import debounce from 'lodash.debounce'
@@ -85,79 +84,94 @@ onMounted(async () => {
 watch(filters, getCreatives, pendingCreativesCount)
 </script>
 <template>
-  <div v-auto-animate class="d-flex flex-nowrap">
-    <SideBar :count="pendingCreativesCount"/>
-    <div class="table_custom">
-      <h2>Креативы</h2>
-      <ul class="nav nav-underline nav_custom">
-        <li class="nav-item">
-          <a @click="handleStatusSelection" class="nav-link" href="#"
-            >На проверке
-            <span class="badge text-bg-danger rounded-circle">{{pendingCreativesCount}}</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a @click="handleStatusSelection" class="nav-link" href="#"
-            >Проверено</a
-          >
-        </li>
-        <li class="nav-item">
-          <a @click="handleStatusSelection" class="nav-link" href="#">Все</a>
-        </li>
-      </ul>
-      <form class="d-flex" role="search">
-        <div class="position-relative search_custom">
-          <input
-            @input="onChangeSearch"
-            class="form-control me-2 position-relative rounded-1"
-            type="search"
-            placeholder="Поиск по таблице"
-            aria-label="Search"
-          />
-          <span
-            v-if="!filters.searchQuery"
-            class="position-absolute top-50 end-0 translate-middle"
-          >
-            <SearchIcon />
-          </span>
-        </div>
-      </form>
-      <button class="btn btn_custom">
-        <DownloadIcon />
-        CSV
-      </button>
-      <TableForm :fields="fields" :creatives="creatives" />
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-end">
-          <li class="page-item">
-            <a class="page-link">
-              <ChevronLeftIcon />
+  <div v-auto-animate class="d-flex">
+    <SideBar :count="pendingCreativesCount" />
+    <div class="d-flex flex-column">
+      <div class="container_custom">
+        <h2 class="m-0">Креативы</h2>
+        <ul class="nav nav-underline nav_custom">
+          <li class="nav-item nav_item_custom">
+            <a
+              @click="handleStatusSelection"
+              class="text-decoration-none nav-link px-3 py-2 a_custom"
+              href="#"
+              >На проверке
+              <span class="badge text-bg-danger rounded-circle">{{
+                pendingCreativesCount
+              }}</span>
             </a>
           </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#">
-              <ChevronRightIcon />
-            </a>
+          <li class="nav-item nav_item_custom">
+            <a
+              @click="handleStatusSelection"
+              class="text-decoration-none nav-link px-3 py-2 a_custom"
+              href="#"
+              >Проверено</a
+            >
+          </li>
+          <li class="nav-item nav_item_custom">
+            <a
+              @click="handleStatusSelection"
+              class="text-decoration-none nav-link px-3 py-2 a_custom"
+              href="#"
+              >Все</a
+            >
           </li>
         </ul>
-      </nav>
+        <div class="d-flex mb-4">
+          <form class="d-flex" role="search">
+            <div class="position-relative search_custom">
+              <input
+                @input="onChangeSearch"
+                class="form-control me-2 position-relative rounded-1"
+                type="search"
+                placeholder="Поиск по таблице"
+                aria-label="Search"
+              />
+              <span
+                v-if="!filters.searchQuery"
+                class="position-absolute top-50 end-0 translate-middle"
+              >
+                <SearchIcon />
+              </span>
+            </div>
+          </form>
+          <button class="btn btn_custom">
+            <DownloadIcon />
+            CSV
+          </button>
+        </div>
+        <TableForm :fields="fields" :creatives="creatives" />
+      </div>
+      <FooterForm />
     </div>
   </div>
 </template>
 
 <style scoped>
 @import '../assets/main.css';
-.table_custom {
-  padding: 32px !important;
+.container_custom {
+  padding-top: 32px;
+  padding-right: 32px;
+  padding-left: 32px;
+  background-color: #f8f9fa;
 }
-
 .nav_custom {
-  padding-bottom: 32px !important;
+  margin-top: 24px !important;
+  margin-bottom: 24px !important;
+  border-bottom: 2px solid #dee2e6;
 }
-
+.nav_item_custom {
+  height: 40px;
+}
+.a_custom {
+  color: #6c757d !important;
+}
+.a_custom:hover {
+  box-shadow: var(--focus-box-shadow) !important;
+  border-color: var(--custom-color) !important;
+  color: var(--custom-color) !important;
+}
 .btn_custom {
   color: var(--custom-color);
   border-color: var(--custom-color);
@@ -167,7 +181,8 @@ watch(filters, getCreatives, pendingCreativesCount)
   height: 38px;
 }
 :focus {
-  box-shadow: var(--focus-box-shadow);
-  border-color: var(--custom-color);
+  box-shadow: var(--focus-box-shadow) !important;
+  border-color: var(--custom-color) !important;
+  color: var(--custom-color) !important;
 }
 </style>
