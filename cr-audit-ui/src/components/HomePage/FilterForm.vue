@@ -1,27 +1,62 @@
 <script setup>
 import { ref } from 'vue'
 defineProps({
+  statuses: Array,
   types: Array,
 })
-const isDropdownOpen = ref(false)
-const handleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value
+const isStatusesOpen = ref(false)
+const isTypesOpen = ref(false)
+
+const toggleStatuses = () => {
+  isStatusesOpen.value = !isStatusesOpen.value
+}
+const toggleTypes = () => {
+  isTypesOpen.value = !isTypesOpen.value
 }
 </script>
 <template>
-  <div>
+  <div class="d-flex">
     <div class="dropdown dropdown_custom">
       <button
-        class="btn btn-light dropdown-toggle rounded-1 text-secondary text-start form-select button_custom"
+        class="btn btn-light dropdown-toggle rounded-1 text-secondary text-start form-select mb-1 button_custom"
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click.prevent="handleDropdown"
+        @click="toggleStatuses"
+      >
+        Статус
+      </button>
+      <ul
+         v-if="isStatusesOpen"
+        class="dropdown-menu list-group rounded-1 ul_statuses"
+      >
+        <li
+          v-for="item in statuses"
+          :key="item"
+          class="dropdown-item list-group-item"
+        >
+          <input
+            class="form-check-input me-1"
+            type="checkbox"
+            value=""
+            id="item"
+          />
+          <label class="form-check-label" for="firstCheckbox">{{ item }}</label>
+        </li>
+      </ul>
+    </div>
+    <div class="dropdown dropdown_custom">
+      <button
+        class="btn btn-light dropdown-toggle rounded-1 text-secondary text-start form-select mb-1 button_custom"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        @click="toggleTypes"
       >
         Тип
       </button>
       <ul
-        v-if="isDropdownOpen"
+         v-if="isTypesOpen"
         class="dropdown-menu list-group rounded-1 ul_types"
       >
         <li
@@ -46,7 +81,6 @@ const handleDropdown = () => {
 .dropdown_custom {
   margin-right: 12px;
   width: 147px;
-  background-color: #ffffff;
 }
 .button_custom {
   width: 147px;
@@ -62,6 +96,10 @@ input:checked {
 button {
   background-color: #ffffff;
   border: 1px solid #ced4da;
+}
+.ul_statuses{
+  width: 242px;
+  height: 176px;
 }
 .ul_types {
   width: 169px;

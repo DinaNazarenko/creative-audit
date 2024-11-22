@@ -116,7 +116,7 @@ function onChangeSort(item) {
 
 <style scoped>
 .table_custom {
-  min-height: calc(100vh - 286px);;
+  min-height: calc(100vh - 290px);;
   max-width: 95vw;
   min-width: 95vw;
   overflow-y: auto;

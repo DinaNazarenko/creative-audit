@@ -5,7 +5,7 @@ import DownloadIcon from '@/components/icons/DownloadIcon.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import FooterForm from '@/components/HomePage/FooterForm.vue'
 import FilterForm from '@/components/HomePage/FilterForm.vue'
-import { GROUP_FIELDS, TYPE_SELECT } from '@/lib/constants'
+import { GROUP_FIELDS, STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { onMounted, ref, reactive, watch } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
@@ -13,6 +13,7 @@ import axios from 'axios'
 const creatives = ref([])
 const fields = ref([])
 const types = ref(TYPE_SELECT)
+const statuses = ref(STATUS_SELECT)
 const pendingCreativesCount = ref(0)
 
 const filters = reactive({
@@ -138,7 +139,7 @@ watch(filters, getCreatives, pendingCreativesCount)
               </span>
             </div>
           </form>
-          <FilterForm :types="types" />
+          <FilterForm :types="types" :statuses="statuses" />
           <button class="btn btn_custom">
             <DownloadIcon />
             CSV
@@ -178,6 +179,8 @@ watch(filters, getCreatives, pendingCreativesCount)
 .btn_custom {
   color: var(--custom-color);
   border-color: var(--custom-color);
+  width: 82px;
+  height: 38px;
 }
 .search_custom {
   width: 294px;
@@ -185,6 +188,11 @@ watch(filters, getCreatives, pendingCreativesCount)
 }
 .form_custom {
   margin-right: 12px;
+}
+.btn_custom:active {
+  background-color: var(--custom-color);
+  border-color: var(--custom-color);
+  color: white !important;
 }
 :focus {
   box-shadow: var(--focus-box-shadow) !important;
