@@ -15,3 +15,5 @@ export const GROUP_FIELDS = {
   comment: 'Комментарии',
   link: 'Ссылка на посадочную'
 }
+
+export const TYPE_SELECT = ['Баннер', 'Видео', 'ZIP', 'HTML']

@@ -43,6 +43,7 @@ import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
   </footer>
 </template>
 <style scoped>
+@import '../../assets/main.css';
 .footer_custom {
   height: 56px !important;
   padding-top: 12px;
@@ -56,7 +57,6 @@ select {
   font-size: 14px;
   line-height: 21px;
   cursor: pointer !important;
-
 }
 option {
   font-size: 12px;

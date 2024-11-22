@@ -4,13 +4,15 @@ import SideBar from '@/components/HomePage/SideBar.vue'
 import DownloadIcon from '@/components/icons/DownloadIcon.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import FooterForm from '@/components/HomePage/FooterForm.vue'
-import { GROUP_FIELDS } from '@/lib/constants'
+import FilterForm from '@/components/HomePage/FilterForm.vue'
+import { GROUP_FIELDS, TYPE_SELECT } from '@/lib/constants'
 import { onMounted, ref, reactive, watch } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
 
 const creatives = ref([])
 const fields = ref([])
+const types = ref(TYPE_SELECT)
 const pendingCreativesCount = ref(0)
 
 const filters = reactive({
@@ -119,7 +121,7 @@ watch(filters, getCreatives, pendingCreativesCount)
           </li>
         </ul>
         <div class="d-flex mb-4">
-          <form class="d-flex" role="search">
+          <form class="d-flex form_custom" role="search">
             <div class="position-relative search_custom">
               <input
                 @input="onChangeSearch"
@@ -136,6 +138,7 @@ watch(filters, getCreatives, pendingCreativesCount)
               </span>
             </div>
           </form>
+          <FilterForm :types="types" />
           <button class="btn btn_custom">
             <DownloadIcon />
             CSV
@@ -179,6 +182,9 @@ watch(filters, getCreatives, pendingCreativesCount)
 .search_custom {
   width: 294px;
   height: 38px;
+}
+.form_custom {
+  margin-right: 12px;
 }
 :focus {
   box-shadow: var(--focus-box-shadow) !important;
