@@ -14,4 +14,8 @@
   </svg>
 </template>
 
-<style scoped></style>
+<style scoped>
+svg {
+  color: #6C757D;
+}
+</style>

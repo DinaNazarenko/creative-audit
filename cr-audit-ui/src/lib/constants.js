@@ -5,7 +5,7 @@ export const GROUP_FIELDS = {
   type: 'Тип',
   name: 'Название креатива',
   email: 'Аккаунт',
-  cabinet: 'Кабинет',
+  account: 'Кабинет',
   advertiser: 'Рекламодатель',
   timeBeforeStart:'До запуска',
   dateStart: 'Дата старта РК',

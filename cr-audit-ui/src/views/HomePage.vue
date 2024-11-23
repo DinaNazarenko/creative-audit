@@ -12,6 +12,7 @@ import axios from 'axios'
 
 const creatives = ref([])
 const fields = ref([])
+const accounts = ref([])
 const types = ref(TYPE_SELECT)
 const statuses = ref(STATUS_SELECT)
 const pendingCreativesCount = ref(0)
@@ -44,10 +45,9 @@ const handleStatusSelection = event => {
 //   filters.sortBy = event.target.value
 // }
 
-// TODO Время пока не ставлю, тк иначе в поиске лупа не сразу исчезает
 const onChangeSearch = debounce(event => {
   filters.searchQuery = event.target.value
-})
+}, 500)
 
 const getCreatives = async () => {
   try {
@@ -75,6 +75,7 @@ const getCreatives = async () => {
     fields.value = [...Object.keys(data[0]).slice(1)].map(
       field => GROUP_FIELDS[field],
     )
+    accounts.value = Array.from(new Set(data.map(item => item.account)))
   } catch (error) {
     console.error('Ошибка получения креативов:', error.message)
   }
@@ -122,24 +123,24 @@ watch(filters, getCreatives, pendingCreativesCount)
           </li>
         </ul>
         <div class="d-flex mb-4">
-          <form class="d-flex form_custom" role="search">
-            <div class="position-relative search_custom">
-              <input
-                @input="onChangeSearch"
-                class="form-control me-2 position-relative rounded-1"
-                type="search"
-                placeholder="Поиск по таблице"
-                aria-label="Search"
-              />
-              <span
-                v-if="!filters.searchQuery"
-                class="position-absolute top-50 end-0 translate-middle"
-              >
-                <SearchIcon />
-              </span>
-            </div>
+          <div class="position-relative">
+          <form class="position-relative form_custom" role="search">
+            <input
+              @input="onChangeSearch"
+              class="form-control rounded-1 me-0 search_custom"
+              placeholder="Поиск по таблице"
+              aria-label="Search"
+            />
+            <span class="position-absolute top-50 end-0 me-2 translate-middle">
+              <SearchIcon />
+            </span>
           </form>
-          <FilterForm :types="types" :statuses="statuses" />
+        </div>
+          <FilterForm
+            :types="types"
+            :statuses="statuses"
+            :accounts="accounts"
+          />
           <button class="btn btn_custom">
             <DownloadIcon />
             CSV
@@ -171,6 +172,7 @@ watch(filters, getCreatives, pendingCreativesCount)
 .a_custom {
   color: #6c757d !important;
 }
+.a_custom:focus,
 .a_custom:hover {
   box-shadow: var(--focus-box-shadow) !important;
   border-color: var(--custom-color) !important;
@@ -182,21 +184,20 @@ watch(filters, getCreatives, pendingCreativesCount)
   width: 82px;
   height: 38px;
 }
+.form_custom {
+  margin-right: 12px;
+}
 .search_custom {
   width: 294px;
   height: 38px;
-}
-.form_custom {
-  margin-right: 12px;
 }
 .btn_custom:active {
   background-color: var(--custom-color);
   border-color: var(--custom-color);
   color: white !important;
 }
-:focus {
+.search_custom:focus {
   box-shadow: var(--focus-box-shadow) !important;
   border-color: var(--custom-color) !important;
-  color: var(--custom-color) !important;
 }
 </style>

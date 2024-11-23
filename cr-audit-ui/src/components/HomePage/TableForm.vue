@@ -98,7 +98,7 @@ function onChangeSort(item) {
           <td class="text-truncate">{{ item.type }}</td>
           <td class="text-truncate">{{ item.name }}</td>
           <td class="text-truncate">{{ item.email }}</td>
-          <td class="text-truncate">{{ item.cabinet }}</td>
+          <td class="text-truncate">{{ item.account }}</td>
           <td class="text-truncate">{{ item.advertiser }}</td>
           <td class="text-truncate">{{ item.timeToConfirm }}</td>
           <td class="text-truncate">{{ item.dateStart }}</td>
