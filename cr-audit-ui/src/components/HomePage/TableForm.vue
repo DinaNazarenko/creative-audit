@@ -11,7 +11,12 @@ const props = defineProps({
 
 const sortOrderFields = ref([])
 const selectedField = ref('')
-const sortedCreatives = computed(() => sortArrayByObject(props.creatives, findSortConfigByField(sortOrderFields.value, selectedField.value)))
+const sortedCreatives = computed(() =>
+  sortArrayByObject(
+    props.creatives,
+    findSortConfigByField(sortOrderFields.value, selectedField.value),
+  ),
+)
 
 function onChangeSort(item) {
   const reverseFields = Object.fromEntries(
@@ -81,10 +86,17 @@ function onChangeSort(item) {
       <tbody>
         <tr v-for="item in sortedCreatives" :key="item.id">
           <td class="text-truncate">{{ item.idApplication }}</td>
-          <td class="text-truncate">{{ item.nameAdGroup }}</td>
-          <td class="text-truncate border_custom">
+          <td>
+            <span class="d-inline-block text-truncate span_max">
+              {{ item.nameAdGroup }}
+            </span>
+          </td>
+          <td class="border_custom">
             <span
               :class="{
+                'd-inline-block': true,
+                'text-truncate': true,
+                span_min: true,
                 'badge rounded-pill': true,
                 'text-bg-info': true,
                 badge_success_custom: item.status === 'Согласовано',
@@ -96,17 +108,34 @@ function onChangeSort(item) {
             >
           </td>
           <td class="text-truncate">{{ item.type }}</td>
-          <td class="text-truncate">{{ item.name }}</td>
+          <td>
+            <span class="d-inline-block text-truncate span_middle">
+              {{ item.name }}
+            </span>
+          </td>
+          <td class="text-truncate">{{ item.amount }}</td>
           <td class="text-truncate">{{ item.email }}</td>
           <td class="text-truncate">{{ item.account }}</td>
-          <td class="text-truncate">{{ item.advertiser }}</td>
+          <td>
+            <span class="d-inline-block text-truncate span_middle">
+              {{ item.advertiser }}
+            </span>
+          </td>
           <td class="text-truncate">{{ item.timeToConfirm }}</td>
           <td class="text-truncate">{{ item.dateStart }}</td>
           <td class="text-truncate">{{ item.dateCreat }}</td>
           <td class="text-truncate">{{ item.dateAudit }}</td>
           <td class="text-truncate">{{ item.timeBeforeStart }}</td>
-          <td class="text-truncate">{{ item.comment }}</td>
-          <td class="text-truncate">{{ item.link }}</td>
+          <td>
+            <span class="d-inline-block text-truncate span_max">
+              {{ item.comment }}
+            </span>
+          </td>
+          <td>
+            <span class="d-inline-block text-truncate span_max">
+              {{ item.link }}
+            </span>
+          </td>
           <td class="border_custom"></td>
         </tr>
       </tbody>
@@ -116,10 +145,19 @@ function onChangeSort(item) {
 
 <style scoped>
 .table_custom {
-  min-height: calc(100vh - 290px);;
+  min-height: calc(100vh - 290px);
   max-width: 95vw;
   min-width: 95vw;
   overflow-y: auto;
+}
+.span_min {
+  max-width: 99px;
+}
+.span_middle {
+  max-width: 202px;
+}
+.span_max {
+  max-width: 252px;
 }
 svg:hover {
   color: var(--custom-color);

@@ -27,16 +27,18 @@ const handleDropdown = () => {
   <div
     class="d-flex flex-column flex-shrink-0 bg-body-tertiary vh-100 sidebar_custom"
   >
-    <a
-      href="#"
-      class="d-block p-3 link-body-emphasis text-decoration-none d-flex align-items-center justify-content-center border-bottom a_custom"
-      data-bs-toggle="tooltip"
-      data-bs-placement="right"
-      data-bs-original-title="Icon-only"
-    >
-      <SidebarLogoIcon />
-    </a>
     <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+      <li class="li_custom">
+        <a
+          href="#"
+          class="d-block p-3 border-bottom a_custom"
+          data-bs-toggle="tooltip"
+          data-bs-placement="right"
+          data-bs-original-title="Icon-only"
+        >
+          <SidebarLogoIcon />
+        </a>
+      </li>
       <li class="li_custom">
         <a
           href="#"
@@ -163,7 +165,6 @@ span {
 .a_custom:active,
 .a_custom:focus {
   background-color: initial !important;
-  border-color: initial !important;
   color: initial !important;
 }
 </style>

@@ -13,6 +13,7 @@ import axios from 'axios'
 const creatives = ref([])
 const fields = ref([])
 const accounts = ref([])
+const advertisers = ref([])
 const types = ref(TYPE_SELECT)
 const statuses = ref(STATUS_SELECT)
 const pendingCreativesCount = ref(0)
@@ -76,6 +77,7 @@ const getCreatives = async () => {
       field => GROUP_FIELDS[field],
     )
     accounts.value = Array.from(new Set(data.map(item => item.account)))
+    advertisers.value = Array.from(new Set(data.map(item => item.advertiser)))
   } catch (error) {
     console.error('Ошибка получения креативов:', error.message)
   }
@@ -100,7 +102,7 @@ watch(filters, getCreatives, pendingCreativesCount)
               class="text-decoration-none nav-link px-3 py-2 a_custom"
               href="#"
               >На проверке
-              <span class="badge text-bg-danger rounded-circle">{{
+              <span class="badge text-bg-danger rounded-pill">{{
                 pendingCreativesCount
               }}</span>
             </a>
@@ -124,22 +126,25 @@ watch(filters, getCreatives, pendingCreativesCount)
         </ul>
         <div class="d-flex mb-4">
           <div class="position-relative">
-          <form class="position-relative form_custom" role="search">
-            <input
-              @input="onChangeSearch"
-              class="form-control rounded-1 me-0 search_custom"
-              placeholder="Поиск по таблице"
-              aria-label="Search"
-            />
-            <span class="position-absolute top-50 end-0 me-2 translate-middle">
-              <SearchIcon />
-            </span>
-          </form>
-        </div>
+            <form class="position-relative form_custom" role="search">
+              <input
+                @input="onChangeSearch"
+                class="form-control rounded-1 me-0 search_custom"
+                placeholder="Поиск по таблице"
+                aria-label="Search"
+              />
+              <span
+                class="position-absolute top-50 end-0 me-2 translate-middle"
+              >
+                <SearchIcon />
+              </span>
+            </form>
+          </div>
           <FilterForm
             :types="types"
             :statuses="statuses"
             :accounts="accounts"
+            :advertisers="advertisers"
           />
           <button class="btn btn_custom">
             <DownloadIcon />

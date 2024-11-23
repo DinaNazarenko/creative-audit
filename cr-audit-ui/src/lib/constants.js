@@ -4,6 +4,7 @@ export const GROUP_FIELDS = {
   status: 'Статус',
   type: 'Тип',
   name: 'Название креатива',
+  amount: 'Количество креативов',
   email: 'Аккаунт',
   account: 'Кабинет',
   advertiser: 'Рекламодатель',
