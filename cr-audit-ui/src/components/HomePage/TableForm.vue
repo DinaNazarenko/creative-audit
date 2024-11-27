@@ -44,7 +44,8 @@ function onChangeSort(item) {
 </script>
 <template>
   <div class="table_custom v-auto-animate">
-    <table class="table table-hover overflow-hidden">
+    <div class="overflow-y-auto scroll_custom mb-3">
+    <table class="table table-hover overflow-hidden m-0">
       <thead>
         <tr>
           <th v-for="item in fields" :key="item" class="text-truncate">
@@ -141,6 +142,7 @@ function onChangeSort(item) {
       </tbody>
     </table>
   </div>
+  </div>
 </template>
 
 <style scoped>
@@ -148,7 +150,10 @@ function onChangeSort(item) {
   min-height: calc(100vh - 290px);
   max-width: 95vw;
   min-width: 95vw;
-  overflow-y: auto;
+}
+.scroll_custom {
+  scrollbar-width: thin;
+  background-color: #FFFFFF;
 }
 .span_min {
   max-width: 99px;
