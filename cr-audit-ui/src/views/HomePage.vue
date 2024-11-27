@@ -5,10 +5,13 @@ import DownloadIcon from '@/components/icons/DownloadIcon.vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import FooterForm from '@/components/HomePage/FooterForm.vue'
 import FilterForm from '@/components/HomePage/FilterForm.vue'
+import VueDatePicker from '@vuepic/vue-datepicker'
 import { GROUP_FIELDS, STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { onMounted, ref, reactive, watch } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
+import '@vuepic/vue-datepicker/dist/main.css'
+import { ru } from 'date-fns/locale'
 
 const creatives = ref([])
 const fields = ref([])
@@ -24,7 +27,26 @@ const filters = reactive({
   searchQuery: '',
   urlStatusParam: '',
 })
+const date = ref([new Date(), new Date()])
 
+// const format = (startDate, endDate) => {
+//   const startDay = startDate.getDate().toString().padStart(2, '0');
+//   const startMonth = (startDate.getMonth() + 1).toString().padStart(2, '0');
+//   const startYear = startDate.getFullYear();
+
+//   const endDay = endDate.getDate().toString().padStart(2, '0');
+//   const endMonth = (endDate.getMonth() + 1).toString().padStart(2, '0');
+//   const endYear = endDate.getFullYear();
+
+//   return `${startDay}.${startMonth}.${startYear} - ${endDay}.${endMonth}.${endYear}`;
+// };
+
+onMounted(() => {
+  const startDate = new Date()
+  const endDate = new Date(new Date().setDate(startDate.getDate() + 7))
+
+  date.value = [startDate, endDate]
+})
 const handleStatusSelection = event => {
   const tempStatus = event.currentTarget.textContent
     .replace(/[0-9]/g, '')
@@ -124,32 +146,50 @@ watch(filters, getCreatives, pendingCreativesCount)
             >
           </li>
         </ul>
-        <div class="d-flex mb-4">
-          <div class="position-relative">
-            <form class="position-relative form_custom" role="search">
-              <input
-                @input="onChangeSearch"
-                class="form-control rounded-1 me-0 search_custom"
-                placeholder="Поиск по таблице"
-                aria-label="Search"
+        <div class="d-flex justify-content-between mb-4">
+          <div class="d-flex">
+            <div class="position-relative">
+              <form class="position-relative form_custom" role="search">
+                <input
+                  @input="onChangeSearch"
+                  class="form-control rounded-1 me-0 search_custom"
+                  placeholder="Поиск по таблице"
+                  aria-label="Search"
+                />
+                <span
+                  class="position-absolute top-50 end-0 me-2 translate-middle"
+                >
+                  <SearchIcon />
+                </span>
+              </form>
+            </div>
+              <FilterForm
+                :types="types"
+                :statuses="statuses"
+                :accounts="accounts"
+                :advertisers="advertisers"
               />
-              <span
-                class="position-absolute top-50 end-0 me-2 translate-middle"
-              >
-                <SearchIcon />
-              </span>
-            </form>
           </div>
-          <FilterForm
-            :types="types"
-            :statuses="statuses"
-            :accounts="accounts"
-            :advertisers="advertisers"
-          />
-          <button class="btn btn_custom">
-            <DownloadIcon />
-            CSV
-          </button>
+          <div class="d-flex">
+            <VueDatePicker
+              v-model="date"
+              locale="ru"
+              cancelText="Отмена"
+              selectText="Выбрать"
+              :format-locale="ru"
+              :format="format"
+              range
+              multi-calendars
+              :enable-time-picker="false"
+              placeholder="Выберите период"
+            />
+            <div>
+            <button class="btn btn_custom">
+              <DownloadIcon />
+              CSV
+            </button>
+          </div>
+          </div>
         </div>
         <TableForm :fields="fields" :creatives="creatives" />
       </div>
@@ -188,6 +228,7 @@ watch(filters, getCreatives, pendingCreativesCount)
   border-color: var(--custom-color);
   width: 82px;
   height: 38px;
+  margin-left: 12px;
 }
 .form_custom {
   margin-right: 12px;
