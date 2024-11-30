@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { GROUP_FIELDS } from '@/lib/constants'
 import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
+import { formatDate, calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 // import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
@@ -67,7 +68,7 @@ function onChangeSort(item) {
               </svg>
             </th>
             <th class="p-0 border_custom">
-            <TableSettings/>
+              <TableSettings />
             </th>
           </tr>
         </thead>
@@ -109,11 +110,11 @@ function onChangeSort(item) {
                 {{ item.advertiser }}
               </span>
             </td>
-            <td class="text-truncate">{{ item.timeToConfirm }}</td>
-            <td class="text-truncate">{{ item.dateStart }}</td>
-            <td class="text-truncate">{{ item.dateCreat }}</td>
-            <td class="text-truncate">{{ item.dateAudit }}</td>
-            <td class="text-truncate">{{ item.timeBeforeStart }}</td>
+            <td class="text-truncate">{{ calculateTimeBetweenDates(item.dateAudit, item.dateCreat) }}</td>
+            <td class="text-truncate">{{ formatDate(item.dateStart, 'DD.MM.YYYY') }}</td>
+            <td class="text-truncate">{{ formatDate(item.dateCreat, 'DD.MM.YYYY HH:mm:ss') }}</td>
+            <td class="text-truncate">{{ formatDate(item.dateAudit, 'DD.MM.YYYY HH:mm:ss') }}</td>
+            <td class="text-truncate">{{ calculateTimeBetweenDates(item.dateAudit, item.dateStart) }}</td>
             <td>
               <span class="d-inline-block text-truncate span_max">
                 {{ item.comment }}

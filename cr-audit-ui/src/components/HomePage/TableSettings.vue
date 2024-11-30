@@ -2,10 +2,27 @@
 import { GROUP_FIELDS } from '@/lib/constants'
 import TableSettingsIcon from '@/components/icons/TableSettingsIcon.vue'
 import GripVerticalIcon from '@/components/icons/GripVerticalIcon.vue'
-import { ref } from 'vue'
+import { useTableSettingsStore } from '@/stores/tableSettings'
+import { ref, computed } from 'vue'
+
 const isOpen = ref(false)
+
 const toggleSettings = () => {
   isOpen.value = !isOpen.value
+}
+const tableSettingsStore = useTableSettingsStore()
+// Получаем текущие настройки таблицы
+const selectedSettings = computed(() => tableSettingsStore.selectedSettings)
+
+const defaultDisabledKeys = ['idApplication', 'nameAdGroup', 'status']
+
+function handleCheckboxChange(event) {
+  const key = event.target.id
+  if (event.target.checked) {
+    tableSettingsStore.updateSelectedSetting(key)
+  } else {
+    tableSettingsStore.removeSelectedSetting(key)
+  }
 }
 </script>
 <template>
@@ -34,13 +51,16 @@ const toggleSettings = () => {
           <input
             class="form-check-input me-2"
             type="checkbox"
-            value="value"
-            id="key"
+            :value="value"
+            :id="key"
+            @change="handleCheckboxChange"
+            :checked="selectedSettings.includes(key)"
+            :disabled="defaultDisabledKeys.includes(key)"
           />
           <label class="form-check-label" :for="key">
             {{ value }}
           </label>
-          <span class="position-absolute top-50 end-0 me-2 translate-middle">
+          <span v-if="!defaultDisabledKeys.includes(key)" class="position-absolute top-50 end-0 me-2 translate-middle">
             <GripVerticalIcon />
           </span>
         </li>

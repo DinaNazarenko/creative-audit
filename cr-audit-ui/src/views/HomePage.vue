@@ -186,7 +186,7 @@ watch(filters, getCreatives, pendingCreativesCount)
             <div>
             <button class="btn btn_custom">
               <DownloadIcon />
-              CSV
+              XLS
             </button>
           </div>
           </div>
