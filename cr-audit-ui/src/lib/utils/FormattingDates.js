@@ -1,4 +1,4 @@
-import { intervalToDuration } from 'date-fns';
+import { intervalToDuration, differenceInDays } from 'date-fns';
 
 // Функция для форматирования дат к виду DD.MM.YYYY или DD.MM.YYYY HH:mm:ss
 export function formatDate(date, dateFormat) {
@@ -49,17 +49,28 @@ export function formatDate(date, dateFormat) {
         throw new Error(`Неправильный формат даты: ${dateFormat}`);
     }
 
-    return formattedDate.replace(',', '');;
+    return formattedDate.replace(',', '');
 }
 
 // Функция расчета времени между двумя датами
-export function calculateTimeBetweenDates(startDate, endDate) {
+export function calculateTimeBetweenDates(startDate, endDate, dateFormat) {
     if (!startDate || !endDate) return '—';
     
     const start = new Date(startDate);
     const end = new Date(endDate);
   
     const duration = intervalToDuration({ start, end });
-  
-    return `${Math.floor(duration.days)} д ${duration.hours} ч`;
+    const days = differenceInDays(end, start) % 365;
+
+    let formattedDate;
+
+    if (dateFormat === 'DD HH') {
+        formattedDate = `${days} д ${duration.hours} ч`;
+    } else if (dateFormat === 'DD') {
+        formattedDate = `${days} д`;
+    } else {
+        throw new Error(`Неправильный формат даты: ${dateFormat}`);
+    }
+
+    return formattedDate;
 }

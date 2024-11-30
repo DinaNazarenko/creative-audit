@@ -4,7 +4,10 @@ import { GROUP_FIELDS } from '@/lib/constants'
 import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
 import { useTableSettingsStore } from '@/stores/tableSettings'
-import { formatDate, calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
+import {
+  formatDate,
+  calculateTimeBetweenDates,
+} from '@/lib/utils/FormattingDates'
 // import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
@@ -17,11 +20,13 @@ const selectedSettings = computed(() => tableSettingsStore.selectedSettings)
 
 const getFields = () => {
   return Object.fromEntries(
-    Object.entries(GROUP_FIELDS).filter(([key]) => selectedSettings.value.includes(key))
-  );
-};
+    Object.entries(GROUP_FIELDS).filter(([key]) =>
+      selectedSettings.value.includes(key),
+    ),
+  )
+}
 
-const fields = computed(getFields);
+const fields = computed(getFields)
 
 const sortedCreatives = computed(() =>
   sortArrayByObject(
@@ -106,25 +111,64 @@ function onChangeSort(item) {
                 >{{ item.status }}</span
               >
             </td>
-            <td v-if="selectedSettings.includes('type')" class="text-truncate">{{ item.type }}</td>
+            <td v-if="selectedSettings.includes('type')" class="text-truncate">
+              {{ item.type }}
+            </td>
             <td v-if="selectedSettings.includes('name')">
               <span class="d-inline-block text-truncate span_middle">
                 {{ item.name }}
               </span>
             </td>
-            <td v-if="selectedSettings.includes('amount')" class="text-truncate">{{ item.amount }}</td>
-            <td v-if="selectedSettings.includes('email')" class="text-truncate">{{ item.email }}</td>
-            <td v-if="selectedSettings.includes('account')" class="text-truncate">{{ item.account }}</td>
+            <td
+              v-if="selectedSettings.includes('amount')"
+              class="text-truncate"
+            >
+              {{ item.amount }}
+            </td>
+            <td v-if="selectedSettings.includes('email')" class="text-truncate">
+              {{ item.email }}
+            </td>
+            <td
+              v-if="selectedSettings.includes('account')"
+              class="text-truncate"
+            >
+              {{ item.account }}
+            </td>
             <td v-if="selectedSettings.includes('advertiser')">
               <span class="d-inline-block text-truncate span_middle">
                 {{ item.advertiser }}
               </span>
             </td>
-            <td v-if="selectedSettings.includes('timeBeforeStart')" class="text-truncate">{{ calculateTimeBetweenDates(item.dateAudit, item.dateCreat) }}</td>
-            <td v-if="selectedSettings.includes('dateStart')" class="text-truncate">{{ formatDate(item.dateStart, 'DD.MM.YYYY') }}</td>
-            <td v-if="selectedSettings.includes('dateCreat')" class="text-truncate">{{ formatDate(item.dateCreat, 'DD.MM.YYYY HH:mm:ss') }}</td>
-            <td v-if="selectedSettings.includes('dateAudit')" class="text-truncate">{{ formatDate(item.dateAudit, 'DD.MM.YYYY HH:mm:ss') }}</td>
-            <td v-if="selectedSettings.includes('timeToConfirm')" class="text-truncate">{{ calculateTimeBetweenDates(item.dateAudit, item.dateStart) }}</td>
+            <td
+              v-if="selectedSettings.includes('timeBeforeStart')"
+              class="text-truncate"
+            >
+              {{ calculateTimeBetweenDates(new Date(), item.dateStart, 'DD') }}
+            </td>
+            <td
+              v-if="selectedSettings.includes('dateStart')"
+              class="text-truncate"
+            >
+              {{ formatDate(item.dateStart, 'DD.MM.YYYY') }}
+            </td>
+            <td
+              v-if="selectedSettings.includes('dateCreat')"
+              class="text-truncate"
+            >
+              {{ formatDate(item.dateCreat, 'DD.MM.YYYY HH:mm:ss') }}
+            </td>
+            <td
+              v-if="selectedSettings.includes('dateAudit')"
+              class="text-truncate"
+            >
+              {{ formatDate(item.dateAudit, 'DD.MM.YYYY HH:mm:ss') }}
+            </td>
+            <td
+              v-if="selectedSettings.includes('timeToConfirm')"
+              class="text-truncate"
+            >
+              {{ calculateTimeBetweenDates(item.dateCreat, item.dateAudit, 'DD HH') }}
+            </td>
             <td v-if="selectedSettings.includes('comment')">
               <span class="d-inline-block text-truncate span_max">
                 {{ item.comment }}
