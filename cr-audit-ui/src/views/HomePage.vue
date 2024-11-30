@@ -6,7 +6,7 @@ import SearchIcon from '@/components/icons/SearchIcon.vue'
 import FooterForm from '@/components/HomePage/FooterForm.vue'
 import FilterForm from '@/components/HomePage/FilterForm.vue'
 import VueDatePicker from '@vuepic/vue-datepicker'
-import { GROUP_FIELDS, STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
+import { STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { onMounted, ref, reactive, watch } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
@@ -14,7 +14,6 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { ru } from 'date-fns/locale'
 
 const creatives = ref([])
-const fields = ref([])
 const accounts = ref([])
 const advertisers = ref([])
 const types = ref(TYPE_SELECT)
@@ -95,9 +94,6 @@ const getCreatives = async () => {
     }
 
     creatives.value = data
-    fields.value = [...Object.keys(data[0]).slice(1)].map(
-      field => GROUP_FIELDS[field],
-    )
     accounts.value = Array.from(new Set(data.map(item => item.account)))
     advertisers.value = Array.from(new Set(data.map(item => item.advertiser)))
   } catch (error) {
@@ -191,7 +187,7 @@ watch(filters, getCreatives, pendingCreativesCount)
           </div>
           </div>
         </div>
-        <TableForm :fields="fields" :creatives="creatives" />
+        <TableForm :creatives="creatives" />
       </div>
       <FooterForm />
     </div>
