@@ -1,8 +1,8 @@
 <script setup>
 import SearchIcon from '@/components/icons/SearchIcon.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-defineProps({
+const props = defineProps({
   statuses: Array,
   types: Array,
   accounts: Array,
@@ -13,6 +13,10 @@ const isStatusesOpen = ref(false)
 const isTypesOpen = ref(false)
 const isAccountsOpen = ref(false)
 const isAdvertisersOpen = ref(false)
+const searchItem = ref('')
+
+const filteredAccounts = computed(() => filterAccounts(searchItem.value))
+const filteredAdvertisers = computed(() => filterAdvertisers(searchItem.value))
 
 const toggleStatuses = () => {
   isStatusesOpen.value = !isStatusesOpen.value
@@ -25,6 +29,22 @@ const toggleAccounts = () => {
 }
 const toggleAdvertisers = () => {
   isAdvertisersOpen.value = !isAdvertisersOpen.value
+}
+
+const filterAccounts = value => {
+  return props.accounts.filter(account =>
+    account.toLowerCase().includes(value.toLowerCase()),
+  )
+}
+
+const filterAdvertisers = value => {
+  return props.advertisers.filter(advertiser =>
+  advertiser.toLowerCase().includes(value.toLowerCase()),
+  )
+}
+
+const onChangeSearch = event => {
+  searchItem.value = event.target.value.trim()
 }
 </script>
 <template>
@@ -107,6 +127,7 @@ const toggleAdvertisers = () => {
               class="form-control me-2 search_custom"
               placeholder="Поиск"
               aria-label="Search"
+              @input="onChangeSearch"
             />
             <span class="position-absolute top-50 end-0 me-3 translate-middle">
               <SearchIcon />
@@ -115,7 +136,7 @@ const toggleAdvertisers = () => {
         </div>
         <div class="overflow-auto scroll_custom">
           <li
-            v-for="item in accounts"
+            v-for="item in filteredAccounts"
             :key="item"
             class="dropdown-item list-group-item"
           >
@@ -154,6 +175,7 @@ const toggleAdvertisers = () => {
               class="form-control me-2 search_custom"
               placeholder="Поиск"
               aria-label="Search"
+              @input="onChangeSearch"
             />
             <span class="position-absolute top-50 end-0 me-3 translate-middle">
               <SearchIcon />
@@ -162,7 +184,7 @@ const toggleAdvertisers = () => {
         </div>
         <div class="overflow-auto scroll_custom">
           <li
-            v-for="item in advertisers"
+            v-for="item in filteredAdvertisers"
             :key="item"
             class="dropdown-item list-group-item"
           >
