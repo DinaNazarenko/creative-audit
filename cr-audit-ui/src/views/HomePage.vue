@@ -7,6 +7,7 @@ import FooterForm from '@/components/HomePage/FooterForm.vue'
 import FilterForm from '@/components/HomePage/FilterForm.vue'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import { STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
+import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { onMounted, ref, reactive, watch } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
@@ -19,6 +20,8 @@ const advertisers = ref([])
 const types = ref(TYPE_SELECT)
 const statuses = ref(STATUS_SELECT)
 const pendingCreativesCount = ref(0)
+const startDateRef = ref(new Date());
+const endDateRef = ref(new Date());
 
 const filters = reactive({
   sortBy: 'idApplication',
@@ -40,12 +43,6 @@ const date = ref([new Date(), new Date()])
 //   return `${startDay}.${startMonth}.${startYear} - ${endDay}.${endMonth}.${endYear}`;
 // };
 
-onMounted(() => {
-  const startDate = new Date()
-  const endDate = new Date(new Date().setDate(startDate.getDate() + 7))
-
-  date.value = [startDate, endDate]
-})
 const handleStatusSelection = event => {
   const tempStatus = event.currentTarget.textContent
     .replace(/[0-9]/g, '')
@@ -94,6 +91,21 @@ const getCreatives = async () => {
     }
 
     creatives.value = data
+
+    creatives.value = creatives.value.map(item => ({
+    ...item,
+    timeBeforeStart: calculateTimeBetweenDates(
+      new Date(),
+      item.dateStart,
+      'DD',
+    ),
+    timeToConfirm: calculateTimeBetweenDates(
+      item.dateCreat,
+      item.dateAudit,
+      'DD HH',
+    ),
+  }));
+ 
     accounts.value = Array.from(new Set(data.map(item => item.account)))
     advertisers.value = Array.from(new Set(data.map(item => item.advertiser)))
   } catch (error) {
@@ -103,6 +115,14 @@ const getCreatives = async () => {
 
 onMounted(async () => {
   await getCreatives()
+
+  const newStartDate = new Date()
+  const newEndDate = new Date(new Date().setDate(newStartDate.getDate() + 7))
+
+  startDateRef.value = newStartDate;
+  endDateRef.value = newEndDate;
+
+  date.value = [startDateRef.value, endDateRef.value];
 })
 
 watch(filters, getCreatives, pendingCreativesCount)
@@ -159,12 +179,12 @@ watch(filters, getCreatives, pendingCreativesCount)
                 </span>
               </form>
             </div>
-              <FilterForm
-                :types="types"
-                :statuses="statuses"
-                :accounts="accounts"
-                :advertisers="advertisers"
-              />
+            <FilterForm
+              :types="types"
+              :statuses="statuses"
+              :accounts="accounts"
+              :advertisers="advertisers"
+            />
           </div>
           <div class="d-flex">
             <VueDatePicker
@@ -180,11 +200,11 @@ watch(filters, getCreatives, pendingCreativesCount)
               placeholder="Выберите период"
             />
             <div>
-            <button class="btn btn_custom">
-              <DownloadIcon />
-              XLS
-            </button>
-          </div>
+              <button class="btn btn_custom">
+                <DownloadIcon />
+                XLS
+              </button>
+            </div>
           </div>
         </div>
         <TableForm :creatives="creatives" />

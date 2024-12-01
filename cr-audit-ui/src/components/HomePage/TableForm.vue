@@ -4,10 +4,7 @@ import { GROUP_FIELDS } from '@/lib/constants'
 import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
 import { useTableSettingsStore } from '@/stores/tableSettings'
-import {
-  formatDate,
-  calculateTimeBetweenDates,
-} from '@/lib/utils/FormattingDates'
+import { formatDate } from '@/lib/utils/FormattingDates'
 // import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
@@ -143,7 +140,7 @@ function onChangeSort(item) {
               v-if="selectedSettings.includes('timeBeforeStart')"
               class="text-truncate"
             >
-              {{ calculateTimeBetweenDates(new Date(), item.dateStart, 'DD') }}
+              {{ item.timeBeforeStart }}
             </td>
             <td
               v-if="selectedSettings.includes('dateStart')"
@@ -167,7 +164,7 @@ function onChangeSort(item) {
               v-if="selectedSettings.includes('timeToConfirm')"
               class="text-truncate"
             >
-              {{ calculateTimeBetweenDates(item.dateCreat, item.dateAudit, 'DD HH') }}
+              {{ item.timeToConfirm }}
             </td>
             <td v-if="selectedSettings.includes('comment')">
               <span class="d-inline-block text-truncate span_max">
