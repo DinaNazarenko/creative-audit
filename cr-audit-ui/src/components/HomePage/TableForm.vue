@@ -140,7 +140,7 @@ function onChangeSort(item) {
               v-if="selectedSettings.includes('timeBeforeStart')"
               class="text-truncate"
             >
-              {{ item.timeBeforeStart }}
+              {{ item?.timeBeforeStart ? `${item?.timeBeforeStart} д` : '—' }}
             </td>
             <td
               v-if="selectedSettings.includes('dateStart')"
@@ -164,7 +164,7 @@ function onChangeSort(item) {
               v-if="selectedSettings.includes('timeToConfirm')"
               class="text-truncate"
             >
-              {{ item.timeToConfirm }}
+              {{ item.timeToConfirm?.days ? `${item?.timeToConfirm.days} д ${item?.timeToConfirm.hours} ч` : '—' }}
             </td>
             <td v-if="selectedSettings.includes('comment')">
               <span class="d-inline-block text-truncate span_max">

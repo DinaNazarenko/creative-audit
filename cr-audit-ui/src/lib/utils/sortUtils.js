@@ -12,11 +12,13 @@ export function sortArrayByObject(arr, sortConfig) {
         const aValue = a[sortConfig.sortField];
         const bValue = b[sortConfig.sortField];
         
-        if (typeof aValue !== 'string' || typeof bValue !== 'string') {
-          return 0;
+        if (typeof aValue !== 'number' && typeof bValue !== 'number') {
+          // Если оба значения не являются числами, сортируем как строки
+          return bValue.localeCompare(aValue);
         }
-        
-        return bValue.localeCompare(aValue);
+
+        // Если хотя бы одно значение является числом, сравниваем числа
+        return bValue - aValue;
       });
     } else {
       // Сортировка по возрастанию
@@ -24,11 +26,13 @@ export function sortArrayByObject(arr, sortConfig) {
         const aValue = a[sortConfig.sortField];
         const bValue = b[sortConfig.sortField];
         
-        if (typeof aValue !== 'string' || typeof bValue !== 'string') {
-          return 0;
+        if (typeof aValue !== 'number' && typeof bValue !== 'number') {
+          // Если оба значения не являются числами, сортируем как строки
+          return aValue.localeCompare(bValue);
         }
-        
-        return aValue.localeCompare(bValue);
+
+        // Если хотя бы одно значение является числом, сравниваем числа
+        return aValue - bValue;
       });
     }
   } catch (error) {
