@@ -1,6 +1,6 @@
 <script setup>
 import SearchIcon from '@/components/icons/SearchIcon.vue'
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 
 const props = defineProps({
   statuses: Array,
@@ -59,6 +59,20 @@ function handleCheckboxChange(event, filterKey) {
     filters[filterKey].delete(key)
   }
 }
+
+// Если переходим по навигации На проверке/Проверено/Все -> необходимо обновлять выбранные фильтры
+function updateFilters(filterKey) {
+  if (!props[filterKey]) return;
+
+  filters[filterKey].forEach(key => {
+    if (!props[filterKey].includes(key)) {
+      filters[filterKey].delete(key);
+    }
+  });
+}
+
+watch(() => props.accounts, () => updateFilters('accounts'));
+watch(() => props.advertisers, () => updateFilters('advertisers'));
 </script>
 <template>
   <div class="d-flex">
