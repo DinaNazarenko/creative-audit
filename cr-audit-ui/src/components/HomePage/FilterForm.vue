@@ -70,7 +70,14 @@ function handleCheckboxChange(event, filterKey) {
         aria-expanded="false"
         @click="toggleState('isStatusesOpen')"
       >
-        Статус
+        <template v-if="filters.statuses.size > 0">
+          Статус{{
+            filters.statuses.size === props.statuses.length
+              ? ': Все'
+              : `: ${filters.statuses.size}`
+          }}
+        </template>
+        <template v-if="filters.statuses.size === 0"> Статус </template>
       </button>
       <ul
         v-if="state.isStatusesOpen"
@@ -101,7 +108,14 @@ function handleCheckboxChange(event, filterKey) {
         aria-expanded="false"
         @click="toggleState('isTypesOpen')"
       >
-        Тип
+        <template v-if="filters.types.size > 0">
+          Тип{{
+            filters.types.size === props.types.length
+              ? ': Все'
+              : `: ${filters.types.size}`
+          }}
+        </template>
+        <template v-if="filters.types.size === 0"> Тип </template>
       </button>
       <ul
         v-if="state.isTypesOpen"
@@ -132,7 +146,14 @@ function handleCheckboxChange(event, filterKey) {
         aria-expanded="false"
         @click="toggleState('isAccountsOpen')"
       >
-        Кабинет
+        <template v-if="filters.accounts.size > 0">
+          Кабинет{{
+            filters.accounts.size === props.accounts.length
+              ? ': Все'
+              : `: ${filters.accounts.size}`
+          }}
+        </template>
+        <template v-if="filters.accounts.size === 0"> Кабинет </template>
       </button>
       <ul
         v-if="state.isAccountsOpen"
@@ -182,7 +203,14 @@ function handleCheckboxChange(event, filterKey) {
         aria-expanded="false"
         @click="toggleState('isAdvertisersOpen')"
       >
-        Рекламодатель
+        <template v-if="filters.advertisers.size > 0">
+          Рекламодатель{{
+            filters.advertisers.size === props.advertisers.length
+              ? ': Все'
+              : `: ${filters.advertisers.size}`
+          }}
+        </template>
+        <template v-if="filters.advertisers.size === 0"> Рекламодатель </template>
       </button>
       <ul
         v-if="state.isAdvertisersOpen"
