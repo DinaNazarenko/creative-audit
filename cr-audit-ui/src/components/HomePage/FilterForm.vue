@@ -1,6 +1,6 @@
 <script setup>
 import SearchIcon from '@/components/icons/SearchIcon.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 
 const props = defineProps({
   statuses: Array,
@@ -9,26 +9,30 @@ const props = defineProps({
   advertisers: Array,
 })
 
-const isStatusesOpen = ref(false)
-const isTypesOpen = ref(false)
-const isAccountsOpen = ref(false)
-const isAdvertisersOpen = ref(false)
+const state = reactive({
+  isStatusesOpen: false,
+  isTypesOpen: false,
+  isAccountsOpen: false,
+  isAdvertisersOpen: false,
+})
+
+const filters = reactive({
+  statuses: new Set(),
+  types: new Set(),
+  accounts: new Set(),
+  advertisers: new Set(),
+})
+
 const searchItem = ref('')
 
 const filteredAccounts = computed(() => filterAccounts(searchItem.value))
 const filteredAdvertisers = computed(() => filterAdvertisers(searchItem.value))
 
-const toggleStatuses = () => {
-  isStatusesOpen.value = !isStatusesOpen.value
-}
-const toggleTypes = () => {
-  isTypesOpen.value = !isTypesOpen.value
-}
-const toggleAccounts = () => {
-  isAccountsOpen.value = !isAccountsOpen.value
-}
-const toggleAdvertisers = () => {
-  isAdvertisersOpen.value = !isAdvertisersOpen.value
+const toggleState = stateKey => {
+  state[stateKey] = !state[stateKey]
+  if (stateKey === 'isAccountsOpen' || stateKey === 'isAdvertisersOpen') {
+    searchItem.value = ''
+  }
 }
 
 const filterAccounts = value => {
@@ -39,12 +43,21 @@ const filterAccounts = value => {
 
 const filterAdvertisers = value => {
   return props.advertisers.filter(advertiser =>
-  advertiser.toLowerCase().includes(value.toLowerCase()),
+    advertiser.toLowerCase().includes(value.toLowerCase()),
   )
 }
 
 const onChangeSearch = event => {
   searchItem.value = event.target.value.trim()
+}
+
+function handleCheckboxChange(event, filterKey) {
+  const key = event.target.id
+  if (event.target.checked) {
+    filters[filterKey].add(key)
+  } else {
+    filters[filterKey].delete(key)
+  }
 }
 </script>
 <template>
@@ -55,12 +68,12 @@ const onChangeSearch = event => {
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="toggleStatuses"
+        @click="toggleState('isStatusesOpen')"
       >
         Статус
       </button>
       <ul
-        v-if="isStatusesOpen"
+        v-if="state.isStatusesOpen"
         class="dropdown-menu list-group rounded-1 ul_statuses"
       >
         <li
@@ -71,8 +84,10 @@ const onChangeSearch = event => {
           <input
             class="form-check-input me-1"
             type="checkbox"
-            value=""
-            id="item"
+            :value="item"
+            :id="item"
+            @change="handleCheckboxChange($event, 'statuses')"
+            :checked="filters.statuses.has(item)"
           />
           <label class="form-check-label" for="firstCheckbox">{{ item }}</label>
         </li>
@@ -84,12 +99,12 @@ const onChangeSearch = event => {
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="toggleTypes"
+        @click="toggleState('isTypesOpen')"
       >
         Тип
       </button>
       <ul
-        v-if="isTypesOpen"
+        v-if="state.isTypesOpen"
         class="dropdown-menu list-group rounded-1 ul_types"
       >
         <li
@@ -100,8 +115,10 @@ const onChangeSearch = event => {
           <input
             class="form-check-input me-1"
             type="checkbox"
-            value=""
-            id="item"
+            :value="item"
+            :id="item"
+            @change="handleCheckboxChange($event, 'types')"
+            :checked="filters.types.has(item)"
           />
           <label class="form-check-label" for="firstCheckbox">{{ item }}</label>
         </li>
@@ -113,12 +130,12 @@ const onChangeSearch = event => {
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="toggleAccounts"
+        @click="toggleState('isAccountsOpen')"
       >
         Кабинет
       </button>
       <ul
-        v-if="isAccountsOpen"
+        v-if="state.isAccountsOpen"
         class="dropdown-menu list-group rounded-1 overflow-hidden py-0 ul_custom"
       >
         <div class="border-bottom">
@@ -143,8 +160,10 @@ const onChangeSearch = event => {
             <input
               class="form-check-input me-1"
               type="checkbox"
-              value=""
-              id="item"
+              :value="item"
+              :id="item"
+              @change="handleCheckboxChange($event, 'accounts')"
+              :checked="filters.accounts.has(item)"
             />
             <label class="form-check-label" for="firstCheckbox">
               <span class="d-inline-block text-truncate span_custom">
@@ -161,12 +180,12 @@ const onChangeSearch = event => {
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="toggleAdvertisers"
+        @click="toggleState('isAdvertisersOpen')"
       >
         Рекламодатель
       </button>
       <ul
-        v-if="isAdvertisersOpen"
+        v-if="state.isAdvertisersOpen"
         class="dropdown-menu list-group rounded-1 overflow-hidden py-0 ul_custom"
       >
         <div class="border-bottom">
@@ -191,8 +210,10 @@ const onChangeSearch = event => {
             <input
               class="form-check-input me-1"
               type="checkbox"
-              value=""
-              id="item"
+              :value="item"
+              :id="item"
+              @change="handleCheckboxChange($event, 'advertisers')"
+              :checked="filters.advertisers.has(item)"
             />
             <label class="form-check-label" for="firstCheckbox">
               <span class="d-inline-block text-truncate span_custom">
