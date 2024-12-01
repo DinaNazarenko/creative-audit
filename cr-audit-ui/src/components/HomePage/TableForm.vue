@@ -4,7 +4,9 @@ import { GROUP_FIELDS } from '@/lib/constants'
 import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
 import { useTableSettingsStore } from '@/stores/tableSettings'
+import { useTableFiltersStore } from '@/stores/tableFilters'
 import { formatDate } from '@/lib/utils/FormattingDates'
+import { tableFilters } from '@/lib/utils/tableFilters'
 // import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
@@ -14,6 +16,15 @@ const sortOrderFields = ref([])
 const selectedField = ref('')
 const tableSettingsStore = useTableSettingsStore()
 const selectedSettings = computed(() => tableSettingsStore.selectedSettings)
+
+const tableFiltersStore = useTableFiltersStore()
+
+const filterSettings = computed(() => ({
+  statuses: [...tableFiltersStore.statuses],
+  types: [...tableFiltersStore.types],
+  accounts: [...tableFiltersStore.accounts],
+  advertisers: [...tableFiltersStore.advertisers],
+}))
 
 const getFields = () => {
   return Object.fromEntries(
@@ -27,7 +38,7 @@ const fields = computed(getFields)
 
 const sortedCreatives = computed(() =>
   sortArrayByObject(
-    props.creatives,
+    tableFilters(props.creatives, filterSettings.value),
     findSortConfigByField(sortOrderFields.value, selectedField.value),
   ),
 )
