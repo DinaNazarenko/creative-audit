@@ -1,5 +1,6 @@
 <script setup>
 import SearchIcon from '@/components/icons/SearchIcon.vue'
+import { useTableFiltersStore } from '@/stores/tableFilters'
 import { ref, computed, reactive, watch } from 'vue'
 
 const props = defineProps({
@@ -16,12 +17,8 @@ const state = reactive({
   isAdvertisersOpen: false,
 })
 
-const filters = reactive({
-  statuses: new Set(),
-  types: new Set(),
-  accounts: new Set(),
-  advertisers: new Set(),
-})
+const tableFiltersStore = useTableFiltersStore()
+const filters = computed(() => tableFiltersStore)
 
 const searchItem = ref('')
 
@@ -54,25 +51,31 @@ const onChangeSearch = event => {
 function handleCheckboxChange(event, filterKey) {
   const key = event.target.id
   if (event.target.checked) {
-    filters[filterKey].add(key)
+    tableFiltersStore.updateTableFilters(filterKey, key)
   } else {
-    filters[filterKey].delete(key)
+    tableFiltersStore.removeTableFilters(filterKey, key)
   }
 }
 
 // Если переходим по навигации На проверке/Проверено/Все -> необходимо обновлять выбранные фильтры
 function updateFilters(filterKey) {
-  if (!props[filterKey]) return;
+  if (!props[filterKey]) return
 
-  filters[filterKey].forEach(key => {
+  filters.value[filterKey].forEach(key => {
     if (!props[filterKey].includes(key)) {
-      filters[filterKey].delete(key);
+      tableFiltersStore.removeTableFilters(filterKey, key)
     }
-  });
+  })
 }
 
-watch(() => props.accounts, () => updateFilters('accounts'));
-watch(() => props.advertisers, () => updateFilters('advertisers'));
+watch(
+  () => props.accounts,
+  () => updateFilters('accounts'),
+)
+watch(
+  () => props.advertisers,
+  () => updateFilters('advertisers'),
+)
 </script>
 <template>
   <div class="d-flex">
@@ -224,7 +227,9 @@ watch(() => props.advertisers, () => updateFilters('advertisers'));
               : `: ${filters.advertisers.size}`
           }}
         </template>
-        <template v-if="filters.advertisers.size === 0"> Рекламодатель </template>
+        <template v-if="filters.advertisers.size === 0">
+          Рекламодатель
+        </template>
       </button>
       <ul
         v-if="state.isAdvertisersOpen"
