@@ -24,6 +24,7 @@ const filterSettings = computed(() => ({
   types: [...tableFiltersStore.types],
   accounts: [...tableFiltersStore.accounts],
   advertisers: [...tableFiltersStore.advertisers],
+  dateRange: [...tableFiltersStore.dateRange],
 }))
 
 const getFields = () => {

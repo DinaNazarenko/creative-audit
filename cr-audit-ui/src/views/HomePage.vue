@@ -23,7 +23,6 @@ const statuses = ref(STATUS_SELECT)
 const pendingCreativesCount = ref(0)
 
 const tableFiltersStore = useTableFiltersStore()
-const filtersStore = computed(() => tableFiltersStore)
 
 const filters = reactive({
   sortBy: 'idApplication',
@@ -34,7 +33,6 @@ const filters = reactive({
 const date = ref(new Date())
 
 const formatedDate = date => {
- 
   const startDateObject = date[0] ? new Date(date[0]) : new Date()
   const startFormattedDate = startDateObject.toLocaleDateString('ru-RU', {
     year: 'numeric',
@@ -42,7 +40,9 @@ const formatedDate = date => {
     day: '2-digit',
   })
 
-  const endDateObject = date[1] ? new Date(date[1]) : new Date(new Date().setDate(startDateObject.getDate() + 7))
+  const endDateObject = date[1]
+    ? new Date(date[1])
+    : new Date(new Date().setDate(startDateObject.getDate() + 7))
   const endFormattedDate = endDateObject.toLocaleDateString('ru-RU', {
     year: 'numeric',
     month: '2-digit',
@@ -132,6 +132,11 @@ onMounted(async () => {
 })
 
 watch(filters, getCreatives, pendingCreativesCount)
+
+const handleDate = (modelData) => {
+  date.value = modelData;
+  tableFiltersStore.updateDateRange('dateRange', date.value)
+}
 </script>
 <template>
   <div v-auto-animate class="d-flex">
@@ -194,7 +199,7 @@ watch(filters, getCreatives, pendingCreativesCount)
           </div>
           <div class="d-flex">
             <VueDatePicker
-              v-model="date"
+              :model-value="date"
               locale="ru"
               cancelText="Отмена"
               selectText="Выбрать"
@@ -204,6 +209,7 @@ watch(filters, getCreatives, pendingCreativesCount)
               multi-calendars
               :enable-time-picker="false"
               placeholder="Выберите период"
+              @update:model-value="handleDate"
             />
             <div>
               <button class="btn btn_custom">
