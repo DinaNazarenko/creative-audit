@@ -8,7 +8,8 @@ import FilterForm from '@/components/HomePage/FilterForm.vue'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import { STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
-import { onMounted, ref, reactive, watch } from 'vue'
+import { useTableFiltersStore } from '@/stores/tableFilters'
+import { onMounted, ref, reactive, watch, computed } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -20,8 +21,9 @@ const advertisers = ref([])
 const types = ref(TYPE_SELECT)
 const statuses = ref(STATUS_SELECT)
 const pendingCreativesCount = ref(0)
-const startDateRef = ref(new Date());
-const endDateRef = ref(new Date());
+
+const tableFiltersStore = useTableFiltersStore()
+const filtersStore = computed(() => tableFiltersStore)
 
 const filters = reactive({
   sortBy: 'idApplication',
@@ -29,19 +31,26 @@ const filters = reactive({
   searchQuery: '',
   urlStatusParam: '',
 })
-const date = ref([new Date(), new Date()])
+const date = ref(new Date())
 
-// const format = (startDate, endDate) => {
-//   const startDay = startDate.getDate().toString().padStart(2, '0');
-//   const startMonth = (startDate.getMonth() + 1).toString().padStart(2, '0');
-//   const startYear = startDate.getFullYear();
+const formatedDate = date => {
+ 
+  const startDateObject = date[0] ? new Date(date[0]) : new Date()
+  const startFormattedDate = startDateObject.toLocaleDateString('ru-RU', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 
-//   const endDay = endDate.getDate().toString().padStart(2, '0');
-//   const endMonth = (endDate.getMonth() + 1).toString().padStart(2, '0');
-//   const endYear = endDate.getFullYear();
+  const endDateObject = date[1] ? new Date(date[1]) : new Date(new Date().setDate(startDateObject.getDate() + 7))
+  const endFormattedDate = endDateObject.toLocaleDateString('ru-RU', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 
-//   return `${startDay}.${startMonth}.${startYear} - ${endDay}.${endMonth}.${endYear}`;
-// };
+  return `${startFormattedDate} - ${endFormattedDate}`
+}
 
 const handleStatusSelection = event => {
   const tempStatus = event.currentTarget.textContent
@@ -93,19 +102,19 @@ const getCreatives = async () => {
     creatives.value = data
 
     creatives.value = creatives.value.map(item => ({
-    ...item,
-    timeBeforeStart: calculateTimeBetweenDates(
-      new Date(),
-      item.dateStart,
-      'DD',
-    ),
-    timeToConfirm: calculateTimeBetweenDates(
-      item.dateCreat,
-      item.dateAudit,
-      'DD HH',
-    ),
-  }));
- 
+      ...item,
+      timeBeforeStart: calculateTimeBetweenDates(
+        new Date(),
+        item.dateStart,
+        'DD',
+      ),
+      timeToConfirm: calculateTimeBetweenDates(
+        item.dateCreat,
+        item.dateAudit,
+        'DD HH',
+      ),
+    }))
+
     accounts.value = Array.from(new Set(data.map(item => item.account)))
     advertisers.value = Array.from(new Set(data.map(item => item.advertiser)))
   } catch (error) {
@@ -119,10 +128,7 @@ onMounted(async () => {
   const newStartDate = new Date()
   const newEndDate = new Date(new Date().setDate(newStartDate.getDate() + 7))
 
-  startDateRef.value = newStartDate;
-  endDateRef.value = newEndDate;
-
-  date.value = [startDateRef.value, endDateRef.value];
+  date.value = [newStartDate, newEndDate]
 })
 
 watch(filters, getCreatives, pendingCreativesCount)
@@ -193,7 +199,7 @@ watch(filters, getCreatives, pendingCreativesCount)
               cancelText="Отмена"
               selectText="Выбрать"
               :format-locale="ru"
-              :format="format"
+              :format="formatedDate"
               range
               multi-calendars
               :enable-time-picker="false"

@@ -6,6 +6,7 @@ export const useTableFiltersStore = defineStore('tableFilters', {
     types: new Set(),
     accounts: new Set(),
     advertisers: new Set(),
+    dateRange: Array,
   }),
   actions: {
     updateTableFilters(filterKey, key) {
