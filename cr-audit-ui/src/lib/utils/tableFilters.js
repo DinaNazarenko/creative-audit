@@ -16,8 +16,8 @@ export function tableFilters(creatives, filterSettings) {
       const [startDate, endDate] = filterSettings.dateRange.map(date => new Date(date)); 
 
       const hasDateRange = filterSettings.dateRange?.length > 0 && 
-      new Date(creative.dateStart) >= startDate &&
-      new Date(creative.dateStart) <= endDate;
+      new Date(creative.dateStart).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0) &&
+      new Date(creative.dateStart).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
 
       return (hasStatus || !filterSettings.statuses.length > 0) &&
              (hasType || !filterSettings.types.length > 0) &&
