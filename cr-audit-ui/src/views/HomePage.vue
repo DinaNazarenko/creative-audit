@@ -9,7 +9,7 @@ import VueDatePicker from '@vuepic/vue-datepicker'
 import { STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { useTableFiltersStore } from '@/stores/tableFilters'
-import { onMounted, ref, reactive, watch, computed } from 'vue'
+import { onMounted, ref, reactive, watch } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -68,10 +68,6 @@ const handleStatusSelection = event => {
     filters.urlStatusParam = ''
   }
 }
-
-// const onChangeSelect = (event) => {
-//   filters.sortBy = event.target.value
-// }
 
 const onChangeSearch = debounce(event => {
   filters.searchQuery = event.target.value
@@ -199,7 +195,7 @@ const handleDate = (modelData) => {
           </div>
           <div class="d-flex">
             <VueDatePicker
-              :model-value="date"
+              v-model="date"
               locale="ru"
               cancelText="Отмена"
               selectText="Выбрать"
@@ -209,7 +205,7 @@ const handleDate = (modelData) => {
               multi-calendars
               :enable-time-picker="false"
               placeholder="Выберите период"
-              @update:model-value="handleDate"
+              @update:model-value="handleDate" 
             />
             <div>
               <button class="btn btn_custom">

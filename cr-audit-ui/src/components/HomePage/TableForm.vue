@@ -7,6 +7,7 @@ import { useTableSettingsStore } from '@/stores/tableSettings'
 import { useTableFiltersStore } from '@/stores/tableFilters'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { tableFilters } from '@/lib/utils/tableFilters'
+import { exportToExcel } from '@/lib/utils/exportToExcel'
 // import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
@@ -67,9 +68,28 @@ function onChangeSort(item) {
   const sortConfig = findSortConfigByField(sortOrderFields.value, selectedField)
   sortedCreatives.value = sortArrayByObject(props.creatives, sortConfig)
 }
+
+const triggerExport = async () => {
+  try {
+    await exportToExcel(sortedCreatives.value);
+    console.log('creatives', sortedCreatives.value)
+    console.log('fields',fields.value)
+  } catch (error) {
+    console.error('Ошибка при экспорте:', error);
+  }
+};
 </script>
 <template>
   <div class="table_custom v-auto-animate">
+    <div>
+      <button
+        class="btn btn_custom"
+        @click="triggerExport"
+      >
+        <DownloadIcon />
+        XLS
+      </button>
+    </div>
     <div class="overflow-y-auto scroll_custom mb-3">
       <table class="table table-hover overflow-hidden m-0">
         <thead>
@@ -176,7 +196,11 @@ function onChangeSort(item) {
               v-if="selectedSettings.includes('timeToConfirm')"
               class="text-truncate"
             >
-              {{ item.timeToConfirm?.days ? `${item?.timeToConfirm.days} д ${item?.timeToConfirm.hours} ч` : '—' }}
+              {{
+                item.timeToConfirm?.days
+                  ? `${item?.timeToConfirm.days} д ${item?.timeToConfirm.hours} ч`
+                  : '—'
+              }}
             </td>
             <td v-if="selectedSettings.includes('comment')">
               <span class="d-inline-block text-truncate span_max">
