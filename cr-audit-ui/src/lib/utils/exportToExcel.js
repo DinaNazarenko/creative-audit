@@ -1,27 +1,31 @@
-import { utils } from 'xlsx';
+import * as XLSX from 'xlsx';
 
 export const exportToExcel = async (sortedCreatives) => {
   // Создаем данные для Excel
-  const data = sortedCreatives
-
-  console.log('exel', sortedCreatives)
-  console.log('exel result', data)
+  const data = sortedCreatives.map(item => ({
+    'ID заявки': item.idApplication,
+    'Название адгруппы': item.nameAdGroup,
+    'Статус': item.status,
+    'Тип': item.type,
+    'Название креатива': item.name
+  }));
 
   // Создаем лист Excel
-  const worksheet = utils.json_to_sheet(data);
+  const worksheet = XLSX.utils.json_to_sheet(data);
 
   // Создаем рабочую книгу Excel
-  const workbook = utils.book_new();
+  const workbook = XLSX.utils.book_new();
   
   // Добавляем лист в рабочую книгу
-  utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
   // Создаем Blob из рабочей книги
-  const blob = new Blob([workbook], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    name: 'exported_data.xlsx'
-  });
-  
+  const buffer = XLSX.write(workbook, { bookType: 'xls', type: 'buffer' });
+
+  // Создаем Blob из буфера
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.ms-excel'
+  });  
 
   // Создаем URL для скачивания файла
   const url = URL.createObjectURL(blob);
