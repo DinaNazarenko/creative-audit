@@ -72,10 +72,8 @@ function onChangeSort(item) {
 const triggerExport = async () => {
   try {
     await exportToExcel(sortedCreatives.value);
-    console.log('creatives', sortedCreatives.value)
-    console.log('fields',fields.value)
   } catch (error) {
-    console.error('Ошибка при экспорте:', error);
+    console.error('Ошибка при экспорте excel:', error);
   }
 };
 </script>

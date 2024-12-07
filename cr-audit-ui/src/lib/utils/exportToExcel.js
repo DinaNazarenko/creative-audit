@@ -1,15 +1,28 @@
+import { formatDate } from '@/lib/utils/FormattingDates';
 import * as XLSX from 'xlsx';
 
 export const exportToExcel = async (sortedCreatives) => {
-  // Создаем данные для Excel
   const data = sortedCreatives.map(item => ({
     'ID заявки': item.idApplication,
     'Название адгруппы': item.nameAdGroup,
     'Статус': item.status,
     'Тип': item.type,
-    'Название креатива': item.name
+    'Название креатива': item.name,
+    'Количество креативов': item.amount,
+    'Аккаунт': item.email,
+    'Кабинет': item.account,
+    'Рекламодатель': item.advertiser,
+    'До запуска': item?.timeBeforeStart ? `${item?.timeBeforeStart} д` : '—',
+    'Дата старта РК': formatDate(item.dateStart, 'DD.MM.YYYY'),
+    'Дата создания': formatDate(item.dateCreat, 'DD.MM.YYYY HH:mm:ss'),
+    'Дата модерации': formatDate(item.dateAudit, 'DD.MM.YYYY HH:mm:ss'), 
+    'Время на проверку': item.timeToConfirm?.days
+    ? `${item?.timeToConfirm.days} д ${item?.timeToConfirm.hours} ч`
+    : '—',
+    'Комментарии': item.comment,
+    'Ссылка на посадочную': item.link
   }));
-
+   
   // Создаем лист Excel
   const worksheet = XLSX.utils.json_to_sheet(data);
 
