@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import { GROUP_FIELDS } from '@/lib/constants'
 import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
@@ -12,9 +12,12 @@ import { exportToExcel } from '@/lib/utils/exportToExcel'
 
 const props = defineProps({
   creatives: Array,
+  isExport: Boolean,
 })
+
 const sortOrderFields = ref([])
 const selectedField = ref('')
+
 const tableSettingsStore = useTableSettingsStore()
 const selectedSettings = computed(() => tableSettingsStore.selectedSettings)
 
@@ -70,24 +73,21 @@ function onChangeSort(item) {
 }
 
 const triggerExport = async () => {
-  try {
-    await exportToExcel(sortedCreatives.value);
-  } catch (error) {
-    console.error('Ошибка при экспорте excel:', error);
-  }
+    try {
+      await exportToExcel(sortedCreatives.value);
+    } catch (error) {
+      console.error('Ошибка при экспорте excel:', error.message);
+    }
 };
+
+watchEffect(() => {
+  if (props.isExport) {
+    triggerExport()
+  }
+})
 </script>
 <template>
   <div class="table_custom v-auto-animate">
-    <div>
-      <button
-        class="btn btn_custom"
-        @click="triggerExport"
-      >
-        <DownloadIcon />
-        XLS
-      </button>
-    </div>
     <div class="overflow-y-auto scroll_custom mb-3">
       <table class="table table-hover overflow-hidden m-0">
         <thead>

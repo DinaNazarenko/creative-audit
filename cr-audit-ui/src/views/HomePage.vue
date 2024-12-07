@@ -21,6 +21,7 @@ const advertisers = ref([])
 const types = ref(TYPE_SELECT)
 const statuses = ref(STATUS_SELECT)
 const pendingCreativesCount = ref(0)
+const isExport = ref(false)
 
 const tableFiltersStore = useTableFiltersStore()
 
@@ -133,6 +134,13 @@ const handleDate = (modelData) => {
   date.value = modelData;
   tableFiltersStore.updateDateRange('dateRange', date.value)
 }
+
+const handleExport = () => {
+  isExport.value = true
+  setTimeout(() => {
+    isExport.value = false;
+  }, 3000);
+}
 </script>
 <template>
   <div v-auto-animate class="d-flex">
@@ -208,14 +216,14 @@ const handleDate = (modelData) => {
               @update:model-value="handleDate" 
             />
             <div>
-              <button class="btn btn_custom">
+              <button class="btn btn_custom" @click="handleExport">
                 <DownloadIcon />
                 XLS
               </button>
             </div>
           </div>
         </div>
-        <TableForm :creatives="creatives" />
+        <TableForm :creatives="creatives" :is-export="isExport"/>
       </div>
       <FooterForm />
     </div>
