@@ -9,11 +9,13 @@ import { formatDate } from '@/lib/utils/FormattingDates'
 import { tableFilters } from '@/lib/utils/tableFilters'
 import { exportToExcel } from '@/lib/utils/exportToExcel'
 import NoCreatives from '@/components/HomePage/NoCreatives.vue'
+import SkeletonCreatives from '@/components/HomePage/SkeletonCreatives.vue'
 // import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
   creatives: Array,
   isExport: Boolean,
+  isLoading: Boolean,
 })
 
 const sortOrderFields = ref([])
@@ -115,11 +117,11 @@ watchEffect(() => {
             </th>
           </tr>
         </thead>
+        <template v-if="isLoading">
+          <SkeletonCreatives />
+        </template>
         <tbody>
-          <tr
-            v-for="item in sortedCreatives"
-            :key="item.id"
-          >
+          <tr v-for="item in sortedCreatives" :key="item.id">
             <td class="text-truncate">{{ item.idApplication }}</td>
             <td>
               <span class="d-inline-block text-truncate span_max">
