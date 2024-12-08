@@ -130,16 +130,16 @@ onMounted(async () => {
 
 watch(filters, getCreatives, pendingCreativesCount)
 
-const handleDate = (modelData) => {
-  date.value = modelData;
+const handleDate = modelData => {
+  date.value = modelData
   tableFiltersStore.updateDateRange('dateRange', date.value)
 }
 
 const handleExport = () => {
   isExport.value = true
   setTimeout(() => {
-    isExport.value = false;
-  }, 3000);
+    isExport.value = false
+  }, 3000)
 }
 </script>
 <template>
@@ -213,7 +213,7 @@ const handleExport = () => {
               multi-calendars
               :enable-time-picker="false"
               placeholder="Выберите период"
-              @update:model-value="handleDate" 
+              @update:model-value="handleDate"
             />
             <div>
               <button class="btn btn_custom" @click="handleExport">
@@ -223,7 +223,7 @@ const handleExport = () => {
             </div>
           </div>
         </div>
-        <TableForm :creatives="creatives" :is-export="isExport"/>
+        <TableForm :creatives="creatives" :is-export="isExport" />
       </div>
       <FooterForm />
     </div>

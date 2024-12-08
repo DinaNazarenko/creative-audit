@@ -8,6 +8,7 @@ import { useTableFiltersStore } from '@/stores/tableFilters'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { tableFilters } from '@/lib/utils/tableFilters'
 import { exportToExcel } from '@/lib/utils/exportToExcel'
+import NoCreatives from '@/components/HomePage/NoCreatives.vue'
 // import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
@@ -217,6 +218,12 @@ watchEffect(() => {
           </tr>
         </tbody>
       </table>
+      <div
+        v-if="sortedCreatives.length === 0"
+        class="d-flex align-items-center justify-content-center main_container"
+      >
+        <NoCreatives />
+      </div>
     </div>
   </div>
 </template>
@@ -226,6 +233,9 @@ watchEffect(() => {
   min-height: calc(100vh - 290px);
   max-width: 95vw;
   min-width: 95vw;
+}
+.main_container {
+  min-height: calc(100vh - 365px);
 }
 .scroll_custom {
   scrollbar-width: thin;
