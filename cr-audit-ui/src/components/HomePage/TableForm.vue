@@ -73,12 +73,12 @@ function onChangeSort(item) {
 }
 
 const triggerExport = async () => {
-    try {
-      await exportToExcel(sortedCreatives.value);
-    } catch (error) {
-      console.error('Ошибка при экспорте excel:', error.message);
-    }
-};
+  try {
+    await exportToExcel(sortedCreatives.value)
+  } catch (error) {
+    console.error('Ошибка при экспорте excel:', error.message)
+  }
+}
 
 watchEffect(() => {
   if (props.isExport) {
@@ -115,7 +115,10 @@ watchEffect(() => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in sortedCreatives" :key="item.id">
+          <tr
+            v-for="item in sortedCreatives"
+            :key="item.id"
+          >
             <td class="text-truncate">{{ item.idApplication }}</td>
             <td>
               <span class="d-inline-block text-truncate span_max">
@@ -259,5 +262,11 @@ svg:hover {
 .badge_info_custom {
   background-color: #e0cffc !important;
   color: #6f42c1 !important;
+}
+span {
+  height: 22px;
+}
+td {
+  padding: 6px;
 }
 </style>
