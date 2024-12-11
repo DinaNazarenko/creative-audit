@@ -91,7 +91,7 @@ watchEffect(() => {
 </script>
 <template>
   <div class="table_custom v-auto-animate">
-    <div class="overflow-y-auto scroll_custom mb-3">
+    <div class="overflow-y-auto scroll_custom mb-3 max_table_custom">
       <table class="table table-hover overflow-hidden m-0">
         <thead>
           <tr>
@@ -235,6 +235,9 @@ watchEffect(() => {
   min-height: calc(100vh - 290px);
   max-width: 95vw;
   min-width: 95vw;
+}
+.max_table_custom {
+  max-height: calc(100vh - 300px);
 }
 .main_container {
   min-height: calc(100vh - 365px);
