@@ -5,6 +5,8 @@ import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
 import { useTableSettingsStore } from '@/stores/tableSettings'
 import { useTableFiltersStore } from '@/stores/tableFilters'
+import { useSortedCreativesStore } from '@/stores/sortedCreatives'
+import { useCreativesPageStore } from '@/stores/pagination'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { tableFilters } from '@/lib/utils/tableFilters'
 import { exportToExcel } from '@/lib/utils/exportToExcel'
@@ -22,9 +24,16 @@ const sortOrderFields = ref([])
 const selectedField = ref('')
 
 const tableSettingsStore = useTableSettingsStore()
+const creativesPageStore = useCreativesPageStore()
 const selectedSettings = computed(() => tableSettingsStore.selectedSettings)
+const creativesPage = computed(() => ({
+  creativesPerPage: creativesPageStore.creativesPerPage,
+  currentPage: creativesPageStore.currentPage,
+}))
 
 const tableFiltersStore = useTableFiltersStore()
+
+const sortedCreativesStore = useSortedCreativesStore()
 
 const filterSettings = computed(() => ({
   statuses: [...tableFiltersStore.statuses],
@@ -50,6 +59,23 @@ const sortedCreatives = computed(() =>
     findSortConfigByField(sortOrderFields.value, selectedField.value),
   ),
 )
+
+const paginatedCreatives = computed(() => {
+  const perPage = creativesPage.value.creativesPerPage
+  if (typeof perPage === 'string') {
+    return sortedCreatives.value
+  } else {
+    const currentPage = creativesPage.value.currentPage
+    let from = (currentPage - 1) * perPage
+    let to = from + perPage
+
+    return sortedCreatives.value.slice(from, to)
+  }
+})
+
+watchEffect(() => {
+  sortedCreativesStore.updateSortedCreatives(sortedCreatives.value)
+})
 
 function onChangeSort(item) {
   const reverseFields = Object.fromEntries(
@@ -121,7 +147,7 @@ watchEffect(() => {
           <SkeletonCreatives />
         </template>
         <tbody>
-          <tr v-for="item in sortedCreatives" :key="item.id">
+          <tr v-for="item in paginatedCreatives" :key="item.id">
             <td class="text-truncate">{{ item.idApplication }}</td>
             <td>
               <span class="d-inline-block text-truncate span_max">
@@ -221,7 +247,7 @@ watchEffect(() => {
         </tbody>
       </table>
       <div
-        v-if="sortedCreatives.length === 0"
+        v-if="paginatedCreatives.length === 0"
         class="d-flex align-items-center justify-content-center main_container"
       >
         <NoCreatives />

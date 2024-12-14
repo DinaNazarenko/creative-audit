@@ -22,7 +22,7 @@ const types = ref(TYPE_SELECT)
 const statuses = ref(STATUS_SELECT)
 const pendingCreativesCount = ref(0)
 const isExport = ref(false)
-const isLoading = ref(true);
+const isLoading = ref(true)
 
 const tableFiltersStore = useTableFiltersStore()
 
@@ -115,10 +115,10 @@ const getCreatives = async () => {
 
     accounts.value = Array.from(new Set(data.map(item => item.account)))
     advertisers.value = Array.from(new Set(data.map(item => item.advertiser)))
-    isLoading.value = false;
+    isLoading.value = false
   } catch (error) {
     console.error('Ошибка получения креативов:', error.message)
-    isLoading.value = false;
+    isLoading.value = false
   }
 }
 
@@ -226,7 +226,11 @@ const handleExport = () => {
             </div>
           </div>
         </div>
-        <TableForm :creatives="creatives" :is-export="isExport" :isLoading="isLoading"/>
+        <TableForm
+          :creatives="creatives"
+          :is-export="isExport"
+          :isLoading="isLoading"
+        />
       </div>
       <FooterForm />
     </div>

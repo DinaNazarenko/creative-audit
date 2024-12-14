@@ -1,20 +1,45 @@
 <script setup>
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
+import { useSortedCreativesStore } from '@/stores/sortedCreatives'
+import { useCreativesPageStore } from '@/stores/pagination'
 import { PAGE_STRINGS } from '@/lib/constants'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-const selectedValue = ref(PAGE_STRINGS[0])
+const sortedCreativesStore = useSortedCreativesStore()
+const creativesPageStore = useCreativesPageStore()
+
+const sortedCreatives = computed(() => [
+  ...sortedCreativesStore.sortedCreatives,
+])
+const creativesPage = computed(() => ({
+  creativesPerPage: creativesPageStore.creativesPerPage,
+  currentPage: creativesPageStore.currentPage,
+}))
+
 const isDropdownOpen = ref(false)
+
+const pages = computed(() => {
+  const perPage = creativesPage.value.creativesPerPage
+  if (typeof perPage === 'string') {
+    return 1
+  } else {
+    return Math.ceil(sortedCreatives.value.length / perPage)
+  }
+})
 
 const handleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
-
 function selectItem(item) {
-  selectedValue.value = item
+  creativesPageStore.updateCreativesPerPage(item)
   isDropdownOpen.value = false
 }
+
+function selectCurrentPage(page) {
+  creativesPageStore.updateCurrentPage(page)
+}
+
 </script>
 <template>
   <footer
@@ -30,7 +55,7 @@ function selectItem(item) {
           aria-expanded="false"
           @click="handleDropdown"
         >
-          {{ selectedValue }}
+          {{ creativesPage.creativesPerPage }}
         </button>
         <ul
           v-if="isDropdownOpen"
@@ -48,7 +73,7 @@ function selectItem(item) {
       </div>
     </div>
     <div class="d-flex justify-content-center align-items-center">
-      <div class="div_custom">Показано 1-4 из 4</div>
+      <div class="div_custom">Показано 1-4 из {{ sortedCreatives.length }}</div>
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-end m-0">
           <li class="page-item">
@@ -56,14 +81,13 @@ function selectItem(item) {
               <ChevronLeftIcon />
             </a>
           </li>
-          <li class="page-item">
-            <a class="page-link py-1 px-2" href="#">1</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link py-1 px-2" href="#">2</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link py-1 px-2" href="#">3</a>
+          <li
+            v-for="page in pages"
+            :key="page"
+            class="page-item"
+            @click="selectCurrentPage(page)"
+          >
+            <a class="page-link py-1 px-2" href="#">{{ page }}</a>
           </li>
           <li class="page-item">
             <a class="page-link py-1 px-2 a_right" href="#">
@@ -77,6 +101,9 @@ function selectItem(item) {
 </template>
 <style scoped>
 @import '../../assets/main.css';
+.dropdown-menu {
+  transform: translateY(-150%);
+}
 .footer_custom {
   height: 56px !important;
   padding-top: 12px;
@@ -102,6 +129,7 @@ function selectItem(item) {
 .ul_custom {
   min-width: 60px;
   border-radius: 3.2px;
+  border: none;
 }
 li {
   font-size: 12px;
@@ -119,7 +147,7 @@ a {
   align-items: center;
 }
 li:active,
-li:focus, 
+li:focus,
 a:active,
 a:focus {
   background-color: var(--custom-color);

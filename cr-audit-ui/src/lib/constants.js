@@ -17,8 +17,8 @@ export const GROUP_FIELDS = {
   link: 'Ссылка на посадочную'
 }
 
-export const TYPE_SELECT = ['Баннер', 'Видео', 'ZIP', 'HTML']
+export const TYPE_SELECT = ['Картинка', 'Видео', 'ZIP', 'HTML']
 
 export const STATUS_SELECT = ['На проверке', 'Согласовано', 'Частично согласовано', 'Отклонено']
 
-export const PAGE_STRINGS = ['20', '50', 'Все']
+export const PAGE_STRINGS = [20, 50, 'Все']
