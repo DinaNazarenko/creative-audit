@@ -40,6 +40,20 @@ function selectItem(item) {
 function selectCurrentPage(page) {
   creativesPageStore.updateCurrentPage(page)
 }
+
+const prevPage = () => {
+  if (creativesPage.value.currentPage > 1) {
+    const currentPage = creativesPage.value.currentPage
+    creativesPageStore.updateCurrentPage(currentPage - 1)
+  }
+};
+
+const nextPage = () => {
+  if (creativesPage.value.currentPage < pages.value) {
+    const currentPage = creativesPage.value.currentPage
+    creativesPageStore.updateCurrentPage(currentPage + 1)
+  }
+};
 </script>
 <template>
   <footer
@@ -73,11 +87,14 @@ function selectCurrentPage(page) {
       </div>
     </div>
     <div class="d-flex justify-content-center align-items-center">
-      <div class="div_custom">Показано 1-{{creativesPage.amountCreatives}} из {{ sortedCreatives.length }}</div>
+      <div class="div_custom">
+        Показано 1-{{ creativesPage.amountCreatives }} из
+        {{ sortedCreatives.length }}
+      </div>
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-end m-0">
           <li class="page-item">
-            <a class="page-link py-1 px-2 a_left">
+            <a class="page-link py-1 px-2 a_left" @click="prevPage">
               <ChevronLeftIcon />
             </a>
           </li>
@@ -89,13 +106,13 @@ function selectCurrentPage(page) {
           >
             <a
               class="page-link py-1 px-2"
-              :class="{'active': creativesPage.currentPage === page }"
+              :class="{ active: creativesPage.currentPage === page }"
               href="#"
               >{{ page }}</a
             >
           </li>
           <li class="page-item">
-            <a class="page-link py-1 px-2 a_right" href="#">
+            <a class="page-link py-1 px-2 a_right" @click="nextPage">
               <ChevronRightIcon />
             </a>
           </li>
