@@ -39,7 +39,6 @@ function selectItem(item) {
 function selectCurrentPage(page) {
   creativesPageStore.updateCurrentPage(page)
 }
-
 </script>
 <template>
   <footer
@@ -87,7 +86,12 @@ function selectCurrentPage(page) {
             class="page-item"
             @click="selectCurrentPage(page)"
           >
-            <a class="page-link py-1 px-2" href="#">{{ page }}</a>
+            <a
+              class="page-link py-1 px-2"
+              :class="{'active': creativesPage.currentPage === page }"
+              href="#"
+              >{{ page }}</a
+            >
           </li>
           <li class="page-item">
             <a class="page-link py-1 px-2 a_right" href="#">
@@ -171,5 +175,10 @@ a:focus {
 :focus {
   box-shadow: var(--focus-box-shadow) !important;
   border-color: var(--custom-color) !important;
+}
+.active {
+  background-color: var(--custom-color);
+  border-color: var(--custom-color);
+  color: white;
 }
 </style>
