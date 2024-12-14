@@ -35,6 +35,7 @@ const handleDropdown = () => {
 function selectItem(item) {
   creativesPageStore.updateCreativesPerPage(item)
   isDropdownOpen.value = false
+  creativesPageStore.updateCurrentPage(1)
 }
 
 function selectCurrentPage(page) {
