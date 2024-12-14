@@ -25,6 +25,11 @@ const isExport = ref(false)
 const isLoading = ref(true)
 
 const tableFiltersStore = useTableFiltersStore()
+const activeItem = ref('На проверке')
+
+function isActive(item) {
+  return activeItem.value === item
+}
 
 const filters = reactive({
   sortBy: 'idApplication',
@@ -62,12 +67,15 @@ const handleStatusSelection = event => {
   if (tempStatus === 'На проверке') {
     filters.status = 'На проверке'
     filters.urlStatusParam = ''
+    activeItem.value = 'На проверке'
   } else if (tempStatus === 'Проверено') {
     filters.status = ''
     filters.urlStatusParam = `?status[]=Согласовано&status[]=Отклонено&status[]=Частично согласовано`
+    activeItem.value = 'Проверено'
   } else {
     filters.status = ''
     filters.urlStatusParam = ''
+    activeItem.value = 'Все'
   }
 }
 
@@ -156,6 +164,7 @@ const handleExport = () => {
             <a
               @click="handleStatusSelection"
               class="text-decoration-none nav-link px-3 py-2 a_custom"
+              :class="{ active: isActive('На проверке') }"
               href="#"
               >На проверке
               <span class="badge text-bg-danger rounded-pill">{{
@@ -167,6 +176,7 @@ const handleExport = () => {
             <a
               @click="handleStatusSelection"
               class="text-decoration-none nav-link px-3 py-2 a_custom"
+              :class="{ active: isActive('Проверено') }"
               href="#"
               >Проверено</a
             >
@@ -175,6 +185,7 @@ const handleExport = () => {
             <a
               @click="handleStatusSelection"
               class="text-decoration-none nav-link px-3 py-2 a_custom"
+              :class="{ active: isActive('Все') }"
               href="#"
               >Все</a
             >
@@ -256,6 +267,7 @@ const handleExport = () => {
 .a_custom {
   color: #6c757d !important;
 }
+.active,
 .a_custom:focus,
 .a_custom:hover {
   box-shadow: var(--focus-box-shadow) !important;

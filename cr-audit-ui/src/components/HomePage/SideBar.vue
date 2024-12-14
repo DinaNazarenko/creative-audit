@@ -62,7 +62,7 @@ const handleDropdown = () => {
         >
           <ImagesIcon />
           <span
-            class="position-absolute translate-middle badge rounded-pill bg-danger"
+            class="position-absolute translate-middle badge text-bg-danger rounded-pill"
             >{{ count }}</span
           >
           <use xlink:href="#home"></use>
@@ -146,7 +146,8 @@ a {
 }
 .active,
 a:active,
-a:focus {
+a:focus,
+.dropdown-item:active {
   background-color: var(--custom-color) !important;
   border-color: var(--custom-color) !important;
   color: white !important;
@@ -162,10 +163,6 @@ a:focus {
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-}
-.dropdown-item:active {
-  background-color: var(--custom-color);
-  border-color: var(--custom-color);
 }
 span {
   display: inline-flex;
