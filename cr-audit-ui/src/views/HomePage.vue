@@ -243,7 +243,7 @@ const handleExport = () => {
           :isLoading="isLoading"
         />
       </div>
-      <FooterForm />
+      <FooterForm :isLoading="isLoading"/>
     </div>
   </div>
 </template>

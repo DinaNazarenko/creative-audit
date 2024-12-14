@@ -6,6 +6,10 @@ import { useCreativesPageStore } from '@/stores/pagination'
 import { PAGE_STRINGS } from '@/lib/constants'
 import { ref, computed } from 'vue'
 
+defineProps({
+  isLoading: Boolean,
+})
+
 const sortedCreativesStore = useSortedCreativesStore()
 const creativesPageStore = useCreativesPageStore()
 
@@ -47,22 +51,30 @@ const prevPage = () => {
     const currentPage = creativesPage.value.currentPage
     creativesPageStore.updateCurrentPage(currentPage - 1)
   }
-};
+}
 
 const nextPage = () => {
   if (creativesPage.value.currentPage < pages.value) {
     const currentPage = creativesPage.value.currentPage
     creativesPageStore.updateCurrentPage(currentPage + 1)
   }
-};
+}
 </script>
 <template>
   <footer
     class="d-flex justify-content-between text-center bg-white footer_custom"
   >
     <div class="d-flex justify-content-center align-items-center">
-      <div class="text-gray-600 div_custom">Строк на странице</div>
-      <div class="dropdown">
+      <p v-if="isLoading" class="placeholder-wave">
+        <a
+          class="btn disabled placeholder col-12 a_skeleton"
+          aria-disabled="true"
+        ></a>
+      </p>
+      <div v-if="!isLoading" class="text-gray-600 div_custom">
+        Строк на странице
+      </div>
+      <div v-if="!isLoading" class="dropdown">
         <button
           class="btn btn-light dropdown-toggle rounded-1 text-start form-select mb-1 py-1 px-2 button_custom"
           type="button"
@@ -88,11 +100,17 @@ const nextPage = () => {
       </div>
     </div>
     <div class="d-flex justify-content-center align-items-center">
-      <div class="div_custom">
+      <p v-if="isLoading" class="placeholder-wave">
+        <a
+          class="btn disabled placeholder col-12 a_skeleton skeleton_second"
+          aria-disabled="true"
+        ></a>
+      </p>
+      <div v-if="!isLoading" class="div_custom">
         Показано 1-{{ creativesPage.amountCreatives }} из
         {{ sortedCreatives.length }}
       </div>
-      <nav aria-label="Page navigation example">
+      <nav v-if="!isLoading" aria-label="Page navigation example">
         <ul class="pagination justify-content-end m-0">
           <li class="page-item">
             <a class="page-link py-1 px-2 a_left" @click="prevPage">
@@ -126,6 +144,20 @@ const nextPage = () => {
 @import '../../assets/main.css';
 .dropdown-menu {
   transform: translateY(-150%);
+}
+.a_skeleton {
+  width: 197px;
+  height: 31px;
+  border-radius: 10px;
+  background-color: #e9ecef;
+  border: none;
+}
+.skeleton_second{
+  width: 215px;
+}
+p {
+  margin-top: 12px;
+  margin-bottom: 13px;
 }
 .footer_custom {
   height: 56px !important;
