@@ -15,6 +15,7 @@ const sortedCreatives = computed(() => [
 const creativesPage = computed(() => ({
   creativesPerPage: creativesPageStore.creativesPerPage,
   currentPage: creativesPageStore.currentPage,
+  amountCreatives: creativesPageStore.amountCreatives,
 }))
 
 const isDropdownOpen = ref(false)
@@ -72,7 +73,7 @@ function selectCurrentPage(page) {
       </div>
     </div>
     <div class="d-flex justify-content-center align-items-center">
-      <div class="div_custom">Показано 1-4 из {{ sortedCreatives.length }}</div>
+      <div class="div_custom">Показано 1-{{creativesPage.amountCreatives}} из {{ sortedCreatives.length }}</div>
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-end m-0">
           <li class="page-item">

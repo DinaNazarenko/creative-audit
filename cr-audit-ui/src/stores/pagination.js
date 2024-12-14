@@ -4,6 +4,7 @@ export const useCreativesPageStore = defineStore('creativesPage', {
   state: () => ({
     creativesPerPage: 20,
     currentPage: 1,
+    amountCreatives: 0,
   }),
 
   actions: {
@@ -12,6 +13,9 @@ export const useCreativesPageStore = defineStore('creativesPage', {
     },
     updateCurrentPage(newPage) {
       this.currentPage = newPage
+    },
+    updateAmountCreatives(amount) {
+      this.amountCreatives = amount
     },
   },
 })

@@ -29,6 +29,7 @@ const selectedSettings = computed(() => tableSettingsStore.selectedSettings)
 const creativesPage = computed(() => ({
   creativesPerPage: creativesPageStore.creativesPerPage,
   currentPage: creativesPageStore.currentPage,
+  amountCreatives: creativesPageStore.amountCreatives,
 }))
 
 const tableFiltersStore = useTableFiltersStore()
@@ -75,6 +76,7 @@ const paginatedCreatives = computed(() => {
 
 watchEffect(() => {
   sortedCreativesStore.updateSortedCreatives(sortedCreatives.value)
+  creativesPageStore.updateAmountCreatives(paginatedCreatives.value.length)
 })
 
 function onChangeSort(item) {
