@@ -13,6 +13,15 @@ defineProps({
 })
 const router = useRouter()
 const isDropdownOpen = ref(false)
+const activeItem = ref('Креативы')
+
+function setActive(item) {
+  activeItem.value = item
+}
+
+function isActive(item) {
+  return activeItem.value === item
+}
 
 const handleLogout = () => {
   localStorage.removeItem('userToken')
@@ -48,6 +57,8 @@ const handleDropdown = () => {
           data-bs-placement="right"
           aria-label="Home"
           data-bs-original-title="Home"
+          @click="setActive('Креативы')"
+          :class="{ active: isActive('Креативы') }"
         >
           <ImagesIcon />
           <span
@@ -66,6 +77,8 @@ const handleDropdown = () => {
           data-bs-placement="right"
           aria-label="Dashboard"
           data-bs-original-title="Dashboard"
+          @click="setActive('Аккаунты')"
+          :class="{ active: isActive('Аккаунты') }"
         >
           <PeopleIcon />
           <use xlink:href="#home"></use>
@@ -80,6 +93,8 @@ const handleDropdown = () => {
           data-bs-placement="right"
           aria-label="Orders"
           data-bs-original-title="Orders"
+          @click="setActive('Отчёты')"
+          :class="{ active: isActive('Отчёты') }"
         >
           <MegaphoneIcon />
           <use xlink:href="#home"></use>
@@ -129,11 +144,12 @@ const handleDropdown = () => {
 a {
   color: black;
 }
+.active,
 a:active,
 a:focus {
-  background-color: var(--custom-color);
-  border-color: var(--custom-color);
-  color: white;
+  background-color: var(--custom-color) !important;
+  border-color: var(--custom-color) !important;
+  color: white !important;
 }
 .dropdown-menu-custom {
   min-width: 91px !important;

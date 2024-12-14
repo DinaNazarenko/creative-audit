@@ -150,6 +150,7 @@ a {
   justify-content: center;
   align-items: center;
 }
+.active,
 li:active,
 li:focus,
 a:active,
@@ -175,10 +176,5 @@ a:focus {
 :focus {
   box-shadow: var(--focus-box-shadow) !important;
   border-color: var(--custom-color) !important;
-}
-.active {
-  background-color: var(--custom-color);
-  border-color: var(--custom-color);
-  color: white;
 }
 </style>
