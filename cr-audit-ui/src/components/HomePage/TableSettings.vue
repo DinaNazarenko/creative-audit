@@ -3,13 +3,8 @@ import { GROUP_FIELDS } from '@/lib/constants'
 import TableSettingsIcon from '@/components/icons/TableSettingsIcon.vue'
 import GripVerticalIcon from '@/components/icons/GripVerticalIcon.vue'
 import { useTableSettingsStore } from '@/stores/tableSettings'
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
-const isOpen = ref(false)
-
-const toggleSettings = () => {
-  isOpen.value = !isOpen.value
-}
 const tableSettingsStore = useTableSettingsStore()
 // Получаем текущие настройки таблицы
 const selectedSettings = computed(() => tableSettingsStore.selectedSettings)
@@ -32,20 +27,17 @@ function handleCheckboxChange(event) {
       type="button"
       data-bs-toggle="dropdown"
       aria-expanded="false"
-      @click="toggleSettings"
     >
       <TableSettingsIcon />
     </button>
     <ul
-      v-if="isOpen"
-      class="dropdown-menu list-group rounded-1 p-0 ul_statuses"
+      class="dropdown-menu rounded-1 p-0 overflow-auto scroll_custom ul_statuses"
     >
-      <li class="dropdown-item list-group-item li_custom">Настройки таблицы</li>
-      <div class="overflow-auto scroll_custom">
+      <li class="dropdown-item li_custom">Настройки таблицы</li>
         <li
           v-for="(value, key) in GROUP_FIELDS"
           :key="key"
-          class="dropdown-item list-group-item position-relative"
+          class="dropdown-item position-relative"
           aria-disabled="true"
         >
           <input
@@ -64,7 +56,6 @@ function handleCheckboxChange(event) {
             <GripVerticalIcon />
           </span>
         </li>
-      </div>
     </ul>
   </div>
 </template>

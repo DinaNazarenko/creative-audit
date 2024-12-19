@@ -12,7 +12,6 @@ defineProps({
   count: Number,
 })
 const router = useRouter()
-const isDropdownOpen = ref(false)
 const activeItem = ref('Креативы')
 
 function setActive(item) {
@@ -26,10 +25,6 @@ function isActive(item) {
 const handleLogout = () => {
   localStorage.removeItem('userToken')
   router.push('/')
-}
-
-const handleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value
 }
 </script>
 <template>
@@ -105,20 +100,14 @@ const handleDropdown = () => {
     <div class="dropdown border-top">
       <a
         href="#"
-        class="d-flex align-items-center justify-content-center p-3 link-body-emphasis text-decoration-none show a_custom"
+        class="dropdown-toggle d-flex align-items-center justify-content-center p-3 link-body-emphasis text-decoration-none a_custom"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="handleDropdown"
       >
         <PersonIcon />
         <CaretDownFillIcon />
       </a>
-      <ul
-        v-if="isDropdownOpen"
-        class="dropdown-menu text-small shadow show dropdown-menu-custom"
-        data-popper-placement="top-start"
-        data-popper-reference-hidden=""
-      >
+      <ul class="dropdown-menu text-small dropdown-menu-custom">
         <li><a class="dropdown-item" href="#">Настройки</a></li>
         <li><a class="dropdown-item" href="#">Профиль</a></li>
         <li><hr class="dropdown-divider" /></li>
@@ -179,5 +168,8 @@ span {
 .a_custom:focus {
   background-color: initial !important;
   color: initial !important;
+}
+.a_custom::after {
+  content: none;
 }
 </style>

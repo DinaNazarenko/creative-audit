@@ -1,20 +1,13 @@
 <script setup>
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import { useTableFiltersStore } from '@/stores/tableFilters'
-import { ref, computed, reactive, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   statuses: Array,
   types: Array,
   accounts: Array,
   advertisers: Array,
-})
-
-const state = reactive({
-  isStatusesOpen: false,
-  isTypesOpen: false,
-  isAccountsOpen: false,
-  isAdvertisersOpen: false,
 })
 
 const tableFiltersStore = useTableFiltersStore()
@@ -24,13 +17,6 @@ const searchItem = ref('')
 
 const filteredAccounts = computed(() => filterAccounts(searchItem.value))
 const filteredAdvertisers = computed(() => filterAdvertisers(searchItem.value))
-
-const toggleState = stateKey => {
-  state[stateKey] = !state[stateKey]
-  if (stateKey === 'isAccountsOpen' || stateKey === 'isAdvertisersOpen') {
-    searchItem.value = ''
-  }
-}
 
 const filterAccounts = value => {
   return props.accounts.filter(account =>
@@ -85,7 +71,6 @@ watch(
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="toggleState('isStatusesOpen')"
       >
         <template v-if="filters.statuses.size > 0">
           Статус{{
@@ -96,15 +81,8 @@ watch(
         </template>
         <template v-if="filters.statuses.size === 0"> Статус </template>
       </button>
-      <ul
-        v-if="state.isStatusesOpen"
-        class="dropdown-menu list-group rounded-1 ul_statuses"
-      >
-        <li
-          v-for="item in statuses"
-          :key="item"
-          class="dropdown-item list-group-item"
-        >
+      <ul class="dropdown-menu rounded-1 ul_statuses">
+        <li v-for="item in statuses" :key="item" class="dropdown-item">
           <input
             class="form-check-input me-1"
             type="checkbox"
@@ -123,7 +101,6 @@ watch(
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="toggleState('isTypesOpen')"
       >
         <template v-if="filters.types.size > 0">
           Тип{{
@@ -134,15 +111,8 @@ watch(
         </template>
         <template v-if="filters.types.size === 0"> Тип </template>
       </button>
-      <ul
-        v-if="state.isTypesOpen"
-        class="dropdown-menu list-group rounded-1 ul_types"
-      >
-        <li
-          v-for="item in types"
-          :key="item"
-          class="dropdown-item list-group-item"
-        >
+      <ul class="dropdown-menu rounded-1 ul_types">
+        <li v-for="item in types" :key="item" class="dropdown-item">
           <input
             class="form-check-input me-1"
             type="checkbox"
@@ -161,7 +131,6 @@ watch(
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="toggleState('isAccountsOpen')"
       >
         <template v-if="filters.accounts.size > 0">
           Кабинет{{
@@ -172,44 +141,51 @@ watch(
         </template>
         <template v-if="filters.accounts.size === 0"> Кабинет </template>
       </button>
-      <ul
-        v-if="state.isAccountsOpen"
-        class="dropdown-menu list-group rounded-1 overflow-hidden py-0 ul_custom"
-      >
-        <div class="border-bottom">
-          <form class="position-relative my-2 px-3" role="search">
+      <ul class="dropdown-menu rounded-1 py-0 ul_custom">
+        <li class="dropdown-item border-bottom py-2 li_search">
+          <form class="position-relative" role="search">
             <input
               class="form-control me-2 search_custom"
               placeholder="Поиск"
               aria-label="Search"
               @input="onChangeSearch"
             />
-            <span class="position-absolute top-50 end-0 me-3 translate-middle">
+            <span class="position-absolute top-50 end-0 me-1 translate-middle">
               <SearchIcon />
             </span>
           </form>
-        </div>
-        <div class="overflow-auto scroll_custom">
-          <li
-            v-for="item in filteredAccounts"
-            :key="item"
-            class="dropdown-item list-group-item"
-          >
-            <input
-              class="form-check-input me-1"
-              type="checkbox"
-              :value="item"
-              :id="item"
-              @change="handleCheckboxChange($event, 'accounts')"
-              :checked="filters.accounts.has(item)"
-            />
-            <label class="form-check-label" for="firstCheckbox">
-              <span class="d-inline-block text-truncate span_custom">
-                {{ item }}
-              </span></label
+        </li>
+        <li
+          class="dropdown-item overflow-auto m-0 p-0 scroll_custom li_custom"
+        >
+          <ul class="mx-3 mt-2 p-0">
+            <li
+              v-for="item in filteredAccounts"
+              :key="item"
+              class="dropdown-item m-0 p-0"
+              data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="auto"
+              data-bs-delay="500"
+              data-bs-animation="true"
+              :data-bs-content="item"
             >
-          </li>
-        </div>
+              <input
+                class="form-check-input me-1"
+                type="checkbox"
+                :value="item"
+                :id="item"
+                @change="handleCheckboxChange($event, 'accounts')"
+                :checked="filters.accounts.has(item)"
+              />
+              <label class="form-check-label" for="firstCheckbox">
+                <span class="d-inline-block text-truncate span_custom">
+                  {{ item }}
+                </span></label
+              >
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
     <div class="dropdown drdn_custom">
@@ -218,7 +194,6 @@ watch(
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        @click="toggleState('isAdvertisersOpen')"
       >
         <template v-if="filters.advertisers.size > 0">
           Рекламодатель{{
@@ -231,28 +206,32 @@ watch(
           Рекламодатель
         </template>
       </button>
-      <ul
-        v-if="state.isAdvertisersOpen"
-        class="dropdown-menu list-group rounded-1 overflow-hidden py-0 ul_custom"
-      >
-        <div class="border-bottom">
-          <form class="position-relative my-2 px-3" role="search">
+      <ul class="dropdown-menu rounded-1 py-0 ul_custom">
+        <li class="dropdown-item border-bottom py-2 li_search">
+          <form class="position-relative" role="search">
             <input
               class="form-control me-2 search_custom"
               placeholder="Поиск"
               aria-label="Search"
               @input="onChangeSearch"
             />
-            <span class="position-absolute top-50 end-0 me-3 translate-middle">
+            <span class="position-absolute top-50 end-0 me-1 translate-middle">
               <SearchIcon />
             </span>
           </form>
-        </div>
-        <div class="overflow-auto scroll_custom">
+        </li>
+        <li class="dropdown-item overflow-auto m-0 p-0 scroll_custom li_custom">
+          <ul class="mx-3 mt-2 p-0">
           <li
             v-for="item in filteredAdvertisers"
             :key="item"
-            class="dropdown-item list-group-item"
+            class="dropdown-item m-0 p-0"
+            data-bs-toggle="popover"
+            data-bs-trigger="hover focus"
+            data-bs-placement="auto"
+            data-bs-delay="500"
+            data-bs-animation="true"
+            :data-bs-content="item"
           >
             <input
               class="form-check-input me-1"
@@ -268,7 +247,8 @@ watch(
               </span></label
             >
           </li>
-        </div>
+          </ul>
+        </li>
       </ul>
     </div>
   </div>
@@ -291,6 +271,9 @@ watch(
 }
 input {
   cursor: pointer;
+}
+.li_search {
+  height: 56px;
 }
 .search_custom {
   width: 188px;
@@ -315,7 +298,7 @@ button {
 }
 .ul_custom {
   width: 220px;
-  height: 218px;
+  height: 226px;
 }
 .btn_custom::after,
 .button_custom::after {
@@ -327,6 +310,9 @@ li {
 }
 .scroll_custom {
   scrollbar-width: thin;
+}
+.li_custom {
+  height: 168px;
 }
 .span_custom {
   max-width: 155px;

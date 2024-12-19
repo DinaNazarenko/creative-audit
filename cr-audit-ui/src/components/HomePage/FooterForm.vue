@@ -4,7 +4,7 @@ import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
 import { useSortedCreativesStore } from '@/stores/sortedCreatives'
 import { useCreativesPageStore } from '@/stores/pagination'
 import { PAGE_STRINGS } from '@/lib/constants'
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 defineProps({
   isLoading: Boolean,
@@ -22,8 +22,6 @@ const creativesPage = computed(() => ({
   amountCreatives: creativesPageStore.amountCreatives,
 }))
 
-const isDropdownOpen = ref(false)
-
 const pages = computed(() => {
   const perPage = creativesPage.value.creativesPerPage
   if (typeof perPage === 'string') {
@@ -33,12 +31,8 @@ const pages = computed(() => {
   }
 })
 
-const handleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value
-}
 function selectItem(item) {
   creativesPageStore.updateCreativesPerPage(item)
-  isDropdownOpen.value = false
   creativesPageStore.updateCurrentPage(1)
 }
 
@@ -80,18 +74,16 @@ const nextPage = () => {
           type="button"
           data-bs-toggle="dropdown"
           aria-expanded="false"
-          @click="handleDropdown"
         >
           {{ creativesPage.creativesPerPage }}
         </button>
         <ul
-          v-if="isDropdownOpen"
-          class="dropdown-menu list-group p-0 ul_custom"
+          class="dropdown-menu p-0 ul_custom"
         >
           <li
             v-for="item in PAGE_STRINGS"
             :key="item"
-            class="dropdown-item list-group-item py-1 px-2"
+            class="dropdown-item py-1 px-2"
             @click="selectItem(item)"
           >
             {{ item }}
@@ -184,7 +176,6 @@ p {
 .ul_custom {
   min-width: 60px;
   border-radius: 3.2px;
-  border: none;
 }
 li {
   font-size: 12px;
