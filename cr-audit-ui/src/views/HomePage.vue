@@ -213,6 +213,7 @@ const handleExport = () => {
               :statuses="statuses"
               :accounts="accounts"
               :advertisers="advertisers"
+              :activeItem="activeItem"
             />
           </div>
           <div class="d-flex">

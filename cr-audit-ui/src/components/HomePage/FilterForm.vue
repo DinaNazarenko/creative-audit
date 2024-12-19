@@ -8,6 +8,7 @@ const props = defineProps({
   types: Array,
   accounts: Array,
   advertisers: Array,
+  activeItem: String,
 })
 
 const tableFiltersStore = useTableFiltersStore()
@@ -65,7 +66,7 @@ watch(
 </script>
 <template>
   <div class="d-flex">
-    <div class="dropdown dropdown_custom">
+    <div v-if="activeItem !== 'На проверке'" class="dropdown dropdown_custom">
       <button
         class="btn btn-light dropdown-toggle rounded-1 text-secondary text-start form-select mb-1 button_custom"
         type="button"
