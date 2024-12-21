@@ -120,7 +120,7 @@ watchEffect(() => {
 <template>
   <div class="table_custom v-auto-animate">
     <div class="overflow-y-auto scroll_custom mb-3 max_table_custom">
-      <table class="table table-hover overflow-hidden m-0">
+      <table class="table table-hover m-0">
         <thead>
           <tr>
             <th v-for="item in fields" :key="item" class="text-truncate">
@@ -311,5 +311,10 @@ span {
 }
 td {
   padding: 6px;
+}
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 </style>

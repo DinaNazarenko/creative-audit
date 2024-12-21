@@ -156,9 +156,7 @@ watch(
             </span>
           </form>
         </li>
-        <li
-          class="dropdown-item overflow-auto m-0 p-0 scroll_custom li_custom"
-        >
+        <li class="dropdown-item overflow-auto m-0 p-0 scroll_custom li_custom">
           <ul class="mx-3 mt-2 p-0">
             <li
               v-for="item in filteredAccounts"
@@ -166,7 +164,7 @@ watch(
               class="dropdown-item m-0 p-0"
               data-bs-toggle="popover"
               data-bs-trigger="hover focus"
-              data-bs-placement="auto"
+              data-bs-placement="right"
               data-bs-delay="500"
               data-bs-animation="true"
               :data-bs-content="item"
@@ -223,31 +221,30 @@ watch(
         </li>
         <li class="dropdown-item overflow-auto m-0 p-0 scroll_custom li_custom">
           <ul class="mx-3 mt-2 p-0">
-          <li
-            v-for="item in filteredAdvertisers"
-            :key="item"
-            class="dropdown-item m-0 p-0"
-            data-bs-toggle="popover"
-            data-bs-trigger="hover focus"
-            data-bs-placement="auto"
-            data-bs-delay="500"
-            data-bs-animation="true"
-            :data-bs-content="item"
-          >
-            <input
-              class="form-check-input me-1"
-              type="checkbox"
-              :value="item"
-              :id="item"
-              @change="handleCheckboxChange($event, 'advertisers')"
-              :checked="filters.advertisers.has(item)"
-            />
-            <label class="form-check-label" for="firstCheckbox">
-              <span class="d-inline-block text-truncate span_custom">
-                {{ item }}
-              </span></label
+            <li
+              v-for="item in filteredAdvertisers"
+              :key="item"
+              class="dropdown-item m-0 p-0"
+              data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="right"
+              data-bs-animation="true"
+              :data-bs-content="item"
             >
-          </li>
+              <input
+                class="form-check-input me-1"
+                type="checkbox"
+                :value="item"
+                :id="item"
+                @change="handleCheckboxChange($event, 'advertisers')"
+                :checked="filters.advertisers.has(item)"
+              />
+              <label class="form-check-label" for="firstCheckbox">
+                <span class="d-inline-block text-truncate span_custom">
+                  {{ item }}
+                </span></label
+              >
+            </li>
           </ul>
         </li>
       </ul>

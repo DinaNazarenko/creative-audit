@@ -2,7 +2,7 @@ import './assets/main.css'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
-import { createApp, onMounted, ref } from 'vue'
+import { createApp, onMounted, ref, nextTick } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { updateStorage } from 'pinia-plugin-persist'
 import { autoAnimatePlugin } from "@formkit/auto-animate/vue";
@@ -37,9 +37,15 @@ const popoverList = ref([])
 
 onMounted(() => {
   popoverTriggerList.value = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="popover"]'),
+    document.querySelectorAll('[data-bs-toggle="popover"]')
   )
   popoverList.value = popoverTriggerList.value.map(
-    popoverTriggerEl => new Popover(popoverTriggerEl),
+    popoverTriggerEl => new Popover(popoverTriggerEl)
   )
+
+  nextTick(() => {
+    popoverList.value.forEach(popover => {
+      popover.update()
+    })
+  })
 })
