@@ -123,7 +123,15 @@ watchEffect(() => {
       <table class="table table-hover m-0">
         <thead>
           <tr>
-            <th v-for="item in fields" :key="item" class="text-truncate">
+            <th
+              v-for="item in fields"
+              :key="item"
+              class="text-truncate th_custom"
+              :class="{
+                th_id: item === 'ID заявки',
+                th_add_group: item === 'Название адгруппы',
+              }"
+            >
               {{ item }}
               <svg
                 @click="onChangeSort(item)"
@@ -140,7 +148,7 @@ watchEffect(() => {
                 />
               </svg>
             </th>
-            <th class="p-0 border_custom">
+            <th class="p-0 border_custom th_settings">
               <TableSettings />
             </th>
           </tr>
@@ -150,13 +158,13 @@ watchEffect(() => {
         </template>
         <tbody>
           <tr v-for="item in paginatedCreatives" :key="item.id">
-            <td class="text-truncate">{{ item.idApplication }}</td>
-            <td>
+            <td class="text-truncate td_id">{{ item.idApplication }}</td>
+            <td class="border_add_group td_add_group">
               <span class="d-inline-block text-truncate span_max">
                 {{ item.nameAdGroup }}
               </span>
             </td>
-            <td class="border_custom">
+            <td>
               <span
                 :class="{
                   'd-inline-block': true,
@@ -244,7 +252,7 @@ watchEffect(() => {
                 {{ item.link }}
               </span>
             </td>
-            <td class="border_custom"></td>
+            <td class="border_custom td_settings"></td>
           </tr>
         </tbody>
       </table>
@@ -290,6 +298,9 @@ svg:hover {
 .border_custom {
   border-left-width: 1px;
 }
+.border_add_group {
+  border-right-width: 1px;
+}
 .badge_success_custom {
   background-color: #d1e7dd !important;
   color: #198754 !important;
@@ -312,9 +323,43 @@ span {
 td {
   padding: 6px;
 }
-thead {
+.th_custom {
   position: sticky;
   top: 0;
+  z-index: 10;
+}
+.td_id {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+}
+.th_id {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 12;
+}
+.td_add_group {
+  position: sticky;
+  left: 111px;
+  z-index: 10;
+}
+.th_add_group {
+  position: sticky;
+  top: 0;
+  left: 111px;
+  z-index: 12;
+  border-right-width: 1px;
+}
+.th_settings {
+  position: sticky;
+  top: 0;
+  right: 0;
+  z-index: 12;
+}
+.td_settings {
+  position: sticky;
+  right: 0;
   z-index: 10;
 }
 </style>
