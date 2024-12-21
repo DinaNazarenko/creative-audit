@@ -148,9 +148,7 @@ watchEffect(() => {
                 />
               </svg>
             </th>
-            <th class="p-0 th_settings">
-              <TableSettings />
-            </th>
+            <th class="p-0 th_settings"></th>
           </tr>
         </thead>
         <template v-if="isLoading">
@@ -263,6 +261,9 @@ watchEffect(() => {
         <NoCreatives />
       </div>
     </div>
+    <div class="settings_custom">
+      <TableSettings />
+    </div>
   </div>
 </template>
 
@@ -271,6 +272,7 @@ watchEffect(() => {
   min-height: calc(100vh - 290px);
   max-width: 95vw;
   min-width: 95vw;
+  position: relative;
 }
 .max_table_custom {
   max-height: calc(100vh - 300px);
@@ -350,13 +352,14 @@ td {
   top: 0;
   right: 0;
   z-index: 12;
-  border-left: 1px solid #DEE2E6;
+  border-left: 1px solid #dee2e6;
 }
 .td_settings {
+  min-width: 40px;
   position: sticky;
   right: 0;
   z-index: 10;
-  border-left: 1px solid #DEE2E6;
+  border-left: 1px solid #dee2e6;
 }
 .th_settings::before,
 .td_settings::before {
@@ -377,5 +380,11 @@ td {
   width: 100%;
   height: 100%;
   border-right: 1px solid #dee2e6;
+}
+.settings_custom{
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1030;
 }
 </style>

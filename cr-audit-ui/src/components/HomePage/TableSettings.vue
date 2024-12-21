@@ -75,10 +75,6 @@ function handleCheckboxChange(event) {
 .ul_statuses {
   width: 319px;
   height: 440px;
-  position: absolute;
-  top: 30%;
-  right: 60px;
-  z-index: 1000;
 }
 .button_custom::after {
   content: none;
