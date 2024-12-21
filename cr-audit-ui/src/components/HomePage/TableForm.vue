@@ -139,7 +139,7 @@ watchEffect(() => {
                 width="16"
                 height="16"
                 fill="currentColor"
-                class="bi bi-gray-600"
+                class="bi bi-gray-600 z-20 position-relative"
                 viewBox="0 0 16 16"
               >
                 <path
@@ -159,7 +159,7 @@ watchEffect(() => {
         <tbody>
           <tr v-for="item in paginatedCreatives" :key="item.id">
             <td class="text-truncate td_id">{{ item.idApplication }}</td>
-            <td class="border_add_group td_add_group">
+            <td class="td_add_group">
               <span class="d-inline-block text-truncate span_max">
                 {{ item.nameAdGroup }}
               </span>
@@ -295,9 +295,6 @@ svg:hover {
   color: var(--custom-color);
   cursor: pointer;
 }
-.border_add_group {
-  border-right-width: 1px;
-}
 .badge_success_custom {
   background-color: #d1e7dd !important;
   color: #198754 !important;
@@ -323,7 +320,6 @@ td {
 .th_custom {
   position: sticky;
   top: 0;
-  z-index: 10;
 }
 .td_id {
   position: sticky;
@@ -340,13 +336,14 @@ td {
   position: sticky;
   left: 111px;
   z-index: 10;
+  border-right: 1px solid #dee2e6;
 }
 .th_add_group {
   position: sticky;
   top: 0;
   left: 111px;
-  z-index: 12;
-  border-right-width: 1px;
+  z-index: 15;
+  border-right: 1px solid #dee2e6;
 }
 .th_settings {
   position: sticky;
@@ -369,7 +366,16 @@ td {
   left: 0;
   width: 100%;
   height: 100%;
-  border-left: 1px solid #DEE2E6;
-  z-index: 10;
+  border-left: 1px solid #dee2e6;
+}
+.th_add_group::before,
+.td_add_group::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-right: 1px solid #dee2e6;
 }
 </style>
