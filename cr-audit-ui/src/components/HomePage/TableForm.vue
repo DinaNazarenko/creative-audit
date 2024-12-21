@@ -381,10 +381,10 @@ td {
   height: 100%;
   border-right: 1px solid #dee2e6;
 }
-.settings_custom{
+.settings_custom {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 0.8%;
   z-index: 1030;
 }
 </style>

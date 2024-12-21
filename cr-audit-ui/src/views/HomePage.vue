@@ -141,9 +141,14 @@ onMounted(async () => {
 
 watch(filters, getCreatives, pendingCreativesCount)
 
-const handleDate = modelData => {
-  date.value = modelData
-  tableFiltersStore.updateDateRange('dateRange', date.value)
+const handleDate = (modelData) => {
+  if (!modelData) {
+    date.value = [];
+    tableFiltersStore.updateDateRange('dateRange', date.value)
+  } else {
+    date.value = modelData;
+    tableFiltersStore.updateDateRange('dateRange', date.value)
+  }
 }
 
 const handleExport = () => {
