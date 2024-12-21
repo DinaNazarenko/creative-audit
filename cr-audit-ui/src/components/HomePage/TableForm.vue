@@ -148,7 +148,7 @@ watchEffect(() => {
                 />
               </svg>
             </th>
-            <th class="p-0 border_custom th_settings">
+            <th class="p-0 th_settings">
               <TableSettings />
             </th>
           </tr>
@@ -252,7 +252,7 @@ watchEffect(() => {
                 {{ item.link }}
               </span>
             </td>
-            <td class="border_custom td_settings"></td>
+            <td class="td_settings"></td>
           </tr>
         </tbody>
       </table>
@@ -294,9 +294,6 @@ watchEffect(() => {
 svg:hover {
   color: var(--custom-color);
   cursor: pointer;
-}
-.border_custom {
-  border-left-width: 1px;
 }
 .border_add_group {
   border-right-width: 1px;
@@ -356,10 +353,23 @@ td {
   top: 0;
   right: 0;
   z-index: 12;
+  border-left: 1px solid #DEE2E6;
 }
 .td_settings {
   position: sticky;
   right: 0;
+  z-index: 10;
+  border-left: 1px solid #DEE2E6;
+}
+.th_settings::before,
+.td_settings::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-left: 1px solid #DEE2E6;
   z-index: 10;
 }
 </style>

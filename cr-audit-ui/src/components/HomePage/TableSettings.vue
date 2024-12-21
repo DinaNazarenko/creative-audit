@@ -21,7 +21,7 @@ function handleCheckboxChange(event) {
 }
 </script>
 <template>
-  <div class="btn-group position-relative">
+  <div class="btn-group position-relative div_custom">
     <button
       class="btn btn-light dropdown-toggle mb-1 button_custom"
       type="button"
@@ -34,36 +34,43 @@ function handleCheckboxChange(event) {
       class="dropdown-menu rounded-1 p-0 overflow-auto scroll_custom ul_statuses"
     >
       <li class="dropdown-item li_custom">Настройки таблицы</li>
-        <li
-          v-for="(value, key) in GROUP_FIELDS"
-          :key="key"
-          class="dropdown-item position-relative"
-          aria-disabled="true"
+      <li
+        v-for="(value, key) in GROUP_FIELDS"
+        :key="key"
+        class="dropdown-item position-relative"
+        aria-disabled="true"
+      >
+        <input
+          class="form-check-input me-2"
+          type="checkbox"
+          :value="value"
+          :id="key"
+          @change="handleCheckboxChange"
+          :checked="selectedSettings.includes(key)"
+          :disabled="defaultDisabledKeys.includes(key)"
+        />
+        <label class="form-check-label" :for="key">
+          {{ value }}
+        </label>
+        <span
+          v-if="!defaultDisabledKeys.includes(key)"
+          class="position-absolute top-50 end-0 me-2 translate-middle"
         >
-          <input
-            class="form-check-input me-2"
-            type="checkbox"
-            :value="value"
-            :id="key"
-            @change="handleCheckboxChange"
-            :checked="selectedSettings.includes(key)"
-            :disabled="defaultDisabledKeys.includes(key)"
-          />
-          <label class="form-check-label" :for="key">
-            {{ value }}
-          </label>
-          <span v-if="!defaultDisabledKeys.includes(key)" class="position-absolute top-50 end-0 me-2 translate-middle">
-            <GripVerticalIcon />
-          </span>
-        </li>
+          <GripVerticalIcon />
+        </span>
+      </li>
     </ul>
   </div>
 </template>
 <style scoped>
 @import '../../assets/main.css';
+.div_custom {
+  z-index: 15;
+}
 .button_custom {
   background-color: #ffffff;
-  border: none;
+  border: none !important;
+  background-color: initial !important;
 }
 .ul_statuses {
   width: 319px;
