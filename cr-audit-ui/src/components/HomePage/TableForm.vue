@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, nextTick, watch } from 'vue'
 import { GROUP_FIELDS } from '@/lib/constants'
 import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
@@ -10,6 +10,7 @@ import { useCreativesPageStore } from '@/stores/pagination'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { tableFilters } from '@/lib/utils/tableFilters'
 import { exportToExcel } from '@/lib/utils/exportToExcel'
+import { usePopover } from '@/lib/utils/popover'
 import NoCreatives from '@/components/HomePage/NoCreatives.vue'
 import SkeletonCreatives from '@/components/HomePage/SkeletonCreatives.vue'
 // import { v4 as uuidv4 } from "uuid";
@@ -35,6 +36,9 @@ const creativesPage = computed(() => ({
 const tableFiltersStore = useTableFiltersStore()
 
 const sortedCreativesStore = useSortedCreativesStore()
+
+const { updatePopovers } = usePopover()
+nextTick(updatePopovers)
 
 const filterSettings = computed(() => ({
   statuses: [...tableFiltersStore.statuses],
@@ -116,6 +120,14 @@ watchEffect(() => {
     triggerExport()
   }
 })
+
+watch(
+  creativesPage,
+  () => {
+    updatePopovers()
+  },
+  { deep: true },
+)
 </script>
 <template>
   <div class="table_custom v-auto-animate">
@@ -157,7 +169,15 @@ watchEffect(() => {
         <tbody>
           <tr v-for="item in paginatedCreatives" :key="item.id">
             <td class="text-truncate td_id">{{ item.idApplication }}</td>
-            <td class="td_add_group">
+            <td
+              class="td_add_group"
+              data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="top"
+              data-bs-delay="500"
+              data-bs-animation="true"
+              :data-bs-content="item.nameAdGroup"
+            >
               <span class="d-inline-block text-truncate span_max">
                 {{ item.nameAdGroup }}
               </span>
@@ -181,7 +201,15 @@ watchEffect(() => {
             <td v-if="selectedSettings.includes('type')" class="text-truncate">
               {{ item.type }}
             </td>
-            <td v-if="selectedSettings.includes('name')">
+            <td
+              v-if="selectedSettings.includes('name')"
+              data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="top"
+              data-bs-delay="500"
+              data-bs-animation="true"
+              :data-bs-content="item.name"
+            >
               <span class="d-inline-block text-truncate span_middle">
                 {{ item.name }}
               </span>
@@ -201,7 +229,15 @@ watchEffect(() => {
             >
               {{ item.account }}
             </td>
-            <td v-if="selectedSettings.includes('advertiser')">
+            <td
+              v-if="selectedSettings.includes('advertiser')"
+              data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="top"
+              data-bs-delay="500"
+              data-bs-animation="true"
+              :data-bs-content="item.advertiser"
+            >
               <span class="d-inline-block text-truncate span_middle">
                 {{ item.advertiser }}
               </span>
@@ -240,12 +276,28 @@ watchEffect(() => {
                   : '—'
               }}
             </td>
-            <td v-if="selectedSettings.includes('comment')">
+            <td
+              v-if="selectedSettings.includes('comment')"
+              data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="bottom"
+              data-bs-delay="500"
+              data-bs-animation="true"
+              :data-bs-content="item.comment"
+            >
               <span class="d-inline-block text-truncate span_max">
                 {{ item.comment }}
               </span>
             </td>
-            <td v-if="selectedSettings.includes('link')">
+            <td
+              v-if="selectedSettings.includes('link')"
+              data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="top"
+              data-bs-delay="500"
+              data-bs-animation="true"
+              :data-bs-content="item.link"
+            >
               <span class="d-inline-block text-truncate span_max">
                 {{ item.link }}
               </span>
