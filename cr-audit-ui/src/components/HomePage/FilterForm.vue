@@ -1,7 +1,8 @@
 <script setup>
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 import { useTableFiltersStore } from '@/stores/tableFilters'
-import { ref, computed, watch } from 'vue'
+import { usePopover } from '@/lib/utils/popover'
+import { ref, computed, watch, nextTick } from 'vue'
 
 const props = defineProps({
   statuses: Array,
@@ -18,6 +19,9 @@ const searchItem = ref('')
 
 const filteredAccounts = computed(() => filterAccounts(searchItem.value))
 const filteredAdvertisers = computed(() => filterAdvertisers(searchItem.value))
+
+const { updatePopovers } = usePopover()
+nextTick(updatePopovers)
 
 const filterAccounts = value => {
   return props.accounts.filter(account =>
@@ -57,11 +61,18 @@ function updateFilters(filterKey) {
 
 watch(
   () => props.accounts,
-  () => updateFilters('accounts'),
+  () => {
+    updateFilters('accounts')
+    nextTick(updatePopovers)
+  },
 )
+
 watch(
   () => props.advertisers,
-  () => updateFilters('advertisers'),
+  () => {
+    updateFilters('advertisers')
+    nextTick(updatePopovers)
+  },
 )
 </script>
 <template>
@@ -165,7 +176,7 @@ watch(
               data-bs-toggle="popover"
               data-bs-trigger="hover focus"
               data-bs-placement="right"
-              data-bs-delay="500"
+              data-bs-delay="300"
               data-bs-animation="true"
               :data-bs-content="item"
             >
@@ -228,6 +239,7 @@ watch(
               data-bs-toggle="popover"
               data-bs-trigger="hover focus"
               data-bs-placement="right"
+              data-bs-delay="300"
               data-bs-animation="true"
               :data-bs-content="item"
             >

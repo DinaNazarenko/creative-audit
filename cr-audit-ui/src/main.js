@@ -1,12 +1,11 @@
 import './assets/main.css'
-import VueDatePicker from '@vuepic/vue-datepicker';
+import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
-import { createApp, onMounted, ref, nextTick } from 'vue'
+import { createApp } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { updateStorage } from 'pinia-plugin-persist'
-import { autoAnimatePlugin } from "@formkit/auto-animate/vue";
-import { Popover } from 'bootstrap'
+import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import axios from 'axios'
 
 import App from './App.vue'
@@ -18,34 +17,16 @@ const pinia = createPinia()
 setActivePinia(pinia)
 
 updateStorage(pinia, {
-    paths: ['tableSettings'],
-    storage: window.localStorage,
-    debug: false, // Информация об отладке
-  })
+  paths: ['tableSettings'],
+  storage: window.localStorage,
+  debug: false, // Информация об отладке
+})
 
 const app = createApp(App)
 
-app.component('VueDatePicker', VueDatePicker);
+app.component('VueDatePicker', VueDatePicker)
 app.use(createPinia())
-app.use(autoAnimatePlugin);
+app.use(autoAnimatePlugin)
 app.use(router)
 
 app.mount('#app')
-
-const popoverTriggerList = ref([])
-const popoverList = ref([])
-
-onMounted(() => {
-  popoverTriggerList.value = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="popover"]')
-  )
-  popoverList.value = popoverTriggerList.value.map(
-    popoverTriggerEl => new Popover(popoverTriggerEl)
-  )
-
-  nextTick(() => {
-    popoverList.value.forEach(popover => {
-      popover.update()
-    })
-  })
-})
