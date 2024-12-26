@@ -1,0 +1,8 @@
+@import '../../node_modules/bootstrap';
+:root {
+  --custom-color: #6366f1 !important;
+  --custom-height: 38px;
+  --custom-margin: 32px !important;
+  --custom-zero: 0 !important;
+  --focus-box-shadow: none;
+}
