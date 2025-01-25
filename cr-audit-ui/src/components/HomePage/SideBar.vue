@@ -44,14 +44,12 @@ const handleLogout = () => {
         </a>
       </li>
       <li class="li_custom">
-        <a
-          href="#"
+        <router-link
+          :to="{ name: 'home' }"
           class="nav-link py-3 border-bottom rounded-0"
           aria-current="page"
-          data-bs-toggle="tooltip"
           data-bs-placement="right"
           aria-label="Home"
-          data-bs-original-title="Home"
           @click="setActive('Креативы')"
           :class="{ active: isActive('Креативы') }"
         >
@@ -60,9 +58,8 @@ const handleLogout = () => {
             class="position-absolute translate-middle badge text-bg-danger rounded-pill"
             >{{ count }}</span
           >
-          <use xlink:href="#home"></use>
           Креативы
-        </a>
+        </router-link>
       </li>
       <li class="li_custom">
         <a

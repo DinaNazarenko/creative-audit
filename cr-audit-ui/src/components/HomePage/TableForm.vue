@@ -194,6 +194,7 @@ watch(
                   badge_danger_custom: item.status === 'Отклонено',
                   badge_warning_custom: item.status === 'На проверке',
                   badge_info_custom: item.status === 'Частично согласовано',
+                  badge_light_custom: item.status === 'Отменено',
                 }"
                 >{{ item.status }}</span
               >
@@ -364,6 +365,10 @@ svg:hover {
 .badge_info_custom {
   background-color: #e0cffc !important;
   color: #6f42c1 !important;
+}
+.badge_light_custom {
+  background-color: #E9ECEF !important;
+  color: #6C757D !important;
 }
 span {
   height: 22px;

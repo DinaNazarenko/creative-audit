@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '@/views/LoginPage.vue'
 import PasswordResetPage from '@/views/PasswordResetPage.vue'
 import PasswordСreatePage from '@/views/PasswordСreatePage.vue'
+import CreativePage from '@/views/CreativePage.vue'
 
 const routes = [
   {
@@ -32,6 +33,11 @@ const routes = [
     meta: {
       auth: true,
     },
+  },
+  {
+    path: '/creative',
+    name: 'creative',
+    component: CreativePage,
   },
 ]
 
