@@ -1,6 +1,8 @@
 <script setup>
 import SideBar from '@/components/HomePage/SideBar.vue'
 import HeaderInfo from '@/components/CreativePage/HeaderInfo.vue'
+import LinkInfo from '@/components/CreativePage/LinkInfo.vue'
+import CreativeInfo from '@/components/CreativePage/CreativeInfo.vue'
 import FooterForm from '@/components/HomePage/FooterForm.vue'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { onMounted, ref, watch } from 'vue'
@@ -58,6 +60,10 @@ watch(getCreative, pendingCreativesCount)
         <h2 class="mb-3">{{ creative.name }}</h2>
         <HeaderInfo :creative="creative" />
         <hr />
+        <div class="d-flex flex-column body_custom v-auto-animate">
+          <LinkInfo :creative="creative" />
+          <CreativeInfo :creative="creative" />
+        </div>
       </div>
       <FooterForm :isLoading="isLoading" />
     </div>
@@ -75,5 +81,12 @@ watch(getCreative, pendingCreativesCount)
 hr {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+.body_custom {
+  min-height: calc(100vh - 273px);
+  max-width: 95vw;
+  min-width: 95vw;
+  position: relative;
+  gap: 20px;
 }
 </style>
