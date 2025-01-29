@@ -9,10 +9,12 @@ const __dirname = path.dirname(__filename)
 export default defineConfig({
   mode: 'development',
   entry: './src/main.js',
+  experiments: {
+    outputModule: true,
+  },
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
-    libraryTarget: 'module'
   },
   devServer: {
     static: path.resolve(__dirname, 'dist'),
@@ -28,9 +30,15 @@ export default defineConfig({
       },
     },
   },
+  target: 'web',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+    fallback: {
+      fs: false,
+      path: false,
+      buffer: false,
     },
   },
   plugins: [new HtmlWebpackPlugin({ template: './index.html' })],
@@ -57,6 +65,13 @@ export default defineConfig({
             loader: 'sass-loader',
           },
         ],
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
       },
     ],
   },

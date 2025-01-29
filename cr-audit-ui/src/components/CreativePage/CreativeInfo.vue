@@ -1,37 +1,76 @@
 <script setup>
 import { CREATIVE_OPTIONS } from '@/lib/constants'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
-import { ref } from 'vue'
+import FullscreenIcon from '@/components/icons/FullscreenIcon.vue'
+import { getImageSize } from '@/lib/utils/getImageSize'
+import { formatDate } from '@/lib/utils/FormattingDates'
+import { ref, watchEffect } from 'vue'
 
-defineProps({
+const props = defineProps({
   creative: Object,
 })
 
 const creativeOptions = ref(CREATIVE_OPTIONS)
+// const imagePath = ref(``);
+const size = ref(null);
+
+function getImage(name) {
+  return `/images/${name}`
+}
+
+watchEffect(async () => {
+  try {
+    const result = await getImageSize(`/images/${props.creative.media[0].mediaName}`);
+    size.value = result;
+  } catch (error) {
+    console.error('Ошибка при получении размера media:', error);
+    size.value = null;
+  }
+});
 </script>
 <template>
-  <div class="bg-white rounded-3 p-3 div_custom">
-    <h4 class="mb-3">Проверка креатива</h4>
-    <div class="mb-4">
+  <div class="d-flex bg-white rounded-3 p-3 div_custom">
+    <div class="col-6 me-3 bg-light d-flex">
       <div
-        v-for="item in creativeOptions"
-        :key="item"
-        class="form-check option_custom"
+        class="d-flex flex-column justify-content-center align-items-center w-100"
       >
-        <input
-          class="form-check-input me-1"
-          type="checkbox"
-          :value="item"
-          :id="item"
+        <img
+          :src="getImage(creative.media[0].mediaName)"
+          class="img-fluid"
+          :alt="creative.media[0].mediaName"
         />
-        <label class="form-check-label" for="firstCheckbox"
-          >{{ item }}<code> *</code> <QuestionCircleIcon
-        /></label>
+        <p class="mb-0 text-secondary p_custom">
+          {{ creative.media[0].mediaName }}
+        </p>
+        <p class="mb-0 text-secondary">
+          {{size?.width}}х{{size?.height}} • {{ formatDate(creative.media[0].dateUploaded, 'DD.MM.YYYY HH:mm') }}
+        </p>
       </div>
+      <div class="flex-shrink-1"><FullscreenIcon /></div>
     </div>
-    <div>
-      <button class="btn me-3 btn-outline-success btn_custom">Принять</button>
-      <button class="btn btn-outline-danger btn_custom">Отклонить</button>
+    <div class="col-6">
+      <h4 class="mb-3">Проверка креатива</h4>
+      <div class="mb-4">
+        <div
+          v-for="item in creativeOptions"
+          :key="item"
+          class="form-check option_custom"
+        >
+          <input
+            class="form-check-input me-1"
+            type="checkbox"
+            :value="item"
+            :id="item"
+          />
+          <label class="form-check-label" for="firstCheckbox"
+            >{{ item }}<code> *</code> <QuestionCircleIcon
+          /></label>
+        </div>
+      </div>
+      <div>
+        <button class="btn me-3 btn-outline-success btn_custom">Принять</button>
+        <button class="btn btn-outline-danger btn_custom">Отклонить</button>
+      </div>
     </div>
   </div>
 </template>
@@ -59,5 +98,11 @@ input:focus {
 .btn_custom {
   width: 109px;
   height: 38px;
+}
+.p_custom {
+  margin-top: 12px;
+}
+p {
+  font-size: 12px !important;
 }
 </style>

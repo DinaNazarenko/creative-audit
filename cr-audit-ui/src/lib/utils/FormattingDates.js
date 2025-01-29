@@ -39,6 +39,15 @@ export function formatDate(date, dateFormat) {
     hour12: false,
   }
 
+  const options2 = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }
+
   let formattedDate
 
   if (dateFormat === 'DD.MM.YYYY') {
@@ -52,6 +61,14 @@ export function formatDate(date, dateFormat) {
       minutes,
       seconds,
     ).toLocaleDateString('ru-RU', options)
+  } else if (dateFormat === 'DD.MM.YYYY HH:mm') {
+    formattedDate = new Date(
+      year,
+      month,
+      day,
+      hours,
+      minutes,
+    ).toLocaleDateString('ru-RU', options2)
   } else {
     throw new Error(`Неправильный формат даты: ${dateFormat}`)
   }

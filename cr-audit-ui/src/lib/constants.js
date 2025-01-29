@@ -24,6 +24,7 @@ export const STATUS_SELECT = [
   'Согласовано',
   'Частично согласовано',
   'Отклонено',
+  'Отменено'
 ]
 
 export const PAGE_STRINGS = [20, 50, 'Все']
