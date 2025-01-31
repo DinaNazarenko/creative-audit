@@ -119,6 +119,7 @@ const getCreatives = async () => {
         item.dateAudit,
         'DD HH',
       ),
+      amount: item.media ? item.media.length : null
     }))
 
     accounts.value = Array.from(new Set(data.map(item => item.account)))

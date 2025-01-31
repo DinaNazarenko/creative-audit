@@ -35,15 +35,15 @@ watchEffect(async () => {
         class="d-flex flex-column justify-content-center align-items-center w-100"
       >
         <img
-          :src="getImage(creative.media[0].mediaName)"
+          :src="getImage(creative?.media[0]?.mediaName)"
           class="img-fluid"
-          :alt="creative.media[0].mediaName"
+          :alt="creative?.media[0]?.mediaName"
         />
         <p class="mb-0 text-secondary p_custom">
-          {{ creative.media[0].mediaName }}
+          {{ creative?.media[0]?.mediaName }}
         </p>
         <p class="mb-0 text-secondary">
-          {{size?.width}}х{{size?.height}} • {{ formatDate(creative.media[0].dateUploaded, 'DD.MM.YYYY HH:mm') }}
+          {{size?.width}}х{{size?.height}} • {{ formatDate(creative?.media[0]?.dateUploaded, 'DD.MM.YYYY HH:mm') }}
         </p>
       </div>
       <div class="flex-shrink-1"><FullscreenIcon /></div>
