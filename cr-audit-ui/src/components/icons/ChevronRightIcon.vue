@@ -1,9 +1,14 @@
-<script setup></script>
+<script setup>
+defineProps({
+  width: String,
+  height: String,
+})
+</script>
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="12"
-    height="12"
+    :width="width || '12'"
+    :height="height || '12'"
     fill="currentColor"
     class="bi bi-chevron-right"
     viewBox="0 0 16 16"

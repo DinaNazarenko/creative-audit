@@ -3,7 +3,7 @@ import SideBar from '@/components/HomePage/SideBar.vue'
 import HeaderInfo from '@/components/CreativePage/HeaderInfo.vue'
 import LinkInfo from '@/components/CreativePage/LinkInfo.vue'
 import CreativeInfo from '@/components/CreativePage/CreativeInfo.vue'
-import FooterForm from '@/components/HomePage/FooterForm.vue'
+import FooterInfo from '@/components/CreativePage/FooterInfo.vue'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
@@ -65,7 +65,7 @@ watch(getCreative, pendingCreativesCount)
           <CreativeInfo :creative="creative" />
         </div>
       </div>
-      <FooterForm :isLoading="isLoading" />
+      <FooterInfo :creative="creative"/>
     </div>
   </div>
 </template>
