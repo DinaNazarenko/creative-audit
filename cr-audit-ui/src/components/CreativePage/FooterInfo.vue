@@ -1,55 +1,42 @@
 <script setup>
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
-// import { useCreativesPageStore } from '@/stores/pagination'
-import { ref } from 'vue'
+import { useMediaSlideStore } from '@/stores/mediaPagination'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   creative: Object,
 })
 const medias = ref(props.creative.media)
 
-// const creativesPageStore = useCreativesPageStore()
+const mediaSlideStore = useMediaSlideStore()
 
-// const creativesPage = computed(() => ({
-//   creativesPerPage: creativesPageStore.creativesPerPage,
-//   currentPage: creativesPageStore.currentPage,
-//   amountCreatives: creativesPageStore.amountCreatives,
-// }))
+const currentSlide = computed(() => mediaSlideStore.currentSlide)
 
-// const pages = computed(() => {
-//   const perPage = creativesPage.value.creativesPerPage
-//   if (typeof perPage === 'string') {
-//     return 1
-//   } else {
-//     return Math.ceil(sortedCreatives.value.length / perPage)
-//   }
-// })
+function selectSlide(slideNumber) {
+  mediaSlideStore.updateCurrentSlide(slideNumber)
+}
 
-// function selectCurrentPage(page) {
-//   creativesPageStore.updateCurrentPage(page)
-// }
+const prevPage = () => {
+  if (currentSlide.value > 0) {
+    const slideNumber = currentSlide.value
+    mediaSlideStore.updateCurrentSlide(slideNumber - 1)
+  }
+}
 
-// const prevPage = () => {
-//   if (creativesPage.value.currentPage > 1) {
-//     const currentPage = creativesPage.value.currentPage
-//     creativesPageStore.updateCurrentPage(currentPage - 1)
-//   }
-// }
-
-// const nextPage = () => {
-//   if (creativesPage.value.currentPage < pages.value) {
-//     const currentPage = creativesPage.value.currentPage
-//     creativesPageStore.updateCurrentPage(currentPage + 1)
-//   }
-// }
+const nextPage = () => {
+  if (currentSlide.value < medias.value.length - 1) {
+    const slideNumber = currentSlide.value
+    mediaSlideStore.updateCurrentSlide(slideNumber + 1)
+  }
+}
 </script>
 <template>
   <footer
     class="d-flex justify-content-between align-items-center bg-white footer_custom"
   >
     <div class="div_custom">
-      Креатив 1 из
+      Креатив {{ currentSlide + 1 }} из
       {{ medias.length }}
     </div>
     <div
@@ -62,7 +49,18 @@ const medias = ref(props.creative.media)
         v-for="media in medias"
         :key="media"
         type="button"
-        class="btn btn-light rounded-3 p-0 col-1 btn_carousel"
+        :class="{
+          btn: true,
+          'btn-light': true,
+          'rounded-3': true,
+          'p-0': true,
+          'col-1': true,
+          btn_carousel: true,
+          success_status: media.status === 'approved',
+          danger_status: media.status === 'rejected',
+          active: currentSlide === medias.indexOf(media),
+        }"
+        @click="selectSlide(medias.indexOf(media))"
       ></button>
       <button class="col-1 btn_link" @click="nextPage">
         <ChevronRightIcon :width="20" :height="20" />
@@ -101,25 +99,11 @@ const medias = ref(props.creative.media)
   padding-right: 12px;
   color: var(--custom-color);
 }
-.btn_link:hover {
-  transform: scale(1.05);
-}
-.btn_send:active,
-.btn_link:active {
-  transform: scale(0.95);
-}
 .btn_carousel {
   width: 52px;
   height: 8px;
   background-color: #dee2e6;
-}
-.btn_carousel:hover {
-  border: 1px solid #dee2e6;
-}
-.btn_carousel:active {
-  width: 78px;
-  height: 12px;
-  background-color: #dee2e6;
+  border: none;
 }
 .pagination_custom {
   column-gap: 12px;
@@ -134,9 +118,27 @@ const medias = ref(props.creative.media)
   background-color: var(--custom-color);
   border: 1px solid var(--custom-color);
 }
+.success_status {
+  background-color: #198754;
+}
+.danger_status {
+  background-color: #dc3545;
+}
 .btn_send:hover,
 .btn_send:active {
   background-color: #ffffff;
   color: var(--custom-color);
+}
+.btn_carousel:hover,
+.btn_link:hover {
+  transform: scale(1.05);
+}
+.btn_carousel:active,
+.btn_link:active {
+  transform: scale(0.95);
+}
+.active {
+  width: 78px;
+  height: 12px;
 }
 </style>
