@@ -11,7 +11,7 @@ const props = defineProps({
   creative: Object,
 })
 const medias = ref(props.creative.media)
-const creativeOptions = ref(CREATIVE_OPTIONS.map(option => option.title))
+const creativeOptions = ref(CREATIVE_OPTIONS)
 const size = ref(null)
 const fullScreenImage = ref(null)
 const fullscreenStatus = ref(false)
@@ -105,7 +105,14 @@ watchEffect(async () => {
             :id="item"
           />
           <label class="form-check-label" for="firstCheckbox"
-            >{{ item }}<code> *</code> <QuestionCircleIcon
+            >{{ item.title }}<code> * </code>
+            <QuestionCircleIcon
+              data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="top"
+              data-bs-delay="500"
+              data-bs-animation="true"
+              :data-bs-content="item.comment"
           /></label>
         </div>
       </div>

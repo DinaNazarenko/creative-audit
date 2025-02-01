@@ -7,7 +7,7 @@ defineProps({
   creative: Object,
 })
 
-const linkOptions = ref(LINK_OPTIONS.map(option => option.title))
+const linkOptions = ref(LINK_OPTIONS)
 </script>
 <template>
   <div class="bg-white rounded-3 p-3 div_custom">
@@ -35,7 +35,14 @@ const linkOptions = ref(LINK_OPTIONS.map(option => option.title))
           :id="item"
         />
         <label class="form-check-label" for="firstCheckbox"
-          >{{ item }}<code> *</code> <QuestionCircleIcon
+          >{{ item.title }}<code> * </code>
+          <QuestionCircleIcon
+            data-bs-toggle="popover"
+            data-bs-trigger="hover focus"
+            data-bs-placement="top"
+            data-bs-delay="500"
+            data-bs-animation="true"
+            :data-bs-content="item.comment"
         /></label>
       </div>
     </div>
