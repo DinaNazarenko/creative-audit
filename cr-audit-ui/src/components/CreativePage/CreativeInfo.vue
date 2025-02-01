@@ -4,15 +4,22 @@ import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import FullscreenIcon from '@/components/icons/FullscreenIcon.vue'
 import { getImageSize } from '@/lib/utils/getImageSize'
 import { formatDate } from '@/lib/utils/FormattingDates'
-import { ref, watchEffect } from 'vue'
+import { useMediaSlideStore } from '@/stores/mediaPagination'
+import { ref, watchEffect, computed } from 'vue'
 
 const props = defineProps({
   creative: Object,
 })
-
+const medias = ref(props.creative.media)
 const creativeOptions = ref(CREATIVE_OPTIONS)
-// const imagePath = ref(``);
-const size = ref(null);
+const size = ref(null)
+const mediaSlideStore = useMediaSlideStore()
+
+const currentSlide = computed(() => mediaSlideStore.currentSlide)
+const currentMedia = computed(() => {
+  const index = Number(currentSlide.value)
+  return medias.value?.[index]
+})
 
 function getImage(name) {
   return `/images/${name}`
@@ -20,13 +27,18 @@ function getImage(name) {
 
 watchEffect(async () => {
   try {
-    const result = await getImageSize(`/images/${props.creative.media[0].mediaName}`);
-    size.value = result;
+    const media = currentMedia.value
+    if (media && media.mediaName) {
+      const result = await getImageSize(`/images/${media.mediaName}`)
+      size.value = result
+    } else {
+      size.value = null
+    }
   } catch (error) {
-    console.error('Ошибка при получении размера media:', error);
-    size.value = null;
+    console.error('Ошибка при получении размера media:', error)
+    size.value = null
   }
-});
+})
 </script>
 <template>
   <div class="d-flex bg-white rounded-3 p-3 div_custom">
@@ -35,15 +47,22 @@ watchEffect(async () => {
         class="d-flex flex-column justify-content-center align-items-center w-100"
       >
         <img
-          :src="getImage(creative?.media[0]?.mediaName)"
+          v-if="currentMedia"
+          :src="getImage(currentMedia.mediaName)"
           class="img-fluid"
-          :alt="creative?.media[0]?.mediaName"
+          :alt="currentMedia.mediaName"
         />
         <p class="mb-0 text-secondary p_custom">
-          {{ creative?.media[0]?.mediaName }}
+          {{ currentMedia.mediaName }}
         </p>
         <p class="mb-0 text-secondary">
-          {{size?.width}}х{{size?.height}} • {{ formatDate(creative?.media[0]?.dateUploaded, 'DD.MM.YYYY HH:mm') }}
+          {{ size?.width }}х{{ size?.height }} •
+          {{
+            formatDate(
+              currentMedia.dateUploaded,
+              'DD.MM.YYYY HH:mm',
+            )
+          }}
         </p>
       </div>
       <div class="flex-shrink-1"><FullscreenIcon /></div>
