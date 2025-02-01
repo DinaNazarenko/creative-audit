@@ -13,6 +13,9 @@ const props = defineProps({
 const medias = ref(props.creative.media)
 const creativeOptions = ref(CREATIVE_OPTIONS)
 const size = ref(null)
+const fullScreenImage = ref(null)
+const fullscreenStatus = ref(false)
+
 const mediaSlideStore = useMediaSlideStore()
 
 const currentSlide = computed(() => mediaSlideStore.currentSlide)
@@ -23,6 +26,24 @@ const currentMedia = computed(() => {
 
 function getImage(name) {
   return `/images/${name}`
+}
+
+function toggleFullscreen() {
+  try {
+    if (!fullScreenImage.value) {
+      throw new Error('Элемент изображения не найден')
+    }
+
+    if (!document.fullscreenElement) {
+      fullScreenImage.value.requestFullscreen()
+      fullscreenStatus.value = true
+    } else {
+      document.exitFullscreen()
+      fullscreenStatus.value = false
+    }
+  } catch (error) {
+    console.error('Ошибка при переключении полноэкранного режима:', error)
+  }
 }
 
 watchEffect(async () => {
@@ -40,6 +61,7 @@ watchEffect(async () => {
   }
 })
 </script>
+
 <template>
   <div class="d-flex bg-white rounded-3 p-3 div_custom">
     <div class="col-6 me-3 bg-light d-flex">
@@ -47,25 +69,26 @@ watchEffect(async () => {
         class="d-flex flex-column justify-content-center align-items-center w-100"
       >
         <img
+          ref="fullScreenImage"
           v-if="currentMedia"
           :src="getImage(currentMedia.mediaName)"
           class="img-fluid"
           :alt="currentMedia.mediaName"
+          v-fullscreen="fullscreenStatus"
         />
         <p class="mb-0 text-secondary p_custom">
           {{ currentMedia.mediaName }}
         </p>
         <p class="mb-0 text-secondary">
           {{ size?.width }}х{{ size?.height }} •
-          {{
-            formatDate(
-              currentMedia.dateUploaded,
-              'DD.MM.YYYY HH:mm',
-            )
-          }}
+          {{ formatDate(currentMedia.dateUploaded, 'DD.MM.YYYY HH:mm') }}
         </p>
       </div>
-      <div class="flex-shrink-1"><FullscreenIcon /></div>
+      <div class="flex-shrink-1">
+        <button class="btn p-0 border-0" @click="toggleFullscreen">
+          <FullscreenIcon />
+        </button>
+      </div>
     </div>
     <div class="col-6">
       <h4 class="mb-3">Проверка креатива</h4>
