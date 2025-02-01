@@ -11,7 +11,7 @@ const props = defineProps({
   creative: Object,
 })
 const medias = ref(props.creative.media)
-const creativeOptions = ref(CREATIVE_OPTIONS)
+const creativeOptions = ref(CREATIVE_OPTIONS.map(option => option.title))
 const size = ref(null)
 const fullScreenImage = ref(null)
 const fullscreenStatus = ref(false)

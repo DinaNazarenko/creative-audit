@@ -7,7 +7,7 @@ defineProps({
   creative: Object,
 })
 
-const linkOptions = ref(LINK_OPTIONS)
+const linkOptions = ref(LINK_OPTIONS.map(option => option.title))
 </script>
 <template>
   <div class="bg-white rounded-3 p-3 div_custom">
