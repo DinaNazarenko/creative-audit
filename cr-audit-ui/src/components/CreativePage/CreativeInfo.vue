@@ -112,7 +112,7 @@ watchEffect(async () => {
               data-bs-placement="top"
               data-bs-delay="500"
               data-bs-animation="true"
-              :data-bs-content="item.comment"
+              :data-bs-content="item.description"
           /></label>
         </div>
       </div>
