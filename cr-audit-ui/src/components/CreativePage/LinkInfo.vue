@@ -1,11 +1,29 @@
 <script setup>
 import { LINK_OPTIONS } from '@/lib/constants'
+import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 defineProps({
   creative: Object,
 })
+
+const auditedCreativesStore = useAuditedCreativesStore()
+
+const auditedLink = computed(() => ({
+  status: auditedCreativesStore.auditedLink.status,
+  comment: auditedCreativesStore.auditedLink.comment,
+  options: auditedCreativesStore.auditedLink.options,
+}))
+
+function handleCheckboxChange(event) {
+  const titleOption = event.target.id
+  if (event.target.checked) {
+    auditedCreativesStore.updateAuditedLink(titleOption)
+  } else {
+    auditedCreativesStore.removeAuditedLink(titleOption)
+  }
+}
 
 const linkOptions = ref(LINK_OPTIONS)
 </script>
@@ -32,7 +50,9 @@ const linkOptions = ref(LINK_OPTIONS)
           class="form-check-input me-1"
           type="checkbox"
           :value="item"
-          :id="item"
+          :id="item.title"
+          @change="handleCheckboxChange"
+          :checked="auditedLink.options.includes(item.title)"
         />
         <label class="form-check-label" for="firstCheckbox"
           >{{ item.title }}<code> * </code>

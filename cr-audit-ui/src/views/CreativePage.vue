@@ -60,7 +60,7 @@ watch(getCreative, pendingCreativesCount)
         <h2 class="mb-3">{{ creative.name }}</h2>
         <HeaderInfo :creative="creative" />
         <hr />
-        <div class="d-flex flex-column body_custom v-auto-animate">
+        <div class="d-flex flex-column overflow-y-auto body_custom v-auto-animate">
           <LinkInfo :creative="creative" />
           <CreativeInfo :creative="creative" />
         </div>
@@ -84,9 +84,11 @@ hr {
 }
 .body_custom {
   min-height: calc(100vh - 273px);
+  max-height: calc(100vh - 273px);
   max-width: 95vw;
   min-width: 95vw;
   position: relative;
   gap: 20px;
+  scrollbar-width: thin;
 }
 </style>
