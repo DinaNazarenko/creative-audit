@@ -13,6 +13,7 @@ import { exportToExcel } from '@/lib/utils/exportToExcel'
 import { usePopover } from '@/lib/utils/popover'
 import NoCreatives from '@/components/HomePage/NoCreatives.vue'
 import SkeletonCreatives from '@/components/HomePage/SkeletonCreatives.vue'
+import CreativeStatus from '@/components/common/CreativeStatus.vue'
 // import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
@@ -183,21 +184,11 @@ watch(
               </span>
             </td>
             <td>
-              <span
-                :class="{
-                  'd-inline-block': true,
-                  'text-truncate': true,
-                  span_min: true,
-                  'badge rounded-pill': true,
-                  'text-bg-info': true,
-                  badge_success_custom: item.status === 'Согласовано',
-                  badge_danger_custom: item.status === 'Отклонено',
-                  badge_warning_custom: item.status === 'На проверке',
-                  badge_info_custom: item.status === 'Частично согласовано',
-                  badge_light_custom: item.status === 'Отменено',
-                }"
-                >{{ item.status }}</span
-              >
+              <CreativeStatus
+                :status="item.status"
+                :textTruncate="true"
+                :spanMin="true"
+              />
             </td>
             <td v-if="selectedSettings.includes('type')" class="text-truncate">
               {{ item.type }}
@@ -367,8 +358,8 @@ svg:hover {
   color: #6f42c1 !important;
 }
 .badge_light_custom {
-  background-color: #E9ECEF !important;
-  color: #6C757D !important;
+  background-color: #e9ecef !important;
+  color: #6c757d !important;
 }
 span {
   height: 22px;

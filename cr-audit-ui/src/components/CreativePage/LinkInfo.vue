@@ -1,4 +1,5 @@
 <script setup>
+import CreativeStatus from '@/components/common/CreativeStatus.vue'
 import { LINK_OPTIONS } from '@/lib/constants'
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import { useErrorStore } from '@/stores/errorInfo'
@@ -32,19 +33,31 @@ function handleCheckboxChange(event) {
 
 function handleAccept() {
   if (auditedLink.value.options.length === linkOptions.value.length) {
-    console.log('ссылка принята')
+    auditedCreativesStore.updateAuditedStatusLink('Принято')
   } else {
     errorStore.setError('Не все обязательные поля выбраны')
   }
 }
 
 function handleReject() {
-  // логика отклонения
+  auditedCreativesStore.updateAuditedStatusLink('Отклонено')
 }
 </script>
 <template>
-  <div class="bg-white rounded-3 p-3 div_custom">
-    <h4>Проверка ссылки</h4>
+  <div
+    :class="{
+      'bg-white': true,
+      'rounded-3': true,
+      'p-3': true,
+      div_custom: true,
+      border_success_custom: auditedLink.status === 'Принято',
+      border_danger_custom: auditedLink.status === 'Отклонено',
+    }"
+  >
+    <div class="d-flex align-items-center">
+      <h4 class="mb-1 me-2">Проверка ссылки</h4>
+      <CreativeStatus :status="auditedLink.status" />
+    </div>
     <p>
       <a
         :href="creative.link"
@@ -68,6 +81,7 @@ function handleReject() {
           :id="item.title"
           @change="handleCheckboxChange"
           :checked="auditedLink.options.includes(item.title)"
+          :disabled="auditedLink.status.length > 0"
         />
         <label class="form-check-label" for="firstCheckbox"
           >{{ item.title }}<code> * </code>
@@ -99,6 +113,12 @@ function handleReject() {
 @import '../../assets/main.css';
 .div_custom {
   height: 371px;
+}
+.border_success_custom {
+  border-left: 4px solid #198754;
+}
+.border_danger_custom {
+  border-left: 4px solid #DC3545;
 }
 input {
   cursor: pointer;

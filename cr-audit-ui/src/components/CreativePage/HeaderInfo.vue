@@ -1,4 +1,5 @@
 <script setup>
+import CreativeStatus from '@/components/common/CreativeStatus.vue'
 import { GROUP_FIELDS } from '@/lib/constants'
 import { usePopover } from '@/lib/utils/popover'
 import { computed, nextTick, watch } from 'vue'
@@ -35,18 +36,7 @@ watch(
     <div class="info_item_min">
       <p class="text-gray-600 m-0 fs_custom">{{ GROUP_FIELDS.status }}</p>
       <p class="fw-bold m-0 pe-3">
-        <span
-          :class="{
-            'badge rounded-pill': true,
-            'text-bg-info': true,
-            badge_success_custom: creative.status === 'Согласовано',
-            badge_danger_custom: creative.status === 'Отклонено',
-            badge_warning_custom: creative.status === 'На проверке',
-            badge_info_custom: creative.status === 'Частично согласовано',
-            badge_light_custom: creative.status === 'Отменено',
-          }"
-          >{{ creative.status }}</span
-        >
+        <CreativeStatus :status="creative.status" />
       </p>
     </div>
     <div class="info_item_min">
@@ -128,26 +118,6 @@ watch(
 }
 .fs_custom {
   font-size: 12px;
-}
-.badge_success_custom {
-  background-color: #d1e7dd !important;
-  color: #198754 !important;
-}
-.badge_danger_custom {
-  background-color: #f8d7da !important;
-  color: #dc3545 !important;
-}
-.badge_warning_custom {
-  background-color: #fff3cd !important;
-  color: #ffc107 !important;
-}
-.badge_info_custom {
-  background-color: #e0cffc !important;
-  color: #6f42c1 !important;
-}
-.badge_light_custom {
-  background-color: #e9ecef !important;
-  color: #6c757d !important;
 }
 .btn_custom {
   background-color: var(--custom-color) !important;

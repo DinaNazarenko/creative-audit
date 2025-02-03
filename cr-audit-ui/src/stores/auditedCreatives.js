@@ -14,6 +14,9 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     },
   }),
   actions: {
+    updateAuditedStatusLink(item) {
+      this.auditedLink.status = item
+    },
     updateAuditedLink(item) {
       this.auditedLink.options.push(item)
     },
