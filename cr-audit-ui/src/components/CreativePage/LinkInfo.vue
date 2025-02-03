@@ -1,9 +1,13 @@
 <script setup>
 import CreativeStatus from '@/components/common/CreativeStatus.vue'
+import ButtonSuccess from '@/components/common/ButtonSuccess.vue'
+import ButtonDanger from '@/components/common/ButtonDanger.vue'
+import ButtonChange from '@/components/common/ButtonChange.vue'
 import { LINK_OPTIONS } from '@/lib/constants'
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import { useErrorStore } from '@/stores/errorInfo'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
+import PencilSquareIcon from '@/components/icons/PencilSquareIcon.vue'
 import { ref, computed } from 'vue'
 
 defineProps({
@@ -11,6 +15,7 @@ defineProps({
 })
 
 const linkOptions = ref(LINK_OPTIONS)
+const isDisabled = ref(false)
 const auditedCreativesStore = useAuditedCreativesStore()
 const errorStore = useErrorStore()
 
@@ -34,6 +39,7 @@ function handleCheckboxChange(event) {
 function handleAccept() {
   if (auditedLink.value.options.length === linkOptions.value.length) {
     auditedCreativesStore.updateAuditedStatusLink('Принято')
+    isDisabled.value = true
   } else {
     errorStore.setError('Не все обязательные поля выбраны')
   }
@@ -41,6 +47,12 @@ function handleAccept() {
 
 function handleReject() {
   auditedCreativesStore.updateAuditedStatusLink('Отклонено')
+  isDisabled.value = true
+  errorStore.setError('')
+}
+function handleСhange() {
+  isDisabled.value = false
+  auditedCreativesStore.updateAuditedStatusLink('')
 }
 </script>
 <template>
@@ -54,20 +66,25 @@ function handleReject() {
       border_danger_custom: auditedLink.status === 'Отклонено',
     }"
   >
-    <div class="d-flex align-items-center">
-      <h4 class="mb-1 me-2">Проверка ссылки</h4>
-      <CreativeStatus :status="auditedLink.status" />
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <div class="d-flex align-items-center">
+          <h4 class="mb-1 me-2">Проверка ссылки</h4>
+          <CreativeStatus :status="auditedLink.status" />
+        </div>
+        <p>
+          <a
+            :href="creative.link"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-decoration-none"
+          >
+            {{ creative.link }}</a
+          >
+        </p>
+      </div>
+      <PencilSquareIcon />
     </div>
-    <p>
-      <a
-        :href="creative.link"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-decoration-none"
-      >
-        {{ creative.link }}</a
-      >
-    </p>
     <div class="mb-4">
       <div
         v-for="item in linkOptions"
@@ -81,7 +98,7 @@ function handleReject() {
           :id="item.title"
           @change="handleCheckboxChange"
           :checked="auditedLink.options.includes(item.title)"
-          :disabled="auditedLink.status.length > 0"
+          :disabled="isDisabled"
         />
         <label class="form-check-label" for="firstCheckbox"
           >{{ item.title }}<code> * </code>
@@ -95,16 +112,16 @@ function handleReject() {
         /></label>
       </div>
     </div>
-    <div>
-      <button
-        class="btn me-3 btn-outline-success btn_custom"
-        @click="handleAccept"
-      >
-        Принять
-      </button>
-      <button class="btn btn-outline-danger btn_custom" @click="handleReject">
-        Отклонить
-      </button>
+    <div v-if="auditedLink.status.length === 0">
+      <ButtonSuccess :handle="handleAccept" />
+      <ButtonDanger :handle="handleReject" />
+    </div>
+    <div v-if="auditedLink.status.length > 0">
+      <ButtonChange
+        title="Изменить решение"
+        width="170px"
+        :handle="handleСhange"
+      />
     </div>
   </div>
 </template>
@@ -118,7 +135,7 @@ function handleReject() {
   border-left: 4px solid #198754;
 }
 .border_danger_custom {
-  border-left: 4px solid #DC3545;
+  border-left: 4px solid #dc3545;
 }
 input {
   cursor: pointer;
@@ -134,9 +151,5 @@ input:focus {
 }
 .option_custom {
   margin-bottom: 12px;
-}
-.btn_custom {
-  width: 109px;
-  height: 38px;
 }
 </style>

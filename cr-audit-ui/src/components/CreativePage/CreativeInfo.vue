@@ -1,5 +1,7 @@
 <script setup>
 import { CREATIVE_OPTIONS } from '@/lib/constants'
+import ButtonSuccess from '@/components/common/ButtonSuccess.vue'
+import ButtonDanger from '@/components/common/ButtonDanger.vue'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import FullscreenIcon from '@/components/icons/FullscreenIcon.vue'
 import { getImageSize } from '@/lib/utils/getImageSize'
@@ -117,8 +119,8 @@ watchEffect(async () => {
         </div>
       </div>
       <div>
-        <button class="btn me-3 btn-outline-success btn_custom">Принять</button>
-        <button class="btn btn-outline-danger btn_custom">Отклонить</button>
+        <ButtonSuccess />
+        <ButtonDanger />
       </div>
     </div>
   </div>
@@ -143,10 +145,6 @@ input:focus {
 }
 .option_custom {
   margin-bottom: 12px;
-}
-.btn_custom {
-  width: 109px;
-  height: 38px;
 }
 .p_custom {
   margin-top: 12px;

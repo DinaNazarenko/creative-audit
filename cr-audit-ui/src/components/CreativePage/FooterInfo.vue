@@ -1,4 +1,5 @@
 <script setup>
+import ButtonChange from '@/components/common/ButtonChange.vue'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
 import { useMediaSlideStore } from '@/stores/mediaPagination'
@@ -67,9 +68,7 @@ const nextPage = () => {
       </button>
     </div>
     <div>
-      <button type="button" class="btn btn-primary rounded-1 btn_send">
-        Отправить
-      </button>
+      <ButtonChange title="Отправить"/>
     </div>
   </footer>
 </template>
@@ -108,26 +107,11 @@ const nextPage = () => {
 .pagination_custom {
   column-gap: 12px;
 }
-.btn_send {
-  width: 106px;
-  height: 38px;
-  padding-bottom: 6px;
-  padding-top: 6px;
-  padding-left: 12px;
-  padding-right: 12px;
-  background-color: var(--custom-color);
-  border: 1px solid var(--custom-color);
-}
 .success_status {
   background-color: #198754;
 }
 .danger_status {
   background-color: #dc3545;
-}
-.btn_send:hover,
-.btn_send:active {
-  background-color: #ffffff;
-  color: var(--custom-color);
 }
 .btn_carousel:hover,
 .btn_link:hover {
