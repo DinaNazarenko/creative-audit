@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', () => {
       )
     } catch (error) {
           errorStore.setError(
-            'Ошибка аутентификации: неверный email или пароль, попробуйте снова',
+            'Неверный email или пароль',
           )
           console.error('Ошибка аутентификации:', error.message)
     }

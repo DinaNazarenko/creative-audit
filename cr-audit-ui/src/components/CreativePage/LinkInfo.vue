@@ -1,6 +1,7 @@
 <script setup>
 import { LINK_OPTIONS } from '@/lib/constants'
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
+import { useErrorStore } from '@/stores/errorInfo'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import { ref, computed } from 'vue'
 
@@ -8,7 +9,9 @@ defineProps({
   creative: Object,
 })
 
+const linkOptions = ref(LINK_OPTIONS)
 const auditedCreativesStore = useAuditedCreativesStore()
+const errorStore = useErrorStore()
 
 const auditedLink = computed(() => ({
   status: auditedCreativesStore.auditedLink.status,
@@ -17,6 +20,8 @@ const auditedLink = computed(() => ({
 }))
 
 function handleCheckboxChange(event) {
+  errorStore.setError('')
+
   const titleOption = event.target.id
   if (event.target.checked) {
     auditedCreativesStore.updateAuditedLink(titleOption)
@@ -25,7 +30,17 @@ function handleCheckboxChange(event) {
   }
 }
 
-const linkOptions = ref(LINK_OPTIONS)
+function handleAccept() {
+  if (auditedLink.value.options.length === linkOptions.value.length) {
+    console.log('ссылка принята')
+  } else {
+    errorStore.setError('Не все обязательные поля выбраны')
+  }
+}
+
+function handleReject() {
+  // логика отклонения
+}
 </script>
 <template>
   <div class="bg-white rounded-3 p-3 div_custom">
@@ -67,8 +82,15 @@ const linkOptions = ref(LINK_OPTIONS)
       </div>
     </div>
     <div>
-      <button class="btn me-3 btn-outline-success btn_custom">Принять</button>
-      <button class="btn btn-outline-danger btn_custom">Отклонить</button>
+      <button
+        class="btn me-3 btn-outline-success btn_custom"
+        @click="handleAccept"
+      >
+        Принять
+      </button>
+      <button class="btn btn-outline-danger btn_custom" @click="handleReject">
+        Отклонить
+      </button>
     </div>
   </div>
 </template>

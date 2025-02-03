@@ -4,6 +4,7 @@ import HeaderInfo from '@/components/CreativePage/HeaderInfo.vue'
 import LinkInfo from '@/components/CreativePage/LinkInfo.vue'
 import CreativeInfo from '@/components/CreativePage/CreativeInfo.vue'
 import FooterInfo from '@/components/CreativePage/FooterInfo.vue'
+import AlertDanger from '@/components/AlertDanger.vue'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
@@ -60,12 +61,17 @@ watch(getCreative, pendingCreativesCount)
         <h2 class="mb-3">{{ creative.name }}</h2>
         <HeaderInfo :creative="creative" />
         <hr />
-        <div class="d-flex flex-column overflow-y-auto body_custom v-auto-animate">
+        <div
+          class="d-flex flex-column overflow-y-auto body_custom v-auto-animate"
+        >
           <LinkInfo :creative="creative" />
           <CreativeInfo :creative="creative" />
+          <div class="alert_custom">
+            <AlertDanger />
+          </div>
         </div>
       </div>
-      <FooterInfo :creative="creative"/>
+      <FooterInfo :creative="creative" />
     </div>
   </div>
 </template>
@@ -90,5 +96,11 @@ hr {
   position: relative;
   gap: 20px;
   scrollbar-width: thin;
+}
+.alert_custom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1030;
 }
 </style>
