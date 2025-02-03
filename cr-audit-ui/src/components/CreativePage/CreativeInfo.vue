@@ -51,8 +51,8 @@ function toggleFullscreen() {
 watchEffect(async () => {
   try {
     const media = currentMedia.value
-    if (media && media.mediaName) {
-      const result = await getImageSize(`/images/${media.mediaName}`)
+    if (media && media?.mediaName) {
+      const result = await getImageSize(`/images/${media?.mediaName}`)
       size.value = result
     } else {
       size.value = null
@@ -73,17 +73,17 @@ watchEffect(async () => {
         <img
           ref="fullScreenImage"
           v-if="currentMedia"
-          :src="getImage(currentMedia.mediaName)"
+          :src="getImage(currentMedia?.mediaName)"
           class="img-fluid"
-          :alt="currentMedia.mediaName"
+          :alt="currentMedia?.mediaName"
           v-fullscreen="fullscreenStatus"
         />
         <p class="mb-0 text-secondary p_custom">
-          {{ currentMedia.mediaName }}
+          {{ currentMedia?.mediaName }}
         </p>
         <p class="mb-0 text-secondary">
           {{ size?.width }}х{{ size?.height }} •
-          {{ formatDate(currentMedia.dateUploaded, 'DD.MM.YYYY HH:mm') }}
+          {{ formatDate(currentMedia?.dateUploaded, 'DD.MM.YYYY HH:mm') }}
         </p>
       </div>
       <div class="flex-shrink-1">

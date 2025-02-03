@@ -5,7 +5,7 @@
     width="24"
     height="24"
     fill="currentColor"
-    class="bi bi-chevron-up"
+    class="bi bi-chevron-up me-3"
     viewBox="0 0 16 16"
   >
     <path
@@ -15,4 +15,15 @@
   </svg>
 </template>
 
-<style scoped></style>
+<style scoped>
+svg {
+  color: #6366f1;
+  cursor: pointer;
+}
+:hover {
+  color: #6366f1 !important;
+  transform: scale(1.05);
+}
+:active {
+  transform: scale(0.95);
+}</style>

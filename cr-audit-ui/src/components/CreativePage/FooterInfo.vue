@@ -26,7 +26,7 @@ const prevPage = () => {
 }
 
 const nextPage = () => {
-  if (currentSlide.value < medias.value.length - 1) {
+  if (currentSlide.value < medias.value?.length - 1) {
     const slideNumber = currentSlide.value
     mediaSlideStore.updateCurrentSlide(slideNumber + 1)
   }
@@ -38,7 +38,7 @@ const nextPage = () => {
   >
     <div class="div_custom">
       Креатив {{ currentSlide + 1 }} из
-      {{ medias.length }}
+      {{ medias?.length }}
     </div>
     <div
       class="grid pagination m-0 d-flex align-items-center pagination_custom"
