@@ -3,15 +3,24 @@ import ButtonChange from '@/components/common/ButtonChange.vue'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
 import { useMediaSlideStore } from '@/stores/mediaPagination'
-import { ref, computed } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 
 const props = defineProps({
-  creative: Object,
+  creative: {
+    type: Object,
+    default: () => ({
+      media: [],
+    }),
+  },
 })
-const medias = ref(props.creative.media)
+
+const medias = ref([])
+
+watchEffect(() => {
+  medias.value = props.creative?.media || []
+})
 
 const mediaSlideStore = useMediaSlideStore()
-
 const currentSlide = computed(() => mediaSlideStore.currentSlide)
 
 function selectSlide(slideNumber) {
@@ -20,15 +29,13 @@ function selectSlide(slideNumber) {
 
 const prevPage = () => {
   if (currentSlide.value > 0) {
-    const slideNumber = currentSlide.value
-    mediaSlideStore.updateCurrentSlide(slideNumber - 1)
+    mediaSlideStore.updateCurrentSlide(currentSlide.value - 1)
   }
 }
 
 const nextPage = () => {
-  if (currentSlide.value < medias.value?.length - 1) {
-    const slideNumber = currentSlide.value
-    mediaSlideStore.updateCurrentSlide(slideNumber + 1)
+  if (currentSlide.value < medias.value.length - 1) {
+    mediaSlideStore.updateCurrentSlide(currentSlide.value + 1)
   }
 }
 </script>
@@ -68,7 +75,7 @@ const nextPage = () => {
       </button>
     </div>
     <div>
-      <ButtonChange title="Отправить"/>
+      <ButtonChange title="Отправить" />
     </div>
   </footer>
 </template>

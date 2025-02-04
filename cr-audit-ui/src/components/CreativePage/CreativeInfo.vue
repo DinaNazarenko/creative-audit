@@ -10,17 +10,28 @@ import { useMediaSlideStore } from '@/stores/mediaPagination'
 import { ref, watchEffect, computed } from 'vue'
 
 const props = defineProps({
-  creative: Object,
+  creative: {
+    type: Object,
+    default: () => ({
+      media: [],
+    }),
+  },
 })
-const medias = ref(props.creative.media)
+
+const medias = ref([])
+
+watchEffect(() => {
+  medias.value = props.creative?.media || []
+})
+
 const creativeOptions = ref(CREATIVE_OPTIONS)
 const size = ref(null)
 const fullScreenImage = ref(null)
 const fullscreenStatus = ref(false)
 
 const mediaSlideStore = useMediaSlideStore()
-
 const currentSlide = computed(() => mediaSlideStore.currentSlide)
+
 const currentMedia = computed(() => {
   const index = Number(currentSlide.value)
   return medias.value?.[index]
@@ -107,14 +118,14 @@ watchEffect(async () => {
             :id="item"
           />
           <label class="form-check-label" for="firstCheckbox"
-            >{{ item.title }}<code> * </code>
+            >{{ item?.title }}<code> * </code>
             <QuestionCircleIcon
               data-bs-toggle="popover"
               data-bs-trigger="hover focus"
               data-bs-placement="top"
               data-bs-delay="500"
               data-bs-animation="true"
-              :data-bs-content="item.description"
+              :data-bs-content="item?.description"
           /></label>
         </div>
       </div>
