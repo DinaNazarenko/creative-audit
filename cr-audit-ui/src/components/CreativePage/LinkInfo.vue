@@ -17,14 +17,15 @@ defineProps({
 })
 
 const linkOptions = ref(LINK_OPTIONS)
-const isDisabled = ref(false)
-const collapseShow = ref(true)
 const collapseRef = ref(null)
+
 const auditedCreativesStore = useAuditedCreativesStore()
 const errorStore = useErrorStore()
 
 const auditedLink = computed(() => ({
   status: auditedCreativesStore.auditedLink.status,
+  userActionStatus: auditedCreativesStore.auditedLink.userActionStatus,
+  collapseShow: auditedCreativesStore.auditedLink.collapseShow,
   comment: auditedCreativesStore.auditedLink.comment,
   options: auditedCreativesStore.auditedLink.options,
 }))
@@ -43,21 +44,23 @@ function handleCheckboxChange(event) {
 function handleAccept() {
   if (auditedLink.value.options.length === linkOptions.value.length) {
     auditedCreativesStore.updateAuditedStatusLink('Принято')
-    isDisabled.value = true
-    collapseShow.value = false
+    auditedCreativesStore.updateCollapseShowLink(false)
   } else {
     errorStore.setError('Не все обязательные поля выбраны')
   }
 }
 
 function handleReject() {
-  auditedCreativesStore.updateAuditedStatusLink('Отклонено')
-  isDisabled.value = true
-  collapseShow.value = false
   errorStore.setError('')
+  auditedCreativesStore.updateAuditedStatusLink('Отклонено')
+
+  if (auditedLink.value.options.length === linkOptions.value.length) {
+    auditedCreativesStore.updateActionStatusLink('exception')
+  } else {
+    auditedCreativesStore.updateActionStatusLink('rejecting')
+  }
 }
 function handleСhange() {
-  isDisabled.value = false
   auditedCreativesStore.updateAuditedStatusLink('')
 }
 
@@ -67,7 +70,7 @@ onMounted(() => {
     toggle: false,
   })
 
-  watch(collapseShow, newValue => {
+  watch( () => auditedLink.value.collapseShow, newValue => {
     if (newValue) {
       collapseInstance.show()
     } else {
@@ -77,7 +80,11 @@ onMounted(() => {
 })
 
 function toggleCollapseShow() {
-  collapseShow.value = !collapseShow.value
+  if (auditedLink.value.collapseShow) {
+    auditedCreativesStore.updateCollapseShowLink(false)
+  } else {
+    auditedCreativesStore.updateCollapseShowLink(true)
+  }
 }
 </script>
 <template>
@@ -97,7 +104,7 @@ function toggleCollapseShow() {
         <button
           class="accordion-button rounded-0 shadow-none bg-white p-0 d-flex justify-content-between align-items-center"
           type="button"
-          :aria-expanded="collapseShow"
+          :aria-expanded="auditedLink.collapseShow"
           aria-controls="panelsStayOpen-collapseOne"
         >
           <div>
@@ -117,8 +124,8 @@ function toggleCollapseShow() {
             </p>
           </div>
           <button class="btn p-0 border-0" @click="toggleCollapseShow">
-            <PencilSquareIcon v-if="!collapseShow" />
-            <ChevronUpIcon v-if="collapseShow" />
+            <PencilSquareIcon v-if="!auditedLink.collapseShow" />
+            <ChevronUpIcon v-if="auditedLink.collapseShow" />
           </button>
         </button>
       </div>
@@ -128,7 +135,7 @@ function toggleCollapseShow() {
         class="accordion-collapse collapse show"
       >
         <div class="accordion-body p-0 mt-3">
-          <div class="mb-4">
+          <div>
             <div
               v-for="item in linkOptions"
               :key="item"
@@ -141,7 +148,7 @@ function toggleCollapseShow() {
                 :id="item.title"
                 @change="handleCheckboxChange"
                 :checked="auditedLink.options.includes(item.title)"
-                :disabled="isDisabled"
+                :disabled="auditedLink.status.length > 0"
               />
               <label class="form-check-label" for="firstCheckbox"
                 >{{ item.title }}<code> * </code>
@@ -155,20 +162,33 @@ function toggleCollapseShow() {
               /></label>
             </div>
           </div>
-          <div>
+          <div class="mt-4">
             <CommentInfo />
           </div>
-          <!-- <div v-if="auditedLink.status.length === 0">
-            <ButtonOutline title="Принять" btn-outline="btn-outline-success" :handle="handleAccept" />
-            <ButtonOutline title="Отклонить" btn-outline="btn-outline-danger" :handle="handleReject"/>
-          </div> -->
-          <!-- <div v-if="auditedLink.status.length > 0">
+          <div v-if="auditedLink.status.length === 0" class="mt-4">
+            <ButtonOutline
+              title="Принять"
+              btn-outline="btn-outline-success"
+              :handle="handleAccept"
+            />
+            <ButtonOutline
+              title="Отклонить"
+              btn-outline="btn-outline-danger"
+              :handle="handleReject"
+            />
+          </div>
+          <div class="mt-4"
+            v-if="
+              auditedLink.status.length > 0 &&
+              ( auditedLink.userActionStatus.length === 0 || auditedLink.userActionStatus === 'saved')
+            "
+          >
             <ButtonChange
               title="Изменить решение"
               width="170px"
               :handle="handleСhange"
             />
-          </div> -->
+          </div>
         </div>
       </div>
     </div>
