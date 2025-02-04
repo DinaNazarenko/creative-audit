@@ -1,7 +1,6 @@
 <script setup>
 import { CREATIVE_OPTIONS } from '@/lib/constants'
-import ButtonSuccess from '@/components/common/ButtonSuccess.vue'
-import ButtonDanger from '@/components/common/ButtonDanger.vue'
+import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import FullscreenIcon from '@/components/icons/FullscreenIcon.vue'
 import { getImageSize } from '@/lib/utils/getImageSize'
@@ -130,8 +129,8 @@ watchEffect(async () => {
         </div>
       </div>
       <div>
-        <ButtonSuccess />
-        <ButtonDanger />
+        <ButtonOutline title="Принять" btn-outline="btn-outline-success"/>
+        <ButtonOutline title="Отклонить" btn-outline="btn-outline-danger"/>
       </div>
     </div>
   </div>

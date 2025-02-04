@@ -1,7 +1,7 @@
 <script setup>
 import CreativeStatus from '@/components/common/CreativeStatus.vue'
-import ButtonSuccess from '@/components/common/ButtonSuccess.vue'
-import ButtonDanger from '@/components/common/ButtonDanger.vue'
+import CommentInfo from '@/components/CreativePage/CommentInfo.vue'
+import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import { LINK_OPTIONS } from '@/lib/constants'
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
@@ -64,10 +64,10 @@ function handleСhange() {
 onMounted(() => {
   const collapseElement = collapseRef.value
   const collapseInstance = new bootstrap.Collapse(collapseElement, {
-    toggle: false
+    toggle: false,
   })
 
-  watch(collapseShow, (newValue) => {
+  watch(collapseShow, newValue => {
     if (newValue) {
       collapseInstance.show()
     } else {
@@ -155,17 +155,20 @@ function toggleCollapseShow() {
               /></label>
             </div>
           </div>
-          <div v-if="auditedLink.status.length === 0">
-            <ButtonSuccess :handle="handleAccept" />
-            <ButtonDanger :handle="handleReject" />
+          <div>
+            <CommentInfo />
           </div>
-          <div v-if="auditedLink.status.length > 0">
+          <!-- <div v-if="auditedLink.status.length === 0">
+            <ButtonOutline title="Принять" btn-outline="btn-outline-success" :handle="handleAccept" />
+            <ButtonOutline title="Отклонить" btn-outline="btn-outline-danger" :handle="handleReject"/>
+          </div> -->
+          <!-- <div v-if="auditedLink.status.length > 0">
             <ButtonChange
               title="Изменить решение"
               width="170px"
               :handle="handleСhange"
             />
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
