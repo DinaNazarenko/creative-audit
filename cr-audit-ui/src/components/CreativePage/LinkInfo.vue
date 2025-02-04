@@ -9,7 +9,8 @@ import { useErrorStore } from '@/stores/errorInfo'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import PencilSquareIcon from '@/components/icons/PencilSquareIcon.vue'
 import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
-import { ref, computed } from 'vue'
+import * as bootstrap from 'bootstrap'
+import { ref, computed, onMounted, watch } from 'vue'
 
 defineProps({
   creative: Object,
@@ -18,6 +19,7 @@ defineProps({
 const linkOptions = ref(LINK_OPTIONS)
 const isDisabled = ref(false)
 const collapseShow = ref(true)
+const collapseRef = ref(null)
 const auditedCreativesStore = useAuditedCreativesStore()
 const errorStore = useErrorStore()
 
@@ -51,12 +53,29 @@ function handleAccept() {
 function handleReject() {
   auditedCreativesStore.updateAuditedStatusLink('Отклонено')
   isDisabled.value = true
+  collapseShow.value = false
   errorStore.setError('')
 }
 function handleСhange() {
   isDisabled.value = false
   auditedCreativesStore.updateAuditedStatusLink('')
 }
+
+onMounted(() => {
+  const collapseElement = collapseRef.value
+  const collapseInstance = new bootstrap.Collapse(collapseElement, {
+    toggle: false
+  })
+
+  watch(collapseShow, (newValue) => {
+    if (newValue) {
+      collapseInstance.show()
+    } else {
+      collapseInstance.hide()
+    }
+  })
+})
+
 function toggleCollapseShow() {
   collapseShow.value = !collapseShow.value
 }
@@ -78,8 +97,6 @@ function toggleCollapseShow() {
         <button
           class="accordion-button rounded-0 shadow-none bg-white p-0 d-flex justify-content-between align-items-center"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#panelsStayOpen-collapseOne"
           :aria-expanded="collapseShow"
           aria-controls="panelsStayOpen-collapseOne"
         >
@@ -106,6 +123,7 @@ function toggleCollapseShow() {
         </button>
       </div>
       <div
+        ref="collapseRef"
         id="panelsStayOpen-collapseOne"
         class="accordion-collapse collapse show"
       >
