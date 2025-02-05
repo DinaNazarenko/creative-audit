@@ -9,6 +9,7 @@ import { useErrorStore } from '@/stores/errorInfo'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import PencilSquareIcon from '@/components/icons/PencilSquareIcon.vue'
 import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
+import { formatOptions } from '@/lib/utils/formatOptions'
 import * as bootstrap from 'bootstrap'
 import { ref, computed, onMounted, watch } from 'vue'
 
@@ -58,6 +59,12 @@ function handleReject() {
     auditedCreativesStore.updateActionStatusLink('exception')
   } else {
     auditedCreativesStore.updateActionStatusLink('rejecting')
+
+    const filteredOptions = linkOptions.value.filter(
+      option => !auditedLink.value.options.includes(option.title),
+    )
+
+    auditedCreativesStore.updateUserCommentLink(formatOptions(filteredOptions))
   }
 }
 function handleСhange() {
@@ -70,13 +77,16 @@ onMounted(() => {
     toggle: false,
   })
 
-  watch( () => auditedLink.value.collapseShow, newValue => {
-    if (newValue) {
-      collapseInstance.show()
-    } else {
-      collapseInstance.hide()
-    }
-  })
+  watch(
+    () => auditedLink.value.collapseShow,
+    newValue => {
+      if (newValue) {
+        collapseInstance.show()
+      } else {
+        collapseInstance.hide()
+      }
+    },
+  )
 })
 
 function toggleCollapseShow() {
@@ -177,10 +187,12 @@ function toggleCollapseShow() {
               :handle="handleReject"
             />
           </div>
-          <div class="mt-4"
+          <div
+            class="mt-4"
             v-if="
               auditedLink.status.length > 0 &&
-              ( auditedLink.userActionStatus.length === 0 || auditedLink.userActionStatus === 'saved')
+              (auditedLink.userActionStatus.length === 0 ||
+                auditedLink.userActionStatus === 'saved')
             "
           >
             <ButtonChange

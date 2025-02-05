@@ -21,17 +21,17 @@ const auditedLink = computed(() => ({
 // Загружаем исходное значение комментария
 watch(
   () => auditedLink.value.comment,
-  (newValue) => {
+  newValue => {
     originalComment.value = newValue || ''
     comment.value = newValue || ''
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function handleRevoke() {
   // Восстанавливаем исходное значение комментария
   comment.value = originalComment.value
-  
+
   auditedCreativesStore.updateAuditedStatusLink('')
   auditedCreativesStore.updateActionStatusLink('')
 }
@@ -40,12 +40,12 @@ function handleSave() {
   if (!comment.value.trim()) {
     return
   }
-  
+
   // Сохраняем изменения в store
   auditedCreativesStore.updateUserCommentLink(comment.value)
   auditedCreativesStore.updateActionStatusLink('saved')
   auditedCreativesStore.updateCollapseShowLink(false)
-  
+
   // Обновляем исходное значение для следующего редактирования
   originalComment.value = comment.value
 }
@@ -86,12 +86,7 @@ function handleSave() {
       ></textarea>
       <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
     </div>
-    <div
-      v-if="
-        auditedLink.userActionStatus !== 'saved'
-      "
-      class="mt-4 ms-auto"
-    >
+    <div v-if="auditedLink.userActionStatus !== 'saved'" class="mt-4 ms-auto">
       <ButtonOutline
         title="Отмена"
         btn-outline="btn-outline-secondary"
