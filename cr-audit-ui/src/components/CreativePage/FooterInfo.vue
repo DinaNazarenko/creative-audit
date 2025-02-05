@@ -1,4 +1,5 @@
 <script setup>
+import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
@@ -16,12 +17,19 @@ const props = defineProps({
 
 const medias = ref([])
 
-watchEffect(() => {
-  medias.value = props.creative?.media || []
-})
-
+const auditedCreativesStore = useAuditedCreativesStore()
 const mediaSlideStore = useMediaSlideStore()
+
+const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
 const currentSlide = computed(() => mediaSlideStore.currentSlide)
+
+watchEffect(() => {
+  if (props.creative.status === 'На проверке') {
+    medias.value = auditedMedia.value
+  } else {
+    medias.value = props.creative?.media || []
+  }
+})
 
 function selectSlide(slideNumber) {
   mediaSlideStore.updateCurrentSlide(slideNumber)
@@ -64,8 +72,8 @@ const nextPage = () => {
           'p-0': true,
           'col-1': true,
           btn_carousel: true,
-          success_status: media.status === 'approved',
-          danger_status: media.status === 'rejected',
+          success_status: media.status === 'Принято',
+          danger_status: media.status === 'Отклонено',
           active: currentSlide === medias.indexOf(media),
         }"
         @click="selectSlide(medias.indexOf(media))"

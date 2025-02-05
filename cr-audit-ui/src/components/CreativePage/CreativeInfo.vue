@@ -1,11 +1,17 @@
 <script setup>
 import { CREATIVE_OPTIONS } from '@/lib/constants'
+import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
+import { useErrorStore } from '@/stores/errorInfo'
+import CreativeStatus from '@/components/common/CreativeStatus.vue'
+import CommentInfo from '@/components/CreativePage/CommentInfo.vue'
 import ButtonOutline from '@/components/common/ButtonOutline.vue'
+import ButtonChange from '@/components/common/ButtonChange.vue'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import FullscreenIcon from '@/components/icons/FullscreenIcon.vue'
 import { getImageSize } from '@/lib/utils/getImageSize'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { useMediaSlideStore } from '@/stores/mediaPagination'
+import { formatOptions } from '@/lib/utils/formatOptions'
 import { ref, watchEffect, computed } from 'vue'
 
 const props = defineProps({
@@ -28,12 +34,22 @@ const size = ref(null)
 const fullScreenImage = ref(null)
 const fullscreenStatus = ref(false)
 
+const auditedCreativesStore = useAuditedCreativesStore()
+const errorStore = useErrorStore()
 const mediaSlideStore = useMediaSlideStore()
+
+const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
+
 const currentSlide = computed(() => mediaSlideStore.currentSlide)
 
 const currentMedia = computed(() => {
   const index = Number(currentSlide.value)
   return medias.value?.[index]
+})
+
+const currentAuditedMedia = computed(() => {
+  const index = Number(currentSlide.value)
+  return auditedMedia.value?.[index]
 })
 
 function getImage(name) {
@@ -72,10 +88,83 @@ watchEffect(async () => {
     size.value = null
   }
 })
+
+function handleCheckboxChange(event) {
+  errorStore.setError('')
+
+  const titleOption = event.target.id
+  if (event.target.checked) {
+    auditedCreativesStore.updateAuditedMedia(
+      Number(currentSlide.value),
+      titleOption,
+    )
+  } else {
+    auditedCreativesStore.removeAuditedMedia(
+      Number(currentSlide.value),
+      titleOption,
+    )
+  }
+}
+
+function handleAccept() {
+  if (
+    currentAuditedMedia.value.options.length === creativeOptions.value.length
+  ) {
+    auditedCreativesStore.updateAuditedStatusMedia(
+      Number(currentSlide.value),
+      'Принято',
+    )
+    auditedCreativesStore.updateUserCommentMedia(Number(currentSlide.value), '')
+  } else {
+    errorStore.setError('Не все обязательные поля выбраны')
+  }
+}
+
+// function handleReject() {
+//   errorStore.setError('')
+//   auditedCreativesStore.updateAuditedStatusLink('Отклонено')
+
+//   if (auditedLink.value.options.length === linkOptions.value.length) {
+//     auditedCreativesStore.updateActionStatusLink('exception')
+//     auditedCreativesStore.updateUserCommentLink('')
+//   } else {
+//     auditedCreativesStore.updateActionStatusLink('rejecting')
+
+//     const filteredOptions = linkOptions.value.filter(
+//       option => !auditedLink.value.options.includes(option.title),
+//     )
+
+//     auditedCreativesStore.updateUserCommentLink(formatOptions(filteredOptions))
+//   }
+// }
+
+function handleСhange() {
+  auditedCreativesStore.updateAuditedStatusMedia(Number(currentSlide.value), '')
+}
+
+watchEffect(() => {
+  const count = medias.value.length
+  if (count > 0) {
+    const mediaArray = Array.from({ length: count }, (_, index) => ({
+      index,
+      status: '',
+      userActionStatus: '',
+      comment: '',
+      options: [],
+    }))
+    auditedCreativesStore.initializeAuditedMedia(mediaArray)
+  }
+})
 </script>
 
 <template>
-  <div class="d-flex bg-white rounded-3 p-3 div_custom">
+  <div
+    class="d-flex bg-white rounded-3 p-3"
+    :class="{
+      border_success_custom: currentAuditedMedia?.status === 'Принято',
+      border_danger_custom: currentAuditedMedia?.status === 'Отклонено',
+    }"
+  >
     <div class="col-6 me-3 bg-light d-flex">
       <div
         class="d-flex flex-column justify-content-center align-items-center w-100"
@@ -103,34 +192,65 @@ watchEffect(async () => {
       </div>
     </div>
     <div class="col-6">
-      <h4 class="mb-3">Проверка креатива</h4>
-      <div class="mb-4">
+      <div class="d-flex align-items-center mb-3">
+        <h4 class="mb-0 me-2">Проверка креатива</h4>
+        <CreativeStatus :status="currentAuditedMedia?.status" />
+      </div>
+      <div>
         <div
-          v-for="item in creativeOptions"
-          :key="item"
           class="form-check option_custom"
+          v-for="option in creativeOptions"
+          :key="option"
         >
           <input
             class="form-check-input me-1"
             type="checkbox"
-            :value="item"
-            :id="item"
+            :value="option"
+            :id="option.title"
+            @change="handleCheckboxChange"
+            :checked="currentAuditedMedia?.options.includes(option.title)"
+            :disabled="currentAuditedMedia?.status.length > 0"
           />
           <label class="form-check-label" for="firstCheckbox"
-            >{{ item?.title }}<code> * </code>
+            >{{ option?.title }}<code> * </code>
             <QuestionCircleIcon
               data-bs-toggle="popover"
               data-bs-trigger="hover focus"
               data-bs-placement="top"
               data-bs-delay="500"
               data-bs-animation="true"
-              :data-bs-content="item?.description"
+              :data-bs-content="option?.description"
           /></label>
         </div>
       </div>
-      <div>
-        <ButtonOutline title="Принять" btn-outline="btn-outline-success"/>
-        <ButtonOutline title="Отклонить" btn-outline="btn-outline-danger"/>
+      <div class="mt-4">
+        <CommentInfo />
+      </div>
+      <div v-if="currentAuditedMedia?.status.length === 0" class="mt-4">
+        <ButtonOutline
+          title="Принять"
+          btn-outline="btn-outline-success"
+          :handle="handleAccept"
+        />
+        <ButtonOutline
+          title="Отклонить"
+          btn-outline="btn-outline-danger"
+          :handle="handleReject"
+        />
+      </div>
+      <div
+        v-if="
+          currentAuditedMedia?.status.length > 0 &&
+          (currentAuditedMedia?.userActionStatus.length === 0 ||
+          currentAuditedMedia?.userActionStatus === 'saved')
+        "
+        class="mt-4"
+      >
+        <ButtonChange
+          title="Изменить решение"
+          width="170px"
+          :handle="handleСhange"
+        />
       </div>
     </div>
   </div>
@@ -138,9 +258,6 @@ watchEffect(async () => {
 
 <style scoped>
 @import '../../assets/main.css';
-.div_custom {
-  height: 487px;
-}
 input {
   cursor: pointer;
 }
@@ -161,5 +278,11 @@ input:focus {
 }
 p {
   font-size: 12px !important;
+}
+.border_success_custom {
+  border-left: 4px solid #198754;
+}
+.border_danger_custom {
+  border-left: 4px solid #dc3545;
 }
 </style>

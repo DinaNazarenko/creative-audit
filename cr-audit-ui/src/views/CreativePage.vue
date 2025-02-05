@@ -16,7 +16,7 @@ const creative = ref([])
 
 const getCreative = async () => {
   try {
-    const url = `https://596b6b27365a5903.mokky.dev/creatives/6`
+    const url = `https://596b6b27365a5903.mokky.dev/creatives/3`
 
     const { data } = await axios.get(url)
 

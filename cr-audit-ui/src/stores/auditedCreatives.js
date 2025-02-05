@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 // Определение типа для одного креатива
 // interface Media {
-//   id: number;
+//   index: number;
 //   status: string;
 //   userActionStatus: string;
 //   comment: string;
@@ -41,6 +41,23 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     },
     updateCollapseShowLink(item) {
       this.auditedLink.collapseShow = item
+    },
+    initializeAuditedMedia(array) {
+      this.auditedMedia = array
+    },
+    updateAuditedStatusMedia(index, item) {
+      this.auditedMedia[index].status = item
+    },
+    updateUserCommentMedia(index, comment) {
+      this.auditedMedia[index].comment = comment
+    },
+    updateAuditedMedia(index, item) {
+      this.auditedMedia[index].options.push(item)
+    },
+    removeAuditedMedia(index, item) {
+      this.auditedMedia[index].options = this.auditedMedia[index].options.filter(
+        option => option !== item,
+      )
     },
   },
 })
