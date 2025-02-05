@@ -58,8 +58,7 @@ function handleSave() {
     <h5 class="option_custom">Причина отклонения:</h5>
     <div
       v-if="
-        auditedLink.userActionStatus === 'rejecting' ||
-        auditedLink.userActionStatus === 'editing'
+        auditedLink.userActionStatus === 'rejecting'
       "
       class="form-check option_custom"
     >
@@ -82,11 +81,14 @@ function handleSave() {
         :class="{ 'is-invalid': !comment }"
         rows="5"
         id="validationTextarea"
-        :disabled="auditedLink.userActionStatus === 'saved'"
+        :disabled="auditedLink.userActionStatus === 'saved' || auditedLink.userActionStatus === 'rejecting'"
       ></textarea>
       <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
     </div>
-    <div v-if="auditedLink.userActionStatus !== 'saved'" class="mt-4 ms-auto">
+    <div
+      v-if="auditedLink.userActionStatus !== 'saved'"
+      class="mt-4 ms-auto"
+    >
       <ButtonOutline
         title="Отмена"
         btn-outline="btn-outline-secondary"
