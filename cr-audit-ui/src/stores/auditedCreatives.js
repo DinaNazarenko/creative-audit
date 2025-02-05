@@ -1,5 +1,14 @@
 import { defineStore } from 'pinia'
 
+// Определение типа для одного креатива
+// interface Media {
+//   id: number;
+//   status: string;
+//   userActionStatus: string;
+//   comment: string;
+//   options: string[];
+// }
+
 export const useAuditedCreativesStore = defineStore('auditedCreatives', {
   state: () => ({
     auditedLink: {
@@ -7,15 +16,10 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
       collapseShow: true,
       userActionStatus: '',
       comment: '',
-      // { userComment: '', commentOptions: [] },
       options: [],
     },
-    auditedMedia: {
-      status: '',
-      userActionStatus: '',
-      comment: [],
-      options: [],
-    },
+    auditedMedia: [],
+    // auditedMedia: Media[] = [];
   }),
   actions: {
     updateAuditedStatusLink(item) {
@@ -44,4 +48,5 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
 // userActionStatus:
 // exception - все ЧБ приняты, но пользователь отклоняет креатив
 // rejecting - стандартное отклонение креатива
+// editing - добавить свой комментарий
 // saved - решение сохранено

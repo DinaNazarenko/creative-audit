@@ -46,6 +46,7 @@ function handleAccept() {
   if (auditedLink.value.options.length === linkOptions.value.length) {
     auditedCreativesStore.updateAuditedStatusLink('Принято')
     auditedCreativesStore.updateCollapseShowLink(false)
+    auditedCreativesStore.updateUserCommentLink('')
   } else {
     errorStore.setError('Не все обязательные поля выбраны')
   }
@@ -57,6 +58,7 @@ function handleReject() {
 
   if (auditedLink.value.options.length === linkOptions.value.length) {
     auditedCreativesStore.updateActionStatusLink('exception')
+    auditedCreativesStore.updateUserCommentLink('')
   } else {
     auditedCreativesStore.updateActionStatusLink('rejecting')
 

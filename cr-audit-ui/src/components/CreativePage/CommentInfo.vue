@@ -49,6 +49,16 @@ function handleSave() {
   // Обновляем исходное значение для следующего редактирования
   originalComment.value = comment.value
 }
+
+function handleCheckboxChange(event) {
+  const isChecked = event.target.checked
+
+  if (isChecked) {
+    auditedCreativesStore.updateActionStatusLink('editing')
+  } else {
+    auditedCreativesStore.updateActionStatusLink('rejecting')
+  }
+}
 </script>
 <template>
   <div
@@ -57,12 +67,14 @@ function handleSave() {
   >
     <h5 class="option_custom">Причина отклонения:</h5>
     <div
-      v-if="
-        auditedLink.userActionStatus === 'rejecting'
-      "
+      v-if="auditedLink.userActionStatus === 'rejecting' || auditedLink.userActionStatus === 'editing'"
       class="form-check option_custom"
     >
-      <input class="form-check-input me-1" type="checkbox" />
+      <input
+        class="form-check-input me-1"
+        type="checkbox"
+        @change="handleCheckboxChange($event)"
+      />
       <label class="form-check-label" for="firstCheckbox"
         >Добавить свой комментарий
         <QuestionCircleIcon
@@ -81,14 +93,14 @@ function handleSave() {
         :class="{ 'is-invalid': !comment }"
         rows="5"
         id="validationTextarea"
-        :disabled="auditedLink.userActionStatus === 'saved' || auditedLink.userActionStatus === 'rejecting'"
+        :disabled="
+          auditedLink.userActionStatus === 'saved' ||
+          auditedLink.userActionStatus === 'rejecting'
+        "
       ></textarea>
       <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
     </div>
-    <div
-      v-if="auditedLink.userActionStatus !== 'saved'"
-      class="mt-4 ms-auto"
-    >
+    <div v-if="auditedLink.userActionStatus !== 'saved'" class="mt-4 ms-auto">
       <ButtonOutline
         title="Отмена"
         btn-outline="btn-outline-secondary"
