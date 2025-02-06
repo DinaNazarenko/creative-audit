@@ -224,7 +224,7 @@ watchEffect(() => {
         </div>
       </div>
       <div class="mt-4">
-        <CommentInfo />
+        <CommentInfo :media-info="true"/>
       </div>
       <div v-if="currentAuditedMedia?.status.length === 0" class="mt-4">
         <ButtonOutline

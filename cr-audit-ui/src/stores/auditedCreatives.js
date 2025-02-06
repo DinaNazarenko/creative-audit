@@ -59,6 +59,9 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
         option => option !== item,
       )
     },
+    updateActionStatusMedia(index, item) {
+      this.auditedMedia[index].userActionStatus = item
+    },
   },
 })
 

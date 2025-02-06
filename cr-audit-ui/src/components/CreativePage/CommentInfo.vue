@@ -1,12 +1,42 @@
 <script setup>
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
-import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
+import CheckBox from '@/components/common/CheckBox.vue'
 import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, watchEffect } from 'vue'
 
-const originalComment = ref('')
-const comment = ref('')
+const props = defineProps({
+  linkInfo: {
+    type: Boolean,
+    default: false,
+  },
+  mediaInfo: {
+    type: Boolean,
+    default: false,
+  },
+  currentAuditedMedia: {
+    type: Object,
+    default: () => ({
+      index: null,
+      status: '',
+      userActionStatus: '',
+      comment: '',
+      options: [],
+    }),
+  },
+})
+
+const currentMedia = ref({})
+
+const originalComment = ref({
+  link: '',
+  media: '',
+})
+
+const comment = ref({
+  link: '',
+  media: '',
+})
 
 const auditedCreativesStore = useAuditedCreativesStore()
 
@@ -18,39 +48,87 @@ const auditedLink = computed(() => ({
   options: auditedCreativesStore.auditedLink.options,
 }))
 
-// Загружаем исходное значение комментария
+watchEffect(() => {
+  currentMedia.value = props.currentAuditedMedia || {
+    index: null,
+    status: '',
+    userActionStatus: '',
+    comment: '',
+    options: [],
+  }
+})
+
+// Загружаем исходное значение комментария для link
 watch(
-  () => auditedLink.value.comment,
+  () => auditedLink.value?.comment,
   newValue => {
-    originalComment.value = newValue || ''
-    comment.value = newValue || ''
+    originalComment.value.link = newValue || ''
+    comment.value.link = newValue || ''
   },
   { immediate: true },
 )
 
+// Загружаем исходное значение комментария для media
+// watch(
+//   () => props.mediaInfo.valueOf,
+//   newValue => {
+//     if (newValue) {
+//       watch(
+//         () => currentMedia.value.comment,
+//         newValue => {
+//           originalComment.value.media = newValue || ''
+//           comment.value.media = newValue || ''
+//         },
+//         { immediate: true },
+//       )
+//     }
+//   },
+// )
+
 function handleRevoke() {
   // Восстанавливаем исходное значение комментария
-  comment.value = originalComment.value
+  comment.value.link = originalComment.value.link
 
   auditedCreativesStore.updateAuditedStatusLink('')
   auditedCreativesStore.updateActionStatusLink('')
+
+  // if (props.mediaInfo.valueOf) {
+  //   comment.value.media = originalComment.value.media
+
+  //   auditedCreativesStore.updateAuditedStatusMedia(currentMedia.value.index, '')
+  //   auditedCreativesStore.updateActionStatusMedia(currentMedia.value.index, '')
+  // }
 }
 
 function handleSave() {
-  if (!comment.value.trim()) {
+  if (!comment.value.link.trim()) {
     return
   }
 
   // Сохраняем изменения в store
-  auditedCreativesStore.updateUserCommentLink(comment.value)
+  auditedCreativesStore.updateUserCommentLink(comment.value.link)
   auditedCreativesStore.updateActionStatusLink('saved')
   auditedCreativesStore.updateCollapseShowLink(false)
 
   // Обновляем исходное значение для следующего редактирования
-  originalComment.value = comment.value
+  originalComment.value.link = comment.value.link
+
+  // if (props.mediaInfo.valueOf) {
+  //   auditedCreativesStore.updateUserCommentMedia(
+  //     currentMedia.value.index,
+  //     comment.value.media,
+  //   )
+  //   auditedCreativesStore.updateActionStatusMedia(
+  //     currentMedia.value.index,
+  //     'saved',
+  //   )
+
+  //   // Обновляем исходное значение для следующего редактирования
+  //   originalComment.value.media = comment.value.media
+  // }
 }
 
-function handleCheckboxChange(event) {
+function handleCheckboxChangeLink(event) {
   const isChecked = event.target.checked
 
   if (isChecked) {
@@ -58,39 +136,39 @@ function handleCheckboxChange(event) {
   } else {
     auditedCreativesStore.updateActionStatusLink('rejecting')
   }
+
+  // if (props.mediaInfo.valueOf) {
+  //   const isChecked = event.target.checked
+
+  //   if (isChecked) {
+  //     auditedCreativesStore.updateActionStatusMedia(
+  //       currentMedia.value.index,
+  //       'editing',
+  //     )
+  //   } else {
+  //     auditedCreativesStore.updateActionStatusMedia(
+  //       currentMedia.value.index,
+  //       'rejecting',
+  //     )
+  //   }
+  // }
 }
 </script>
 <template>
   <div
-    v-if="auditedLink.status === 'Отклонено'"
+    v-if="linkInfo && auditedLink.status === 'Отклонено'"
     class="d-flex flex-column div_custom"
   >
     <h5 class="option_custom">Причина отклонения:</h5>
-    <div
-      v-if="auditedLink.userActionStatus === 'rejecting' || auditedLink.userActionStatus === 'editing'"
-      class="form-check option_custom"
-    >
-      <input
-        class="form-check-input me-1"
-        type="checkbox"
-        @change="handleCheckboxChange($event)"
-      />
-      <label class="form-check-label" for="firstCheckbox"
-        >Добавить свой комментарий
-        <QuestionCircleIcon
-          data-bs-toggle="popover"
-          data-bs-trigger="hover focus"
-          data-bs-placement="top"
-          data-bs-delay="500"
-          data-bs-animation="true"
-          data-bs-content="test"
-      /></label>
-    </div>
+    <CheckBox
+      :status="auditedLink.userActionStatus"
+      :handle-change="handleCheckboxChangeLink"
+    />
     <div>
       <textarea
-        v-model="comment"
+        v-model="comment.link"
         class="form-control rounded-1 textarea_custom"
-        :class="{ 'is-invalid': !comment }"
+        :class="{ 'is-invalid': !comment.link }"
         rows="5"
         id="validationTextarea"
         :disabled="

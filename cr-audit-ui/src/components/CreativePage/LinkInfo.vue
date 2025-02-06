@@ -175,7 +175,7 @@ function toggleCollapseShow() {
             </div>
           </div>
           <div class="mt-4">
-            <CommentInfo />
+            <CommentInfo :link-info="true"/>
           </div>
           <div v-if="auditedLink.status.length === 0" class="mt-4">
             <ButtonOutline
