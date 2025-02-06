@@ -1,5 +1,6 @@
 <script setup>
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
+import StaticBackdropModal from '@/components/common/StaticBackdropModal.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
@@ -17,11 +18,32 @@ const props = defineProps({
 
 const medias = ref([])
 
+const modalStatus = ref('')
+
 const auditedCreativesStore = useAuditedCreativesStore()
 const mediaSlideStore = useMediaSlideStore()
 
 const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
+const auditedLink = computed(() => auditedCreativesStore.auditedLink)
 const currentSlide = computed(() => mediaSlideStore.currentSlide)
+
+function handleCheck() {
+  // Всё проверено
+  if (
+    auditedLink.value.status === 'Принято' &&
+    auditedMedia.value.every(item => item.status === 'Принято')
+  ) {
+    modalStatus.value = 'verified'
+  }
+  // Креатив не проверен
+  if (auditedMedia.value.some(item => item.status !== 'Принято')) {
+    modalStatus.value = 'unverifiedCreative'
+  }
+  // Ссылка не проверена
+  if (auditedLink.value.status !== 'Принято') {
+    modalStatus.value = 'unverifiedLink'
+  }
+}
 
 watchEffect(() => {
   if (props.creative.status === 'На проверке') {
@@ -83,8 +105,13 @@ const nextPage = () => {
       </button>
     </div>
     <div>
-      <ButtonChange title="Отправить" />
+      <ButtonChange
+        title="Отправить"
+        :should-have-modal="true"
+        @click="handleCheck"
+      />
     </div>
+    <StaticBackdropModal :modal-status="modalStatus" />
   </footer>
 </template>
 <style scoped>

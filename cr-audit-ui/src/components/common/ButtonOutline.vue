@@ -10,9 +10,8 @@ defineProps({
 </script>
 <template>
   <button
+  class="btn me-3 my-0 mt-0"
     :class="{
-      'btn': true,
-      'me-3': true,
       'btn-outline-success': btnOutline === 'btn-outline-success',
       'btn-outline-secondary': btnOutline === 'btn-outline-secondary',
       'btn-outline-danger': btnOutline === 'btn-outline-danger',
@@ -21,6 +20,7 @@ defineProps({
       'height': height || '38px',
     }"
     @click="handle"
+    :data-bs-dismiss="title === 'Отмена' ? 'modal' : undefined"
   >
     {{ title }}
   </button>

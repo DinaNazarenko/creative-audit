@@ -1,25 +1,30 @@
 <script setup>
+
 import { defineProps } from 'vue'
+
 defineProps({
   title: String,
   width: String,
   height: String,
   handle: Function,
+  shouldHaveModal: Boolean,
 })
 </script>
 <template>
   <button
+  class="btn btn-primary rounded-1 m-0"
     :class="{
-      'btn': true,
-      'btn-primary': true,
-      'rounded-1': true,
-      'width': width || '106px',
-      'height': height || '38px',
+      width: width || '106px',
+      height: height || '38px',
     }"
     @click="handle"
+    :data-bs-toggle="shouldHaveModal ? 'modal' : undefined"
+    :data-bs-target="shouldHaveModal ? '#staticBackdrop' : undefined"
+    :data-bs-dismiss="(title === 'Закрыть' || title === 'Отмена') ? 'modal' : undefined"
   >
     {{ title }}
   </button>
+
 </template>
 
 <style scoped>
