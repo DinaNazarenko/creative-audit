@@ -8,6 +8,7 @@ defineProps({
   height: String,
   handle: Function,
   shouldHaveModal: Boolean,
+  modalStatus: String,
 })
 </script>
 <template>
@@ -20,7 +21,7 @@ defineProps({
     @click="handle"
     :data-bs-toggle="shouldHaveModal ? 'modal' : undefined"
     :data-bs-target="shouldHaveModal ? '#staticBackdrop' : undefined"
-    :data-bs-dismiss="(title === 'Закрыть' || title === 'Отмена') ? 'modal' : undefined"
+    :data-bs-dismiss="modalStatus ? 'modal' : undefined"
   >
     {{ title }}
   </button>

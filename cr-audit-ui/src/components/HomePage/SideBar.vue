@@ -7,12 +7,15 @@ import MegaphoneIcon from '@/components/icons/MegaphoneIcon.vue'
 import PersonIcon from '@/components/icons/PersonIcon.vue'
 import SidebarLogoIcon from '@/components/icons/SidebarLogoIcon.vue'
 import CaretDownFillIcon from '@/components/icons/CaretDownFillIcon.vue'
+import { useModalStore } from '@/stores/modal'
 
 defineProps({
   count: Number,
 })
 const router = useRouter()
 const activeItem = ref('Креативы')
+
+const modalStore = useModalStore()
 
 function setActive(item) {
   activeItem.value = item
@@ -25,6 +28,12 @@ function isActive(item) {
 const handleLogout = () => {
   localStorage.removeItem('userToken')
   router.push('/')
+}
+
+function handleCheck() {
+  if (router.currentRoute.value.name !== 'home') {
+    modalStore.updateModalStatus('exit')
+  }
 }
 </script>
 <template>
@@ -44,14 +53,19 @@ const handleLogout = () => {
         </a>
       </li>
       <li class="li_custom">
-        <router-link
-          :to="{ name: 'home' }"
+        <a
+          href="#"
           class="nav-link py-3 border-bottom rounded-0"
-          aria-current="page"
-          data-bs-placement="right"
-          aria-label="Home"
-          @click="setActive('Креативы')"
           :class="{ active: isActive('Креативы') }"
+          v-bind="
+            router.currentRoute.value.name !== 'home'
+              ? {
+                  'data-bs-toggle': 'modal',
+                  'data-bs-target': '#staticBackdrop',
+                }
+              : {}
+          "
+          @click="[setActive('Креативы'), handleCheck()]"
         >
           <ImagesIcon />
           <span
@@ -59,7 +73,8 @@ const handleLogout = () => {
             >{{ count }}</span
           >
           Креативы
-        </router-link>
+        </a>
+        <StaticBackdropModal />
       </li>
       <li class="li_custom">
         <a

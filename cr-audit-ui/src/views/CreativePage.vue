@@ -5,7 +5,9 @@ import LinkInfo from '@/components/CreativePage/LinkInfo.vue'
 import CreativeInfo from '@/components/CreativePage/CreativeInfo.vue'
 import FooterInfo from '@/components/CreativePage/FooterInfo.vue'
 import AlertDanger from '@/components/AlertDanger.vue'
+import StaticBackdropModal from '@/components/common/StaticBackdropModal.vue'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
+import { useModalStore } from '@/stores/modal'
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 
@@ -13,6 +15,8 @@ const pendingCreativesCount = ref(0)
 const isLoading = ref(true)
 
 const creative = ref([])
+
+const modalStore = useModalStore()
 
 const getCreative = async () => {
   try {
@@ -35,6 +39,10 @@ const getCreative = async () => {
   }
 }
 
+function handleCheck() {
+  modalStore.updateModalStatus('exit')
+}
+
 onMounted(async () => {
   await getCreative()
 })
@@ -48,14 +56,18 @@ watch(getCreative, pendingCreativesCount)
       <div class="container_custom">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <router-link :to="{ name: 'home' }" class="text-decoration-none">
-                Креативы
-              </router-link>
+            <li
+              class="breadcrumb-item text_custom"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+              @click="handleCheck"
+            >
+              Креативы
             </li>
             <li class="breadcrumb-item active" aria-current="page">
               {{ creative.name }}
             </li>
+            <StaticBackdropModal />
           </ol>
         </nav>
         <h2 class="mb-3">{{ creative.name }}</h2>
@@ -102,5 +114,8 @@ hr {
   bottom: 0;
   right: 0;
   z-index: 1030;
+}
+.text_custom {
+  color: var(--custom-color);
 }
 </style>

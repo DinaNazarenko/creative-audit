@@ -6,6 +6,7 @@ defineProps({
   width: String,
   height: String,
   handle: Function,
+  modalStatus: String,
 })
 </script>
 <template>
@@ -20,7 +21,7 @@ defineProps({
       'height': height || '38px',
     }"
     @click="handle"
-    :data-bs-dismiss="title === 'Отмена' ? 'modal' : undefined"
+    :data-bs-dismiss="modalStatus ? 'modal' : undefined"
   >
     {{ title }}
   </button>

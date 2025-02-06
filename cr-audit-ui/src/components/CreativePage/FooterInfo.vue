@@ -5,6 +5,7 @@ import ButtonChange from '@/components/common/ButtonChange.vue'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
 import { useMediaSlideStore } from '@/stores/mediaPagination'
+import { useModalStore } from '@/stores/modal'
 import { ref, computed, watchEffect } from 'vue'
 
 const props = defineProps({
@@ -18,7 +19,7 @@ const props = defineProps({
 
 const medias = ref([])
 
-const modalStatus = ref('')
+const modalStore = useModalStore()
 
 const auditedCreativesStore = useAuditedCreativesStore()
 const mediaSlideStore = useMediaSlideStore()
@@ -33,15 +34,15 @@ function handleCheck() {
     auditedLink.value.status === 'Принято' &&
     auditedMedia.value.every(item => item.status === 'Принято')
   ) {
-    modalStatus.value = 'verified'
+    modalStore.updateModalStatus('verified')
   }
   // Креатив не проверен
   if (auditedMedia.value.some(item => item.status !== 'Принято')) {
-    modalStatus.value = 'unverifiedCreative'
+    modalStore.updateModalStatus('unverifiedCreative')
   }
   // Ссылка не проверена
   if (auditedLink.value.status !== 'Принято') {
-    modalStatus.value = 'unverifiedLink'
+    modalStore.updateModalStatus('unverifiedLink')
   }
 }
 
@@ -111,7 +112,7 @@ const nextPage = () => {
         @click="handleCheck"
       />
     </div>
-    <StaticBackdropModal :modal-status="modalStatus" />
+    <StaticBackdropModal />
   </footer>
 </template>
 <style scoped>

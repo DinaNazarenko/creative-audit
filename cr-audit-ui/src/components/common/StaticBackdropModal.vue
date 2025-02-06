@@ -1,25 +1,37 @@
 <script setup>
+import { useModalStore } from '@/stores/modal'
 import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import { MODAL_TEXTS } from '@/lib/constants'
-import { defineProps, ref, watchEffect } from 'vue'
-
-const props = defineProps({
-modalStatus: String,
-})
+import { useRouter } from 'vue-router'
+import { ref, watchEffect, computed } from 'vue'
 
 const modalTexts = ref({})
 
+const modalStore = useModalStore()
+
+const modalStatus = computed(() => modalStore.modalStatus)
+
+const router = useRouter()
+
+function goToHome() {
+  router.push({ name: 'home' })
+}
+
 watchEffect(() => {
-  if (props.modalStatus === 'verified') {
+  if (modalStatus.value === 'verified') {
     modalTexts.value = MODAL_TEXTS[0]
-  } else if (props.modalStatus === 'unverifiedCreative') {
+  }
+  if (modalStatus.value === 'unverifiedCreative') {
     modalTexts.value = MODAL_TEXTS[1]
-  } else if (props.modalStatus === 'unverifiedLink') {
+  }
+  if (modalStatus.value === 'unverifiedLink') {
     modalTexts.value = MODAL_TEXTS[2]
-  } else if (props.modalStatus === 'auditCancelled') {
+  }
+  if (modalStatus.value === 'auditCancelled') {
     modalTexts.value = MODAL_TEXTS[3]
-  } else {
+  }
+  if (modalStatus.value === 'exit') {
     modalTexts.value = MODAL_TEXTS[4]
   }
 })
@@ -47,13 +59,25 @@ watchEffect(() => {
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body body_custom"> {{ modalTexts.bodyText }}</div>
+        <div class="modal-body body_custom">{{ modalTexts.bodyText }}</div>
         <div class="modal-footer footer_custom">
-          <ButtonOutline v-if="modalTexts.buttonLeftText"
+          <ButtonOutline
+            v-if="modalStatus === 'verified'"
             :title="modalTexts.buttonLeftText"
             btn-outline="btn-outline-secondary"
+            :modal-status="modalStatus"
           />
-          <ButtonChange :title="modalTexts.buttonRightText"/>
+          <ButtonOutline
+            v-if="modalStatus === 'exit'"
+            :title="modalTexts.buttonLeftText"
+            btn-outline="btn-outline-secondary"
+            :handle="goToHome"
+            :modal-status="modalStatus"
+          />
+          <ButtonChange
+            :title="modalTexts.buttonRightText"
+            :modal-status="modalStatus"
+          />
         </div>
       </div>
     </div>
@@ -73,5 +97,8 @@ h5 {
 }
 .footer_custom {
   height: 63px;
+}
+button:focus {
+  box-shadow: none;
 }
 </style>
