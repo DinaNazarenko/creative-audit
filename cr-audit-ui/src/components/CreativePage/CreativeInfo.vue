@@ -120,23 +120,38 @@ function handleAccept() {
   }
 }
 
-// function handleReject() {
-//   errorStore.setError('')
-//   auditedCreativesStore.updateAuditedStatusLink('Отклонено')
+function handleReject() {
+  errorStore.setError('')
 
-//   if (auditedLink.value.options.length === linkOptions.value.length) {
-//     auditedCreativesStore.updateActionStatusLink('exception')
-//     auditedCreativesStore.updateUserCommentLink('')
-//   } else {
-//     auditedCreativesStore.updateActionStatusLink('rejecting')
+  auditedCreativesStore.updateAuditedStatusMedia(
+    Number(currentSlide.value),
+    'Отклонено',
+  )
 
-//     const filteredOptions = linkOptions.value.filter(
-//       option => !auditedLink.value.options.includes(option.title),
-//     )
+  if (
+    currentAuditedMedia.value.options.length === creativeOptions.value.length
+  ) {
+    auditedCreativesStore.updateActionStatusMedia(
+      Number(currentSlide.value),
+      'exception',
+    )
+    auditedCreativesStore.updateUserCommentMedia(Number(currentSlide.value), '')
+  } else {
+    auditedCreativesStore.updateActionStatusMedia(
+      Number(currentSlide.value),
+      'rejecting',
+    )
 
-//     auditedCreativesStore.updateUserCommentLink(formatOptions(filteredOptions))
-//   }
-// }
+    const filteredOptions = creativeOptions.value.filter(
+      option => !currentAuditedMedia.value.options.includes(option.title),
+    )
+
+    auditedCreativesStore.updateUserCommentMedia(
+      Number(currentSlide.value),
+      formatOptions(filteredOptions),
+    )
+  }
+}
 
 function handleСhange() {
   auditedCreativesStore.updateAuditedStatusMedia(Number(currentSlide.value), '')
@@ -224,7 +239,7 @@ watchEffect(() => {
         </div>
       </div>
       <div class="mt-4">
-        <CommentInfo :media-info="true"/>
+        <CommentInfo :media-info="true" :current-audited-media="currentAuditedMedia"/>
       </div>
       <div v-if="currentAuditedMedia?.status.length === 0" class="mt-4">
         <ButtonOutline
@@ -242,7 +257,7 @@ watchEffect(() => {
         v-if="
           currentAuditedMedia?.status.length > 0 &&
           (currentAuditedMedia?.userActionStatus.length === 0 ||
-          currentAuditedMedia?.userActionStatus === 'saved')
+            currentAuditedMedia?.userActionStatus === 'saved')
         "
         class="mt-4"
       >

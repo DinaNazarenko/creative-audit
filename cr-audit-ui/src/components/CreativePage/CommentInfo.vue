@@ -69,42 +69,34 @@ watch(
 )
 
 // Загружаем исходное значение комментария для media
-// watch(
-//   () => props.mediaInfo.valueOf,
-//   newValue => {
-//     if (newValue) {
-//       watch(
-//         () => currentMedia.value.comment,
-//         newValue => {
-//           originalComment.value.media = newValue || ''
-//           comment.value.media = newValue || ''
-//         },
-//         { immediate: true },
-//       )
-//     }
-//   },
-// )
+watch(
+  () => currentMedia.value?.comment,
+  newValue => {
+    originalComment.value.media = newValue || ''
+    comment.value.media = newValue || ''
+  },
+  { immediate: true },
+)
 
-function handleRevoke() {
+function handleRevokeLink() {
   // Восстанавливаем исходное значение комментария
   comment.value.link = originalComment.value.link
 
   auditedCreativesStore.updateAuditedStatusLink('')
   auditedCreativesStore.updateActionStatusLink('')
-
-  // if (props.mediaInfo.valueOf) {
-  //   comment.value.media = originalComment.value.media
-
-  //   auditedCreativesStore.updateAuditedStatusMedia(currentMedia.value.index, '')
-  //   auditedCreativesStore.updateActionStatusMedia(currentMedia.value.index, '')
-  // }
 }
 
-function handleSave() {
+function handleRevokeMedia() {
+  comment.value.media = originalComment.value.media
+
+  auditedCreativesStore.updateAuditedStatusMedia(currentMedia.value.index, '')
+  auditedCreativesStore.updateActionStatusMedia(currentMedia.value.index, '')
+}
+
+function handleSaveLink() {
   if (!comment.value.link.trim()) {
     return
   }
-
   // Сохраняем изменения в store
   auditedCreativesStore.updateUserCommentLink(comment.value.link)
   auditedCreativesStore.updateActionStatusLink('saved')
@@ -112,20 +104,23 @@ function handleSave() {
 
   // Обновляем исходное значение для следующего редактирования
   originalComment.value.link = comment.value.link
+}
 
-  // if (props.mediaInfo.valueOf) {
-  //   auditedCreativesStore.updateUserCommentMedia(
-  //     currentMedia.value.index,
-  //     comment.value.media,
-  //   )
-  //   auditedCreativesStore.updateActionStatusMedia(
-  //     currentMedia.value.index,
-  //     'saved',
-  //   )
-
-  //   // Обновляем исходное значение для следующего редактирования
-  //   originalComment.value.media = comment.value.media
-  // }
+function handleSaveMedia() {
+  if (!comment.value.media.trim()) {
+    return
+  }
+  // Сохраняем изменения в store
+  auditedCreativesStore.updateUserCommentMedia(
+    currentMedia.value.index,
+    comment.value.media,
+  )
+  auditedCreativesStore.updateActionStatusMedia(
+    currentMedia.value.index,
+    'saved',
+  )
+  // Обновляем исходное значение для следующего редактирования
+  originalComment.value.media = comment.value.media
 }
 
 function handleCheckboxChangeLink(event) {
@@ -136,25 +131,26 @@ function handleCheckboxChangeLink(event) {
   } else {
     auditedCreativesStore.updateActionStatusLink('rejecting')
   }
+}
 
-  // if (props.mediaInfo.valueOf) {
-  //   const isChecked = event.target.checked
+function handleCheckboxChangeMedia(event) {
+  const isChecked = event.target.checked
 
-  //   if (isChecked) {
-  //     auditedCreativesStore.updateActionStatusMedia(
-  //       currentMedia.value.index,
-  //       'editing',
-  //     )
-  //   } else {
-  //     auditedCreativesStore.updateActionStatusMedia(
-  //       currentMedia.value.index,
-  //       'rejecting',
-  //     )
-  //   }
-  // }
+  if (isChecked) {
+    auditedCreativesStore.updateActionStatusMedia(
+      currentMedia.value.index,
+      'editing',
+    )
+  } else {
+    auditedCreativesStore.updateActionStatusMedia(
+      currentMedia.value.index,
+      'rejecting',
+    )
+  }
 }
 </script>
 <template>
+  <div>
   <div
     v-if="linkInfo && auditedLink.status === 'Отклонено'"
     class="d-flex flex-column div_custom"
@@ -182,11 +178,45 @@ function handleCheckboxChangeLink(event) {
       <ButtonOutline
         title="Отмена"
         btn-outline="btn-outline-secondary"
-        :handle="handleRevoke"
+        :handle="handleRevokeLink"
       />
-      <ButtonChange title="Сохранить" :handle="handleSave" />
+      <ButtonChange title="Сохранить" :handle="handleSaveLink" />
     </div>
   </div>
+
+  <div
+    v-if="mediaInfo && currentMedia.status === 'Отклонено'"
+    class="d-flex flex-column div_custom"
+  >
+    <h5 class="option_custom">Причина отклонения:</h5>
+    <CheckBox
+      :status="currentMedia.userActionStatus"
+      :handle-change="handleCheckboxChangeMedia"
+    />
+    <div>
+      <textarea
+        v-model="comment.media"
+        class="form-control rounded-1 textarea_custom"
+        :class="{ 'is-invalid': !comment.media }"
+        rows="5"
+        id="validationTextarea"
+        :disabled="
+          currentMedia.userActionStatus === 'saved' ||
+          currentMedia.userActionStatus === 'rejecting'
+        "
+      ></textarea>
+      <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
+    </div>
+    <div v-if="currentMedia.userActionStatus !== 'saved'" class="mt-4 ms-auto">
+      <ButtonOutline
+        title="Отмена"
+        btn-outline="btn-outline-secondary"
+        :handle="handleRevokeMedia"
+      />
+      <ButtonChange title="Сохранить" :handle="handleSaveMedia" />
+    </div>
+  </div>
+</div>
 </template>
 
 <style scoped>
