@@ -2,7 +2,6 @@
 import LoginHeader from '@/components/LoginHeader.vue'
 import LoginForm from '@/components/LoginForm.vue'
 import SidebarLogo from '@/components/SidebarLogo.vue'
-import AlertSuccess from '@/components/AlertSuccess.vue'
 import AlertDanger from '@/components/AlertDanger.vue'
 import { usePasswordStore } from '@/stores/password'
 import { useErrorStore } from '@/stores/errorInfo'
@@ -22,7 +21,12 @@ const onCreatePassword = async () => {
     await axios.patch(`https://596b6b27365a5903.mokky.dev/users/${userId.userId}`, {
       password: passwordInfo,
     })
-    successStore.setSuccess('Ваш новый пароль был успешно сохранён')
+    setTimeout(() => {
+      successStore.setSuccess('Ваш новый пароль был успешно сохранён')
+    }, 1000)
+    setTimeout(() => {
+      successStore.setSuccess('')
+    }, 4000)
     localStorage.removeItem('userId')
   } catch (error) {
     errorStore.setError('Ошибка сохранения пароля')
@@ -47,7 +51,6 @@ const onCreatePassword = async () => {
           />
         </div>
       </div>
-      <AlertSuccess />
       <AlertDanger />
     </div>
     <SidebarLogo />

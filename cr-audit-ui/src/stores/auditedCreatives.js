@@ -11,6 +11,10 @@ import { defineStore } from 'pinia'
 
 export const useAuditedCreativesStore = defineStore('auditedCreatives', {
   state: () => ({
+    auditedCreative: {
+      id: null,
+      status: '',
+    },
     auditedLink: {
       status: '',
       collapseShow: true,
@@ -22,6 +26,9 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     // auditedMedia: Media[] = [];
   }),
   actions: {
+    updateAuditedStatus(key, item) {
+      this.auditedCreative[key] = item
+    },
     updateAuditedStatusLink(item) {
       this.auditedLink.status = item
     },

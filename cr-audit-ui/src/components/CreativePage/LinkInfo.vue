@@ -11,12 +11,13 @@ import PencilSquareIcon from '@/components/icons/PencilSquareIcon.vue'
 import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
 import { formatOptions } from '@/lib/utils/formatOptions'
 import * as bootstrap from 'bootstrap'
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, watchEffect } from 'vue'
 
-defineProps({
+const props = defineProps({
   creative: Object,
 })
 
+const currentCreative = ref({})
 const linkOptions = ref(LINK_OPTIONS)
 const collapseRef = ref(null)
 
@@ -30,6 +31,11 @@ const auditedLink = computed(() => ({
   comment: auditedCreativesStore.auditedLink.comment,
   options: auditedCreativesStore.auditedLink.options,
 }))
+
+watchEffect(() => {
+  currentCreative.value = props.creative
+  auditedCreativesStore.updateAuditedStatus('id', currentCreative.value.id)
+})
 
 function handleCheckboxChange(event) {
   errorStore.setError('')

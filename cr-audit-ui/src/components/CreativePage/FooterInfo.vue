@@ -17,10 +17,10 @@ const props = defineProps({
   },
 })
 
+const currentCreative = ref({})
 const medias = ref([])
 
 const modalStore = useModalStore()
-
 const auditedCreativesStore = useAuditedCreativesStore()
 const mediaSlideStore = useMediaSlideStore()
 
@@ -31,22 +31,44 @@ const currentSlide = computed(() => mediaSlideStore.currentSlide)
 function handleCheck() {
   // Всё проверено
   if (
-    auditedLink.value.status === 'Принято' &&
-    auditedMedia.value.every(item => item.status === 'Принято')
+    auditedLink.value.status.length > 0 &&
+    auditedMedia.value.every(item => item.status.length > 0)
   ) {
     modalStore.updateModalStatus('verified')
+    if (
+      auditedLink.value.status === 'Принято' &&
+      auditedMedia.value.every(item => item.status === 'Принято')
+    ) {
+      auditedCreativesStore.updateAuditedStatus('status', 'Согласовано')
+    } else if (
+      auditedLink.value.status === 'Отклонено' &&
+      auditedMedia.value.every(item => item.status === 'Отклонено')
+    ) {
+      auditedCreativesStore.updateAuditedStatus('status', 'Отклонено')
+    } else if (
+      (auditedLink.value.status === 'Принято' &&
+        auditedMedia.value.some(item => item.status === 'Отклонено')) ||
+      auditedLink.value.status === 'Отклонено'
+    ) {
+      auditedCreativesStore.updateAuditedStatus(
+        'status',
+        'Частично согласовано',
+      )
+    }
   }
   // Креатив не проверен
-  if (auditedMedia.value.some(item => item.status !== 'Принято')) {
+  if (auditedMedia.value.some(item => item.status.length === 0)) {
     modalStore.updateModalStatus('unverifiedCreative')
   }
   // Ссылка не проверена
-  if (auditedLink.value.status !== 'Принято') {
+  if (auditedLink.value.status.length === 0) {
     modalStore.updateModalStatus('unverifiedLink')
   }
 }
 
 watchEffect(() => {
+  currentCreative.value = props.creative
+
   if (props.creative.status === 'На проверке') {
     medias.value = auditedMedia.value
   } else {

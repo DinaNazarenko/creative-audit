@@ -1,16 +1,26 @@
 <script setup>
+import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
+import { useErrorStore } from '@/stores/errorInfo'
+import { useSuccessStore } from '@/stores/successInfo'
 import { useModalStore } from '@/stores/modal'
 import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import { MODAL_TEXTS } from '@/lib/constants'
 import { useRouter } from 'vue-router'
 import { ref, watchEffect, computed } from 'vue'
+import axios from 'axios'
 
 const modalTexts = ref({})
 
 const modalStore = useModalStore()
+const errorStore = useErrorStore()
+const successStore = useSuccessStore()
+const auditedCreativesStore = useAuditedCreativesStore()
 
 const modalStatus = computed(() => modalStore.modalStatus)
+const auditedCreative = computed(() => auditedCreativesStore.auditedCreative)
+// const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
+// const auditedLink = computed(() => auditedCreativesStore.auditedLink)
 
 const router = useRouter()
 
@@ -18,23 +28,41 @@ function goToHome() {
   router.push({ name: 'home' })
 }
 
+const getCreativeStatus = async () => {
+  try {
+    await axios.patch(
+      `https://596b6b27365a5903.mokky.dev/creatives/${auditedCreative.value.id}`,
+      { status: auditedCreative.value.status },
+    )
+    goToHome()
+    setTimeout(() => {
+      successStore.setSuccess('Креативы успешно отправлены')
+    }, 1000)
+    setTimeout(() => {
+      successStore.setSuccess('')
+    }, 5000)
+  } catch (error) {
+    setTimeout(() => {
+      errorStore.setError('Ошибка отправки креативов')
+    }, 1000)
+    setTimeout(() => {
+      errorStore.setError('')
+    }, 5000)
+    console.error('Ошибка отправки креативов:', error.message)
+  }
+}
+
 watchEffect(() => {
-  if (modalStatus.value === 'verified') {
-    modalTexts.value = MODAL_TEXTS[0]
-  }
-  if (modalStatus.value === 'unverifiedCreative') {
-    modalTexts.value = MODAL_TEXTS[1]
-  }
-  if (modalStatus.value === 'unverifiedLink') {
-    modalTexts.value = MODAL_TEXTS[2]
-  }
-  if (modalStatus.value === 'auditCancelled') {
-    modalTexts.value = MODAL_TEXTS[3]
-  }
-  if (modalStatus.value === 'exit') {
-    modalTexts.value = MODAL_TEXTS[4]
-  }
-})
+  const statusMap = {
+    verified: MODAL_TEXTS[0],
+    unverifiedCreative: MODAL_TEXTS[1],
+    unverifiedLink: MODAL_TEXTS[2],
+    auditCancelled: MODAL_TEXTS[3],
+    exit: MODAL_TEXTS[4]
+  };
+  
+  modalTexts.value = statusMap[modalStatus.value]
+});
 </script>
 <template>
   <div
@@ -50,7 +78,7 @@ watchEffect(() => {
       <div class="modal-content modal_custom">
         <div class="modal-header">
           <h5 class="modal-title" id="staticBackdropLabel">
-            {{ modalTexts.title }}
+            {{ modalTexts?.title }}
           </h5>
           <button
             type="button"
@@ -59,24 +87,18 @@ watchEffect(() => {
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body body_custom">{{ modalTexts.bodyText }}</div>
+        <div class="modal-body body_custom">{{ modalTexts?.bodyText }}</div>
         <div class="modal-footer footer_custom">
-          <ButtonOutline
-            v-if="modalStatus === 'verified'"
-            :title="modalTexts.buttonLeftText"
+          <ButtonOutline v-if="modalStatus === 'verified' || modalStatus === 'exit'"
+            :title="modalTexts?.buttonLeftText"
             btn-outline="btn-outline-secondary"
             :modal-status="modalStatus"
-          />
-          <ButtonOutline
-            v-if="modalStatus === 'exit'"
-            :title="modalTexts.buttonLeftText"
-            btn-outline="btn-outline-secondary"
-            :handle="goToHome"
-            :modal-status="modalStatus"
+            :handle="modalStatus === 'exit' ? goToHome : undefined"
           />
           <ButtonChange
-            :title="modalTexts.buttonRightText"
+            :title="modalTexts?.buttonRightText"
             :modal-status="modalStatus"
+            :handle="modalStatus === 'verified' ? getCreativeStatus : undefined"
           />
         </div>
       </div>

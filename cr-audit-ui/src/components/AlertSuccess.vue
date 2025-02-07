@@ -23,7 +23,6 @@ watch(storedEmail, () => {
     successStore.setSuccess('')
   }
 })
-
 watch(storedPassword, () => {
   if (successInfo.value) {
     successStore.setSuccess('')
@@ -41,8 +40,9 @@ watch(storedPassword, () => {
       </symbol>
     </svg>
     <div
-      v-if="successInfo && storedEmail && !storedPassword"
-      class="alert alert-success d-flex align-items-center alert_reset_custom"
+      v-if="successInfo"
+      class="alert alert-success d-flex align-items-center"
+      :class="[storedEmail && !storedPassword ? alert_reset_custom : alert_create_custom]"
       role="alert"
     >
       <svg
@@ -52,25 +52,13 @@ watch(storedPassword, () => {
       >
         <use xlink:href="#check-circle-fill" />
       </svg>
-      <div>
+      <div v-if="storedEmail && !storedPassword">
         Отправили вам письмо с ссылкой для восстановления пароля. <br />Если
         письма нет на почте <strong>{{ storedEmail }}</strong
         >, загляните в папку "Спам".
+      </div><div v-else>
+        {{ successInfo }}
       </div>
-    </div>
-    <div
-      v-if="successInfo && storedPassword"
-      class="alert alert-success d-flex align-items-center alert_create_custom"
-      role="alert"
-    >
-      <svg
-        class="bi flex-shrink-0 me-2 icon_custom"
-        role="img"
-        aria-label="Success:"
-      >
-        <use xlink:href="#check-circle-fill" />
-      </svg>
-      <div>{{ successInfo }}</div>
     </div>
   </div>
 </template>
@@ -81,14 +69,12 @@ watch(storedPassword, () => {
   width: 16px;
 }
 .alert_reset_custom {
-  height: 82px;
-  width: 642px;
+  width: 640px;
   padding: 16px;
   margin-bottom: 32px !important;
 }
 .alert_create_custom {
-  height: 58px;
-  width: 402px;
+  max-width: 402px;
   padding: 16px;
   margin-bottom: 32px !important;
 }

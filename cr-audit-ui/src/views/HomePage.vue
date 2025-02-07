@@ -6,6 +6,8 @@ import SearchIcon from '@/components/icons/SearchIcon.vue'
 import FooterForm from '@/components/HomePage/FooterForm.vue'
 import FilterForm from '@/components/HomePage/FilterForm.vue'
 import VueDatePicker from '@vuepic/vue-datepicker'
+import AlertDanger from '@/components/AlertDanger.vue'
+import AlertSuccess from '@/components/AlertSuccess.vue'
 import { STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { useTableFiltersStore } from '@/stores/tableFilters'
@@ -119,7 +121,7 @@ const getCreatives = async () => {
         item.dateAudit,
         'DD HH',
       ),
-      amount: item.media ? item.media.length : null
+      amount: item.media ? item.media.length : null,
     }))
 
     accounts.value = Array.from(new Set(data.map(item => item.account)))
@@ -142,12 +144,12 @@ onMounted(async () => {
 
 watch(filters, getCreatives, pendingCreativesCount)
 
-const handleDate = (modelData) => {
+const handleDate = modelData => {
   if (!modelData) {
-    date.value = [];
+    date.value = []
     tableFiltersStore.updateDateRange('dateRange', date.value)
   } else {
-    date.value = modelData;
+    date.value = modelData
     tableFiltersStore.updateDateRange('dateRange', date.value)
   }
 }
@@ -249,8 +251,12 @@ const handleExport = () => {
           :is-export="isExport"
           :isLoading="isLoading"
         />
+        <div class="alert_custom">
+          <AlertSuccess />
+          <AlertDanger />
+        </div>
       </div>
-      <FooterForm :isLoading="isLoading"/>
+      <FooterForm :isLoading="isLoading" />
     </div>
   </div>
 </template>
@@ -303,5 +309,11 @@ const handleExport = () => {
 .search_custom:focus {
   box-shadow: var(--focus-box-shadow) !important;
   border-color: var(--custom-color) !important;
+}
+.alert_custom {
+  position: absolute;
+  bottom: 100px;
+  right: 30px;
+  z-index: 1030;
 }
 </style>

@@ -5,6 +5,7 @@ import LinkInfo from '@/components/CreativePage/LinkInfo.vue'
 import CreativeInfo from '@/components/CreativePage/CreativeInfo.vue'
 import FooterInfo from '@/components/CreativePage/FooterInfo.vue'
 import AlertDanger from '@/components/AlertDanger.vue'
+import AlertSuccess from '@/components/AlertSuccess.vue'
 import StaticBackdropModal from '@/components/common/StaticBackdropModal.vue'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { useModalStore } from '@/stores/modal'
@@ -79,6 +80,7 @@ watch(getCreative, pendingCreativesCount)
           <LinkInfo :creative="creative" />
           <CreativeInfo :creative="creative" />
           <div class="alert_custom">
+            <AlertSuccess />
             <AlertDanger />
           </div>
         </div>
