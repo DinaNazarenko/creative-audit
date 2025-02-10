@@ -17,7 +17,6 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     },
     auditedLink: {
       status: '',
-      collapseShow: true,
       userActionStatus: '',
       comment: '',
       options: [],
@@ -45,9 +44,6 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     },
     updateUserCommentLink(comment) {
       this.auditedLink.comment = comment
-    },
-    updateCollapseShowLink(item) {
-      this.auditedLink.collapseShow = item
     },
     initializeAuditedMedia(array) {
       this.auditedMedia = array

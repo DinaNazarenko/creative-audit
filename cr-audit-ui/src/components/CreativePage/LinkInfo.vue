@@ -5,6 +5,7 @@ import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import { LINK_OPTIONS } from '@/lib/constants'
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
+import { useCollapseShowStore } from '@/stores/collapseShow'
 import { useErrorStore } from '@/stores/errorInfo'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import PencilSquareIcon from '@/components/icons/PencilSquareIcon.vue'
@@ -22,15 +23,17 @@ const linkOptions = ref(LINK_OPTIONS)
 const collapseRef = ref(null)
 
 const auditedCreativesStore = useAuditedCreativesStore()
+const collapseShowStore = useCollapseShowStore()
 const errorStore = useErrorStore()
 
 const auditedLink = computed(() => ({
   status: auditedCreativesStore.auditedLink.status,
   userActionStatus: auditedCreativesStore.auditedLink.userActionStatus,
-  collapseShow: auditedCreativesStore.auditedLink.collapseShow,
   comment: auditedCreativesStore.auditedLink.comment,
   options: auditedCreativesStore.auditedLink.options,
 }))
+
+const collapseShowLink = computed(() => collapseShowStore.collapseShow)
 
 watchEffect(() => {
   currentCreative.value = props.creative
@@ -51,7 +54,7 @@ function handleCheckboxChange(event) {
 function handleAccept() {
   if (auditedLink.value.options.length === linkOptions.value.length) {
     auditedCreativesStore.updateAuditedStatusLink('Принято')
-    auditedCreativesStore.updateCollapseShowLink(false)
+    collapseShowStore.updateCollapseShow(false)
     auditedCreativesStore.updateUserCommentLink('')
   } else {
     errorStore.setError('Не все обязательные поля выбраны')
@@ -86,7 +89,7 @@ onMounted(() => {
   })
 
   watch(
-    () => auditedLink.value.collapseShow,
+    () => collapseShowLink.value,
     newValue => {
       if (newValue) {
         collapseInstance.show()
@@ -98,10 +101,10 @@ onMounted(() => {
 })
 
 function toggleCollapseShow() {
-  if (auditedLink.value.collapseShow) {
-    auditedCreativesStore.updateCollapseShowLink(false)
+  if (collapseShowLink.value) {
+    collapseShowStore.updateCollapseShow(false)
   } else {
-    auditedCreativesStore.updateCollapseShowLink(true)
+    collapseShowStore.updateCollapseShow(true)
   }
 }
 </script>
@@ -122,7 +125,7 @@ function toggleCollapseShow() {
         <button
           class="accordion-button rounded-0 shadow-none bg-white p-0 d-flex justify-content-between align-items-center"
           type="button"
-          :aria-expanded="auditedLink.collapseShow"
+          :aria-expanded="collapseShowLink"
           aria-controls="panelsStayOpen-collapseOne"
         >
           <div>
@@ -142,8 +145,8 @@ function toggleCollapseShow() {
             </p>
           </div>
           <button class="btn p-0 border-0" @click="toggleCollapseShow">
-            <PencilSquareIcon v-if="!auditedLink.collapseShow" />
-            <ChevronUpIcon v-if="auditedLink.collapseShow" />
+            <PencilSquareIcon v-if="!collapseShowLink" />
+            <ChevronUpIcon v-if="collapseShowLink" />
           </button>
         </button>
       </div>

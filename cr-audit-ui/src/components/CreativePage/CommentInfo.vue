@@ -1,5 +1,6 @@
 <script setup>
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
+import { useCollapseShowStore } from '@/stores/collapseShow'
 import CheckBox from '@/components/common/CheckBox.vue'
 import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
@@ -39,10 +40,10 @@ const comment = ref({
 })
 
 const auditedCreativesStore = useAuditedCreativesStore()
+const collapseShowStore = useCollapseShowStore()
 
 const auditedLink = computed(() => ({
   status: auditedCreativesStore.auditedLink.status,
-  collapseShow: auditedCreativesStore.auditedLink.collapseShow,
   userActionStatus: auditedCreativesStore.auditedLink.userActionStatus,
   comment: auditedCreativesStore.auditedLink.comment,
   options: auditedCreativesStore.auditedLink.options,
@@ -100,7 +101,7 @@ function handleSaveLink() {
   // Сохраняем изменения в store
   auditedCreativesStore.updateUserCommentLink(comment.value.link)
   auditedCreativesStore.updateActionStatusLink('saved')
-  auditedCreativesStore.updateCollapseShowLink(false)
+  collapseShowStore.updateCollapseShow(false)
 
   // Обновляем исходное значение для следующего редактирования
   originalComment.value.link = comment.value.link
@@ -151,72 +152,75 @@ function handleCheckboxChangeMedia(event) {
 </script>
 <template>
   <div>
-  <div
-    v-if="linkInfo && auditedLink.status === 'Отклонено'"
-    class="d-flex flex-column div_custom"
-  >
-    <h5 class="option_custom">Причина отклонения:</h5>
-    <CheckBox
-      :status="auditedLink.userActionStatus"
-      :handle-change="handleCheckboxChangeLink"
-    />
-    <div>
-      <textarea
-        v-model="comment.link"
-        class="form-control rounded-1 textarea_custom"
-        :class="{ 'is-invalid': !comment.link }"
-        rows="5"
-        id="validationTextarea"
-        :disabled="
-          auditedLink.userActionStatus === 'saved' ||
-          auditedLink.userActionStatus === 'rejecting'
-        "
-      ></textarea>
-      <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
-    </div>
-    <div v-if="auditedLink.userActionStatus !== 'saved'" class="mt-4 ms-auto">
-      <ButtonOutline
-        title="Отмена"
-        btn-outline="btn-outline-secondary"
-        :handle="handleRevokeLink"
+    <div
+      v-if="linkInfo && auditedLink.status === 'Отклонено'"
+      class="d-flex flex-column div_custom"
+    >
+      <h5 class="option_custom">Причина отклонения:</h5>
+      <CheckBox
+        :status="auditedLink.userActionStatus"
+        :handle-change="handleCheckboxChangeLink"
       />
-      <ButtonChange title="Сохранить" :handle="handleSaveLink" />
+      <div>
+        <textarea
+          v-model="comment.link"
+          class="form-control rounded-1 textarea_custom"
+          :class="{ 'is-invalid': !comment.link }"
+          rows="5"
+          id="validationTextarea"
+          :disabled="
+            auditedLink.userActionStatus === 'saved' ||
+            auditedLink.userActionStatus === 'rejecting'
+          "
+        ></textarea>
+        <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
+      </div>
+      <div v-if="auditedLink.userActionStatus !== 'saved'" class="mt-4 ms-auto">
+        <ButtonOutline
+          title="Отмена"
+          btn-outline="btn-outline-secondary"
+          :handle="handleRevokeLink"
+        />
+        <ButtonChange title="Сохранить" :handle="handleSaveLink" />
+      </div>
     </div>
-  </div>
 
-  <div
-    v-if="mediaInfo && currentMedia.status === 'Отклонено'"
-    class="d-flex flex-column div_custom"
-  >
-    <h5 class="option_custom">Причина отклонения:</h5>
-    <CheckBox
-      :status="currentMedia.userActionStatus"
-      :handle-change="handleCheckboxChangeMedia"
-    />
-    <div>
-      <textarea
-        v-model="comment.media"
-        class="form-control rounded-1 textarea_custom"
-        :class="{ 'is-invalid': !comment.media }"
-        rows="5"
-        id="validationTextarea"
-        :disabled="
-          currentMedia.userActionStatus === 'saved' ||
-          currentMedia.userActionStatus === 'rejecting'
-        "
-      ></textarea>
-      <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
-    </div>
-    <div v-if="currentMedia.userActionStatus !== 'saved'" class="mt-4 ms-auto">
-      <ButtonOutline
-        title="Отмена"
-        btn-outline="btn-outline-secondary"
-        :handle="handleRevokeMedia"
+    <div
+      v-if="mediaInfo && currentMedia.status === 'Отклонено'"
+      class="d-flex flex-column div_custom"
+    >
+      <h5 class="option_custom">Причина отклонения:</h5>
+      <CheckBox
+        :status="currentMedia.userActionStatus"
+        :handle-change="handleCheckboxChangeMedia"
       />
-      <ButtonChange title="Сохранить" :handle="handleSaveMedia" />
+      <div>
+        <textarea
+          v-model="comment.media"
+          class="form-control rounded-1 textarea_custom"
+          :class="{ 'is-invalid': !comment.media }"
+          rows="5"
+          id="validationTextarea"
+          :disabled="
+            currentMedia.userActionStatus === 'saved' ||
+            currentMedia.userActionStatus === 'rejecting'
+          "
+        ></textarea>
+        <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
+      </div>
+      <div
+        v-if="currentMedia.userActionStatus !== 'saved'"
+        class="mt-4 ms-auto"
+      >
+        <ButtonOutline
+          title="Отмена"
+          btn-outline="btn-outline-secondary"
+          :handle="handleRevokeMedia"
+        />
+        <ButtonChange title="Сохранить" :handle="handleSaveMedia" />
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <style scoped>
