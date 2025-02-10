@@ -1,5 +1,15 @@
 import { intervalToDuration, differenceInDays } from 'date-fns'
 
+// Сохранение формата ISO 8601 с часовым поясом
+export const getTimezoneOffset = () => {
+  const offset = new Date().getTimezoneOffset();
+  const hours = Math.floor(Math.abs(offset) / 60);
+  const minutes = Math.abs(offset) % 60;
+  return (offset <= 0 ? '+' : '-') + 
+         String(hours).padStart(2, '0') + ':' + 
+         String(minutes).padStart(2, '0');
+};
+
 // Функция для форматирования дат к виду DD.MM.YYYY или DD.MM.YYYY HH:mm:ss
 export function formatDate(date, dateFormat) {
   if (!date) return '—'

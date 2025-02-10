@@ -6,6 +6,7 @@ import { useModalStore } from '@/stores/modal'
 import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import { MODAL_TEXTS } from '@/lib/constants'
+import { getTimezoneOffset } from '@/lib/utils/FormattingDates'
 import { useRouter } from 'vue-router'
 import { ref, watchEffect, computed } from 'vue'
 import axios from 'axios'
@@ -19,8 +20,8 @@ const auditedCreativesStore = useAuditedCreativesStore()
 
 const modalStatus = computed(() => modalStore.modalStatus)
 const auditedCreative = computed(() => auditedCreativesStore.auditedCreative)
-// const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
-// const auditedLink = computed(() => auditedCreativesStore.auditedLink)
+const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
+const auditedLink = computed(() => auditedCreativesStore.auditedLink)
 
 const router = useRouter()
 
@@ -30,9 +31,31 @@ function goToHome() {
 
 const getCreativeStatus = async () => {
   try {
+    const { data } = await axios.get(
+      `https://596b6b27365a5903.mokky.dev/creatives/${auditedCreative.value.id}`,
+    )
+
+    const updatedMedia = auditedMedia.value.map((item, index) => ({
+      ...data.media[index],
+      status: item.status,
+      comment: item.comment,
+      options: item.options,
+    }))
+
+    const payload = {
+      status: auditedCreative.value.status,
+      dateAudit: new Date().toISOString().replace('Z', getTimezoneOffset()),
+      linkData: {
+        status: auditedLink.value.status,
+        comment: auditedLink.value.comment,
+        options: auditedLink.value.options,
+      },
+      media: updatedMedia,
+    }
+
     await axios.patch(
       `https://596b6b27365a5903.mokky.dev/creatives/${auditedCreative.value.id}`,
-      { status: auditedCreative.value.status },
+      payload,
     )
     goToHome()
     setTimeout(() => {
@@ -58,11 +81,11 @@ watchEffect(() => {
     unverifiedCreative: MODAL_TEXTS[1],
     unverifiedLink: MODAL_TEXTS[2],
     auditCancelled: MODAL_TEXTS[3],
-    exit: MODAL_TEXTS[4]
-  };
-  
+    exit: MODAL_TEXTS[4],
+  }
+
   modalTexts.value = statusMap[modalStatus.value]
-});
+})
 </script>
 <template>
   <div
@@ -89,7 +112,8 @@ watchEffect(() => {
         </div>
         <div class="modal-body body_custom">{{ modalTexts?.bodyText }}</div>
         <div class="modal-footer footer_custom">
-          <ButtonOutline v-if="modalStatus === 'verified' || modalStatus === 'exit'"
+          <ButtonOutline
+            v-if="modalStatus === 'verified' || modalStatus === 'exit'"
             :title="modalTexts?.buttonLeftText"
             btn-outline="btn-outline-secondary"
             :modal-status="modalStatus"
