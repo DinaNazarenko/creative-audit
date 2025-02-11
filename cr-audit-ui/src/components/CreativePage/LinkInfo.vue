@@ -26,19 +26,20 @@ const auditedCreativesStore = useAuditedCreativesStore()
 const collapseShowStore = useCollapseShowStore()
 const errorStore = useErrorStore()
 
-const auditedLink = computed(() => ({
-  status: auditedCreativesStore.auditedLink.status,
-  userActionStatus: auditedCreativesStore.auditedLink.userActionStatus,
-  comment: auditedCreativesStore.auditedLink.comment,
-  options: auditedCreativesStore.auditedLink.options,
-}))
-
 const collapseShowLink = computed(() => collapseShowStore.collapseShow)
 
 watchEffect(() => {
   currentCreative.value = props.creative
   auditedCreativesStore.updateAuditedStatus('id', currentCreative.value.id)
+  auditedCreativesStore.updateAuditedStatus('status', currentCreative.value.status)
 })
+
+const auditedLink = computed(() => ({
+  ...currentCreative.value.linkData,
+  ...(currentCreative.value.status === 'На проверке'
+    ? auditedCreativesStore.auditedLink
+    : {})
+}))
 
 function handleCheckboxChange(event) {
   errorStore.setError('')
@@ -115,8 +116,8 @@ function toggleCollapseShow() {
       'rounded-3': true,
       'p-3': true,
       accordion: true,
-      border_success_custom: auditedLink.status === 'Принято',
-      border_danger_custom: auditedLink.status === 'Отклонено',
+      border_success_custom: auditedLink?.status === 'Принято',
+      border_danger_custom: auditedLink?.status === 'Отклонено',
     }"
     id="accordionPanelsStayOpenExample"
   >
@@ -131,7 +132,7 @@ function toggleCollapseShow() {
           <div>
             <div class="d-flex align-items-center">
               <h4 class="mb-1 me-2">Проверка ссылки</h4>
-              <CreativeStatus :status="auditedLink.status" />
+              <CreativeStatus :status="auditedLink?.status" />
             </div>
             <p class="m-0">
               <a
@@ -168,8 +169,8 @@ function toggleCollapseShow() {
                 :value="item"
                 :id="item.title"
                 @change="handleCheckboxChange"
-                :checked="auditedLink.options.includes(item.title)"
-                :disabled="auditedLink.status.length > 0"
+                :checked="auditedLink.options?.includes(item.title)"
+                :disabled="auditedLink.status?.length > 0 || currentCreative.status === 'Отменено'"
               />
               <label class="form-check-label" for="firstCheckbox"
                 >{{ item.title }}<code> * </code>
@@ -184,9 +185,9 @@ function toggleCollapseShow() {
             </div>
           </div>
           <div class="mt-4">
-            <CommentInfo :link-info="true"/>
+            <CommentInfo :link-info="true" :current-audited-link="auditedLink"/>
           </div>
-          <div v-if="auditedLink.status.length === 0" class="mt-4">
+          <div v-if="auditedLink.status?.length === 0 && currentCreative.status !== 'Отменено'" class="mt-4">
             <ButtonOutline
               title="Принять"
               btn-outline="btn-outline-success"
@@ -201,9 +202,9 @@ function toggleCollapseShow() {
           <div
             class="mt-4"
             v-if="
-              auditedLink.status.length > 0 &&
-              (auditedLink.userActionStatus.length === 0 ||
-                auditedLink.userActionStatus === 'saved')
+              auditedLink.status?.length > 0 &&
+              (auditedLink.userActionStatus?.length === 0 ||
+                auditedLink?.userActionStatus === 'saved')
             "
           >
             <ButtonChange

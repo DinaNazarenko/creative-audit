@@ -25,9 +25,19 @@ const props = defineProps({
       options: [],
     }),
   },
+  currentAuditedLink: {
+    type: Object,
+    default: () => ({
+      status: '',
+      userActionStatus: '',
+      comment: '',
+      options: [],
+    }),
+  },
 })
 
 const currentMedia = ref({})
+const currentLink = ref({})
 
 const originalComment = ref({
   link: '',
@@ -41,13 +51,7 @@ const comment = ref({
 
 const auditedCreativesStore = useAuditedCreativesStore()
 const collapseShowStore = useCollapseShowStore()
-
-const auditedLink = computed(() => ({
-  status: auditedCreativesStore.auditedLink.status,
-  userActionStatus: auditedCreativesStore.auditedLink.userActionStatus,
-  comment: auditedCreativesStore.auditedLink.comment,
-  options: auditedCreativesStore.auditedLink.options,
-}))
+const auditedCreative = computed(() => auditedCreativesStore.auditedCreative)
 
 watchEffect(() => {
   currentMedia.value = props.currentAuditedMedia || {
@@ -57,7 +61,20 @@ watchEffect(() => {
     comment: '',
     options: [],
   }
+  currentLink.value = props.currentAuditedLink || {
+    status: '',
+    userActionStatus: '',
+    comment: '',
+    options: [],
+  }
 })
+
+const auditedLink = computed(() => ({
+  ...currentLink.value,
+  ...(auditedCreative.value.status === 'На проверке'
+    ? auditedCreativesStore.auditedLink
+    : {}),
+}))
 
 // Загружаем исходное значение комментария для link
 watch(
@@ -153,29 +170,44 @@ function handleCheckboxChangeMedia(event) {
 <template>
   <div>
     <div
-      v-if="linkInfo && auditedLink.status === 'Отклонено'"
+      v-if="linkInfo && auditedLink?.status === 'Отклонено'"
       class="d-flex flex-column div_custom"
     >
-      <h5 class="option_custom">Причина отклонения:</h5>
+      <h5
+        v-if="auditedCreative?.status === 'На проверке'"
+        class="option_custom"
+      >
+        Причина отклонения:
+      </h5>
       <CheckBox
-        :status="auditedLink.userActionStatus"
+        :status="auditedLink?.userActionStatus"
         :handle-change="handleCheckboxChangeLink"
       />
       <div>
         <textarea
           v-model="comment.link"
-          class="form-control rounded-1 textarea_custom"
-          :class="{ 'is-invalid': !comment.link }"
+          class="form-control rounded-1 overflow-auto textarea_custom"
+          :class="{
+            'is-invalid': !comment.link,
+            textarea_red: auditedCreative?.status !== 'На проверке',
+          }"
           rows="5"
           id="validationTextarea"
           :disabled="
-            auditedLink.userActionStatus === 'saved' ||
-            auditedLink.userActionStatus === 'rejecting'
+            auditedLink?.userActionStatus === 'saved' ||
+            auditedLink?.userActionStatus === 'rejecting' ||
+            auditedCreative?.status !== 'На проверке'
           "
         ></textarea>
         <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
       </div>
-      <div v-if="auditedLink.userActionStatus !== 'saved'" class="mt-4 ms-auto">
+      <div
+        v-if="
+          auditedLink?.userActionStatus !== 'saved' &&
+          auditedCreative?.status === 'На проверке'
+        "
+        class="mt-4 ms-auto"
+      >
         <ButtonOutline
           title="Отмена"
           btn-outline="btn-outline-secondary"
@@ -247,5 +279,14 @@ input:focus {
 .textarea_custom:active {
   outline: none;
   box-shadow: none;
+}
+.textarea_custom {
+  scrollbar-width: thin;
+}
+.textarea_red {
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+  color: #842029;
+  scrollbar-width: thin;
 }
 </style>
