@@ -128,7 +128,7 @@ const nextPage = () => {
       </button>
     </div>
     <div>
-      <ButtonChange
+      <ButtonChange v-if="currentCreative?.status === 'На проверке'"
         title="Отправить"
         :should-have-modal="true"
         @click="handleCheck"

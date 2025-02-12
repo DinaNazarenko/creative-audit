@@ -4,6 +4,7 @@ import { useCollapseShowStore } from '@/stores/collapseShow'
 import CheckBox from '@/components/common/CheckBox.vue'
 import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
+// import CopyIcon from '@/components/icons/CopyIcon.vue'
 import { ref, computed, watch, watchEffect } from 'vue'
 
 const props = defineProps({
@@ -218,30 +219,42 @@ function handleCheckboxChangeMedia(event) {
     </div>
 
     <div
-      v-if="mediaInfo && currentMedia.status === 'Отклонено'"
+      v-if="mediaInfo && currentMedia?.status === 'Отклонено'"
       class="d-flex flex-column div_custom"
     >
-      <h5 class="option_custom">Причина отклонения:</h5>
+      <h5
+        v-if="auditedCreative?.status === 'На проверке'"
+        class="option_custom"
+      >
+        Причина отклонения:
+      </h5>
       <CheckBox
-        :status="currentMedia.userActionStatus"
+        :status="currentMedia?.userActionStatus"
         :handle-change="handleCheckboxChangeMedia"
       />
       <div>
         <textarea
           v-model="comment.media"
-          class="form-control rounded-1 textarea_custom"
-          :class="{ 'is-invalid': !comment.media }"
+          class="form-control rounded-1 overflow-auto textarea_custom"
+          :class="{
+            'is-invalid': !comment.media,
+            textarea_red: auditedCreative?.status !== 'На проверке',
+          }"
           rows="5"
           id="validationTextarea"
           :disabled="
-            currentMedia.userActionStatus === 'saved' ||
-            currentMedia.userActionStatus === 'rejecting'
+            currentMedia?.userActionStatus === 'saved' ||
+            currentMedia?.userActionStatus === 'rejecting' ||
+            auditedCreative?.status !== 'На проверке'
           "
         ></textarea>
         <div class="invalid-feedback">Пожалуйста заполните комментарий</div>
       </div>
       <div
-        v-if="currentMedia.userActionStatus !== 'saved'"
+        v-if="
+          currentMedia?.userActionStatus !== 'saved' &&
+          auditedCreative?.status === 'На проверке'
+        "
         class="mt-4 ms-auto"
       >
         <ButtonOutline

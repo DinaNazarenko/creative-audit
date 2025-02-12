@@ -24,9 +24,11 @@ const props = defineProps({
 })
 
 const medias = ref([])
+const currentCreative = ref({})
 
 watchEffect(() => {
   medias.value = props.creative?.media || []
+  currentCreative.value = props.creative
 })
 
 const creativeOptions = ref(CREATIVE_OPTIONS)
@@ -38,7 +40,7 @@ const auditedCreativesStore = useAuditedCreativesStore()
 const errorStore = useErrorStore()
 const mediaSlideStore = useMediaSlideStore()
 
-const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
+// const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
 
 const currentSlide = computed(() => mediaSlideStore.currentSlide)
 
@@ -46,6 +48,13 @@ const currentMedia = computed(() => {
   const index = Number(currentSlide.value)
   return medias.value?.[index]
 })
+
+const auditedMedia = computed(() => ({
+  ...currentCreative.value.media,
+  ...(currentCreative.value.status === 'На проверке'
+    ? auditedCreativesStore.auditedMedia
+    : {}),
+}))
 
 const currentAuditedMedia = computed(() => {
   const index = Number(currentSlide.value)
@@ -223,8 +232,11 @@ watchEffect(() => {
             :value="option"
             :id="option.title"
             @change="handleCheckboxChange"
-            :checked="currentAuditedMedia?.options.includes(option.title)"
-            :disabled="currentAuditedMedia?.status.length > 0"
+            :checked="currentAuditedMedia?.options?.includes(option.title)"
+            :disabled="
+              currentAuditedMedia?.status?.length > 0 ||
+              currentCreative.status === 'Отменено'
+            "
           />
           <label class="form-check-label" for="firstCheckbox"
             >{{ option?.title }}<code> * </code>
@@ -239,9 +251,18 @@ watchEffect(() => {
         </div>
       </div>
       <div class="mt-4">
-        <CommentInfo :media-info="true" :current-audited-media="currentAuditedMedia"/>
+        <CommentInfo
+          :media-info="true"
+          :current-audited-media="currentAuditedMedia"
+        />
       </div>
-      <div v-if="currentAuditedMedia?.status.length === 0" class="mt-4">
+      <div
+        v-if="
+          currentAuditedMedia?.status?.length === 0 &&
+          currentCreative.status !== 'Отменено'
+        "
+        class="mt-4"
+      >
         <ButtonOutline
           title="Принять"
           btn-outline="btn-outline-success"
@@ -255,8 +276,8 @@ watchEffect(() => {
       </div>
       <div
         v-if="
-          currentAuditedMedia?.status.length > 0 &&
-          (currentAuditedMedia?.userActionStatus.length === 0 ||
+          currentAuditedMedia?.status?.length > 0 &&
+          (currentAuditedMedia?.userActionStatus?.length === 0 ||
             currentAuditedMedia?.userActionStatus === 'saved')
         "
         class="mt-4"

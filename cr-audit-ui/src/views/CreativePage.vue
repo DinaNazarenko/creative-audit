@@ -9,6 +9,7 @@ import AlertSuccess from '@/components/AlertSuccess.vue'
 import StaticBackdropModal from '@/components/common/StaticBackdropModal.vue'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { useModalStore } from '@/stores/modal'
+import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 
@@ -16,6 +17,7 @@ const pendingCreativesCount = ref(0)
 const isLoading = ref(true)
 
 const creative = ref([])
+const router = useRouter()
 
 const modalStore = useModalStore()
 
@@ -41,7 +43,10 @@ const getCreative = async () => {
 }
 
 function handleCheck() {
-  modalStore.updateModalStatus('exit')
+  if (creative.value.status === 'На проверке') {
+    modalStore.updateModalStatus('exit')
+  }
+  router.push({ name: 'home' })
 }
 
 onMounted(async () => {
@@ -52,15 +57,22 @@ watch(getCreative, pendingCreativesCount)
 </script>
 <template>
   <div v-auto-animate class="d-flex">
-    <SideBar :count="pendingCreativesCount" />
+    <SideBar :count="pendingCreativesCount" :creative="creative" />
     <div class="d-flex flex-column">
       <div class="container_custom">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li
               class="breadcrumb-item text_custom"
-              data-bs-toggle="modal"
-              data-bs-target="#staticBackdrop"
+              role="button"
+              :data-bs-toggle="
+                creative.status === 'На проверке' ? 'modal' : undefined
+              "
+              :data-bs-target="
+                creative.status === 'На проверке'
+                  ? '#staticBackdrop'
+                  : undefined
+              "
               @click="handleCheck"
             >
               Креативы
