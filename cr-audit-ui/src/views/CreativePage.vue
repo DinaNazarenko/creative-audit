@@ -13,7 +13,6 @@ import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 
-const pendingCreativesCount = ref(0)
 const isLoading = ref(true)
 
 const creative = ref([])
@@ -45,19 +44,18 @@ const getCreative = async () => {
 function handleCheck() {
   if (creative.value.status === 'На проверке') {
     modalStore.updateModalStatus('exit')
-  }
-  router.push({ name: 'home' })
+  } else {  router.push({ name: 'home' })}
 }
 
 onMounted(async () => {
   await getCreative()
 })
 
-watch(getCreative, pendingCreativesCount)
+watch(getCreative)
 </script>
 <template>
   <div v-auto-animate class="d-flex">
-    <SideBar :count="pendingCreativesCount" :creative="creative" />
+    <SideBar :creative="creative" />
     <div class="d-flex flex-column">
       <div class="container_custom">
         <nav aria-label="breadcrumb">

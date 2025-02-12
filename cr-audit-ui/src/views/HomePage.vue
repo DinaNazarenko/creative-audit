@@ -10,8 +10,9 @@ import AlertDanger from '@/components/AlertDanger.vue'
 import AlertSuccess from '@/components/AlertSuccess.vue'
 import { STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
+import { useCreativesStore } from '@/stores/creatives'
 import { useTableFiltersStore } from '@/stores/tableFilters'
-import { onMounted, ref, reactive, watch } from 'vue'
+import { onMounted, ref, reactive, watch, computed } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -22,11 +23,12 @@ const accounts = ref([])
 const advertisers = ref([])
 const types = ref(TYPE_SELECT)
 const statuses = ref(STATUS_SELECT)
-const pendingCreativesCount = ref(0)
 const isExport = ref(false)
 const isLoading = ref(true)
 
 const tableFiltersStore = useTableFiltersStore()
+const creativesStore = useCreativesStore()
+const pendingCreativesCount = computed(() => creativesStore.pendingCount)
 const activeItem = ref('На проверке')
 
 function isActive(item) {
@@ -104,9 +106,8 @@ const getCreatives = async () => {
       params,
     })
     if (filters.status === 'На проверке') {
-      pendingCreativesCount.value = data.length
+      creativesStore.updatedPendingCount(data)
     }
-
     creatives.value = data
 
     creatives.value = creatives.value.map(item => ({
@@ -142,7 +143,7 @@ onMounted(async () => {
   date.value = [newStartDate, newEndDate]
 })
 
-watch(filters, getCreatives, pendingCreativesCount)
+watch(filters, getCreatives)
 
 const handleDate = modelData => {
   if (!modelData) {
@@ -163,7 +164,7 @@ const handleExport = () => {
 </script>
 <template>
   <div v-auto-animate class="d-flex">
-    <SideBar :count="pendingCreativesCount" />
+    <SideBar />
     <div class="d-flex flex-column">
       <div class="container_custom">
         <h2 class="m-0">Креативы</h2>

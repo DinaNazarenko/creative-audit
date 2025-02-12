@@ -29,8 +29,30 @@ function goToHome() {
   router.push({ name: 'home' })
 }
 
+function updateCreativeStatus() {
+  if (
+    auditedLink.value.status === 'Принято' &&
+    auditedMedia.value.every(item => item.status === 'Принято')
+  ) {
+    auditedCreativesStore.updateAuditedStatus('status', 'Согласовано')
+  } else if (
+    auditedLink.value.status === 'Отклонено' &&
+    auditedMedia.value.every(item => item.status === 'Отклонено')
+  ) {
+    auditedCreativesStore.updateAuditedStatus('status', 'Отклонено')
+  } else if (
+    (auditedLink.value.status === 'Принято' &&
+      auditedMedia.value.some(item => item.status === 'Отклонено')) ||
+    auditedLink.value.status === 'Отклонено'
+  ) {
+    auditedCreativesStore.updateAuditedStatus('status', 'Частично согласовано')
+  }
+}
+
 const getCreativeStatus = async () => {
   try {
+    updateCreativeStatus()
+
     const { data } = await axios.get(
       `https://596b6b27365a5903.mokky.dev/creatives/${auditedCreative.value.id}`,
     )

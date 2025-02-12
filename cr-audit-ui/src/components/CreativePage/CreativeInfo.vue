@@ -40,8 +40,6 @@ const auditedCreativesStore = useAuditedCreativesStore()
 const errorStore = useErrorStore()
 const mediaSlideStore = useMediaSlideStore()
 
-// const auditedMedia = computed(() => auditedCreativesStore.auditedMedia)
-
 const currentSlide = computed(() => mediaSlideStore.currentSlide)
 
 const currentMedia = computed(() => {

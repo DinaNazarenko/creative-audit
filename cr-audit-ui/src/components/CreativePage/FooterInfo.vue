@@ -35,26 +35,6 @@ function handleCheck() {
     auditedMedia.value.every(item => item.status.length > 0)
   ) {
     modalStore.updateModalStatus('verified')
-    if (
-      auditedLink.value.status === 'Принято' &&
-      auditedMedia.value.every(item => item.status === 'Принято')
-    ) {
-      auditedCreativesStore.updateAuditedStatus('status', 'Согласовано')
-    } else if (
-      auditedLink.value.status === 'Отклонено' &&
-      auditedMedia.value.every(item => item.status === 'Отклонено')
-    ) {
-      auditedCreativesStore.updateAuditedStatus('status', 'Отклонено')
-    } else if (
-      (auditedLink.value.status === 'Принято' &&
-        auditedMedia.value.some(item => item.status === 'Отклонено')) ||
-      auditedLink.value.status === 'Отклонено'
-    ) {
-      auditedCreativesStore.updateAuditedStatus(
-        'status',
-        'Частично согласовано',
-      )
-    }
   }
   // Креатив не проверен
   if (auditedMedia.value.some(item => item.status.length === 0)) {
@@ -128,7 +108,8 @@ const nextPage = () => {
       </button>
     </div>
     <div>
-      <ButtonChange v-if="currentCreative?.status === 'На проверке'"
+      <ButtonChange
+        v-if="currentCreative?.status === 'На проверке'"
         title="Отправить"
         :should-have-modal="true"
         @click="handleCheck"

@@ -5,7 +5,7 @@ import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
 import { useTableSettingsStore } from '@/stores/tableSettings'
 import { useTableFiltersStore } from '@/stores/tableFilters'
-import { useSortedCreativesStore } from '@/stores/sortedCreatives'
+import { useCreativesStore } from '@/stores/creatives'
 import { useCreativesPageStore } from '@/stores/pagination'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { tableFilters } from '@/lib/utils/tableFilters'
@@ -36,7 +36,7 @@ const creativesPage = computed(() => ({
 
 const tableFiltersStore = useTableFiltersStore()
 
-const sortedCreativesStore = useSortedCreativesStore()
+const creativesStore = useCreativesStore()
 
 const { updatePopovers } = usePopover()
 nextTick(updatePopovers)
@@ -80,7 +80,7 @@ const paginatedCreatives = computed(() => {
 })
 
 watchEffect(() => {
-  sortedCreativesStore.updateSortedCreatives(sortedCreatives.value)
+  creativesStore.updatedCreatives(sortedCreatives.value)
   creativesPageStore.updateAmountCreatives(paginatedCreatives.value.length)
 })
 

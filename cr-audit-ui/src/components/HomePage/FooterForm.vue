@@ -1,7 +1,7 @@
 <script setup>
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
-import { useSortedCreativesStore } from '@/stores/sortedCreatives'
+import { useCreativesStore } from '@/stores/creatives'
 import { useCreativesPageStore } from '@/stores/pagination'
 import { PAGE_STRINGS } from '@/lib/constants'
 import { computed } from 'vue'
@@ -10,11 +10,11 @@ defineProps({
   isLoading: Boolean,
 })
 
-const sortedCreativesStore = useSortedCreativesStore()
+const creativesStore = useCreativesStore()
 const creativesPageStore = useCreativesPageStore()
 
 const sortedCreatives = computed(() => [
-  ...sortedCreativesStore.sortedCreatives,
+  ...creativesStore.sortedCreatives,
 ])
 const creativesPage = computed(() => ({
   creativesPerPage: creativesPageStore.creativesPerPage,

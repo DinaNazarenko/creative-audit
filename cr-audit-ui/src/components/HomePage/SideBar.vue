@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import PeopleIcon from '@/components/icons/PeopleIcon.vue'
 import ImagesIcon from '@/components/icons/ImagesIcon.vue'
 import MegaphoneIcon from '@/components/icons/MegaphoneIcon.vue'
@@ -8,15 +8,17 @@ import PersonIcon from '@/components/icons/PersonIcon.vue'
 import SidebarLogoIcon from '@/components/icons/SidebarLogoIcon.vue'
 import CaretDownFillIcon from '@/components/icons/CaretDownFillIcon.vue'
 import { useModalStore } from '@/stores/modal'
+import { useCreativesStore } from '@/stores/creatives'
 
 const props = defineProps({
-  count: Number,
   creative: Object,
 })
 
+const creativesStore = useCreativesStore()
 const currentCreative = ref({})
 const router = useRouter()
 const activeItem = ref('Креативы')
+const pendingCreativesCount = computed(() => creativesStore.pendingCount)
 
 const modalStore = useModalStore()
 
@@ -38,10 +40,14 @@ const handleLogout = () => {
 }
 
 function handleCheck() {
-  if (router.currentRoute.value.name !== 'home' && currentCreative.value.status === 'На проверке') {
+  if (
+    router.currentRoute.value.name !== 'home' &&
+    currentCreative.value.status === 'На проверке'
+  ) {
     modalStore.updateModalStatus('exit')
+  } else {
+    router.push({ name: 'home' })
   }
-  router.push({ name: 'home' })
 }
 </script>
 <template>
@@ -66,7 +72,8 @@ function handleCheck() {
           class="nav-link py-3 border-bottom rounded-0"
           :class="{ active: isActive('Креативы') }"
           v-bind="
-            router.currentRoute.value.name !== 'home' && currentCreative.status === 'На проверке'
+            router.currentRoute.value.name !== 'home' &&
+            currentCreative.status === 'На проверке'
               ? {
                   'data-bs-toggle': 'modal',
                   'data-bs-target': '#staticBackdrop',
@@ -78,7 +85,7 @@ function handleCheck() {
           <ImagesIcon />
           <span
             class="position-absolute translate-middle badge text-bg-danger rounded-pill"
-            >{{ count }}</span
+            >{{ pendingCreativesCount }}</span
           >
           Креативы
         </a>
