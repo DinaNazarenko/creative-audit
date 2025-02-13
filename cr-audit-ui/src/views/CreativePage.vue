@@ -114,7 +114,7 @@ hr {
   position: absolute;
   bottom: 0;
   right: 0;
-  z-index: 1030;
+  z-index: 8000;
 }
 .text_custom {
   color: var(--custom-color);

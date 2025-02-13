@@ -65,11 +65,9 @@ watchEffect(async () => {
         <p class="m-0">Тип: {{ creative?.type }}</p>
         <p class="m-0">Рекламный кабинет: {{ creative?.account }}</p>
         <p class="m-0">Рекламодатель: {{ creative?.advertiser }}</p>
-        <p class="m-0">
-          Дата проверки: {{ formatDate(creative?.dateAudit, 'DD.MM.YYYY') }}
+        <p class="m-0">Дата проверки: {{ formatDate(creative?.dateAudit, 'DD.MM.YYYY') }}
         </p>
-        <p class="mb-4">
-          Дата направления на проверку:
+        <p class="mb-4">Дата направления на проверку:
           {{ formatDate(creative?.dateCreat, 'DD.MM.YYYY') }}
         </p>
         <div v-if="creative?.linkData?.comment" class="mb-4">
