@@ -1,19 +1,26 @@
 <script setup>
 import CreativeStatus from '@/components/common/CreativeStatus.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
+import OffcanvasRight from '@/components/common/OffcanvasRight.vue'
 import { GROUP_FIELDS } from '@/lib/constants'
 import { usePopover } from '@/lib/utils/popover'
-import { computed, nextTick, watch } from 'vue'
+import { computed, nextTick, watch, ref } from 'vue'
+
 const props = defineProps({
   creative: Object,
 })
 
+const isOffcanvasOpen = ref('false')
 const showsButton = computed(() => {
   return (
     props.creative.status === 'Частично согласовано' ||
     props.creative.status === 'Отклонено'
   )
 })
+
+function handleOpenOffcanvas() {
+  isOffcanvasOpen.value = true
+}
 
 const { updatePopovers } = usePopover()
 nextTick(updatePopovers)
@@ -99,7 +106,12 @@ watch(
       </div>
     </div>
     <div v-if="showsButton">
-      <ButtonChange title="Показать все комментарии" />
+      <ButtonChange
+        title="Показать все комментарии"
+        is-offcanvas-open=""
+        @click="handleOpenOffcanvas"
+      />
+      <OffcanvasRight />
     </div>
   </div>
 </template>

@@ -1,9 +1,14 @@
-<script setup></script>
+<script setup>
+defineProps({
+  width: String,
+  height: String,
+})
+</script>
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
+    :width="width || '16'"
+    :height="height || '16'"
     fill="currentColor"
     class="bi bi-copy"
     viewBox="0 0 16 16"
@@ -15,4 +20,13 @@
   </svg>
 </template>
 
-<style scoped></style>
+<style scoped>
+:hover {
+  color: #6366f1 !important;
+  transform: scale(1.02);
+  cursor: pointer;
+}
+:active {
+  transform: scale(0.98);
+}
+</style>

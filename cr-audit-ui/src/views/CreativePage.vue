@@ -22,7 +22,7 @@ const modalStore = useModalStore()
 
 const getCreative = async () => {
   try {
-    const url = `https://596b6b27365a5903.mokky.dev/creatives/3`
+    const url = `https://596b6b27365a5903.mokky.dev/creatives/11`
 
     const { data } = await axios.get(url)
 
