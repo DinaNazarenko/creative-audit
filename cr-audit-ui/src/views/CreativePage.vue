@@ -10,7 +10,8 @@ import StaticBackdropModal from '@/components/common/StaticBackdropModal.vue'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { useModalStore } from '@/stores/modal'
 import { useRouter } from 'vue-router'
-import { onMounted, ref, watch } from 'vue'
+import { usePopover } from '@/lib/utils/popover'
+import { onMounted, ref, watch, nextTick } from 'vue'
 import axios from 'axios'
 
 const isLoading = ref(true)
@@ -22,7 +23,7 @@ const modalStore = useModalStore()
 
 const getCreative = async () => {
   try {
-    const url = `https://596b6b27365a5903.mokky.dev/creatives/11`
+    const url = `https://596b6b27365a5903.mokky.dev/creatives/3`
 
     const { data } = await axios.get(url)
 
@@ -52,6 +53,16 @@ onMounted(async () => {
 })
 
 watch(getCreative)
+const { updatePopovers } = usePopover()
+nextTick(updatePopovers)
+
+watch(
+  creative,
+  () => {
+    updatePopovers()
+  },
+  { deep: true },
+)
 </script>
 <template>
   <div v-auto-animate class="d-flex">

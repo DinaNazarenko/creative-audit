@@ -3,8 +3,7 @@ import CreativeStatus from '@/components/common/CreativeStatus.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import OffcanvasRight from '@/components/common/OffcanvasRight.vue'
 import { GROUP_FIELDS } from '@/lib/constants'
-import { usePopover } from '@/lib/utils/popover'
-import { computed, nextTick, watch, ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   creative: Object,
@@ -22,16 +21,6 @@ function handleOpenOffcanvas() {
   isOffcanvasOpen.value = true
 }
 
-const { updatePopovers } = usePopover()
-nextTick(updatePopovers)
-
-watch(
-  props.creative,
-  () => {
-    updatePopovers()
-  },
-  { deep: true },
-)
 </script>
 <template>
   <div class="d-flex justify-content-between">
@@ -58,7 +47,7 @@ watch(
           class="fw-bold m-0 pe-3 info_item_max text-truncate"
           data-bs-toggle="popover"
           data-bs-trigger="hover focus"
-          data-bs-placement="top"
+          data-bs-placement="bottom"
           data-bs-delay="300"
           data-bs-animation="true"
           :data-bs-content="creative.email"
@@ -72,7 +61,7 @@ watch(
           class="fw-bold m-0 pe-3 info_item_min text-truncate"
           data-bs-toggle="popover"
           data-bs-trigger="hover focus"
-          data-bs-placement="top"
+          data-bs-placement="bottom"
           data-bs-delay="300"
           data-bs-animation="true"
           :data-bs-content="creative.account"
@@ -86,7 +75,7 @@ watch(
           class="fw-bold m-0 pe-3 info_item_max text-truncate"
           data-bs-toggle="popover"
           data-bs-trigger="hover focus"
-          data-bs-placement="top"
+          data-bs-placement="bottom"
           data-bs-delay="300"
           data-bs-animation="true"
           :data-bs-content="creative.advertiser"
