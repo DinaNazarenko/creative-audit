@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watchEffect, nextTick, watch } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import { GROUP_FIELDS } from '@/lib/constants'
 import { sortArrayByObject, findSortConfigByField } from '@/lib/utils/sortUtils'
 import TableSettings from '@/components/HomePage/TableSettings.vue'
@@ -35,7 +35,6 @@ const creativesPage = computed(() => ({
 const tableFiltersStore = useTableFiltersStore()
 
 const creativesStore = useCreativesStore()
-
 
 const filterSettings = computed(() => ({
   statuses: [...tableFiltersStore.statuses],
@@ -117,7 +116,6 @@ watchEffect(() => {
     triggerExport()
   }
 })
-
 </script>
 <template>
   <div class="table_custom v-auto-animate">

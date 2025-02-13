@@ -6,7 +6,7 @@ import { useModalStore } from '@/stores/modal'
 import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import { MODAL_TEXTS } from '@/lib/constants'
-import { getTimezoneOffset } from '@/lib/utils/FormattingDates'
+// import { getTimezoneOffset } from '@/lib/utils/FormattingDates'
 import { useRouter } from 'vue-router'
 import { ref, watchEffect, computed } from 'vue'
 import axios from 'axios'
@@ -66,7 +66,8 @@ const getCreativeStatus = async () => {
 
     const payload = {
       status: auditedCreative.value.status,
-      dateAudit: new Date().toISOString().replace('Z', getTimezoneOffset()),
+      // dateAudit: new Date().toISOString().replace('Z', getTimezoneOffset()),
+      dateAudit: new Date().toISOString(),
       linkData: {
         status: auditedLink.value.status,
         comment: auditedLink.value.comment,
