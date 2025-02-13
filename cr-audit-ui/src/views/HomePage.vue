@@ -12,7 +12,8 @@ import { STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { useCreativesStore } from '@/stores/creatives'
 import { useTableFiltersStore } from '@/stores/tableFilters'
-import { onMounted, ref, reactive, watch, computed } from 'vue'
+import { usePopover } from '@/lib/utils/popover'
+import { onMounted, ref, reactive, watch, computed, nextTick } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -161,6 +162,17 @@ const handleExport = () => {
     isExport.value = false
   }, 3000)
 }
+
+const { updatePopovers } = usePopover()
+nextTick(updatePopovers)
+
+watch(
+  ()=> creatives,
+  () => {
+    updatePopovers()
+  },
+  { deep: true },
+)
 </script>
 <template>
   <div v-auto-animate class="d-flex">

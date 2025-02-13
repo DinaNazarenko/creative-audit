@@ -74,6 +74,18 @@ watch(
     nextTick(updatePopovers)
   },
 )
+watch(
+  () => props.statuses,
+  () => {
+    nextTick(updatePopovers)
+  },
+)
+watch(
+  () => props.types,
+  () => {
+    nextTick(updatePopovers)
+  },
+)
 </script>
 <template>
   <div class="d-flex">

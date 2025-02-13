@@ -10,11 +10,9 @@ import { useCreativesPageStore } from '@/stores/pagination'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { tableFilters } from '@/lib/utils/tableFilters'
 import { exportToExcel } from '@/lib/utils/exportToExcel'
-import { usePopover } from '@/lib/utils/popover'
 import NoCreatives from '@/components/HomePage/NoCreatives.vue'
 import SkeletonCreatives from '@/components/HomePage/SkeletonCreatives.vue'
 import CreativeStatus from '@/components/common/CreativeStatus.vue'
-// import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
   creatives: Array,
@@ -38,8 +36,6 @@ const tableFiltersStore = useTableFiltersStore()
 
 const creativesStore = useCreativesStore()
 
-const { updatePopovers } = usePopover()
-nextTick(updatePopovers)
 
 const filterSettings = computed(() => ({
   statuses: [...tableFiltersStore.statuses],
@@ -122,13 +118,6 @@ watchEffect(() => {
   }
 })
 
-watch(
-  creativesPage,
-  () => {
-    updatePopovers()
-  },
-  { deep: true },
-)
 </script>
 <template>
   <div class="table_custom v-auto-animate">
