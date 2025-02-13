@@ -12,8 +12,8 @@ const props = defineProps({
 const isOffcanvasOpen = ref('false')
 const showsButton = computed(() => {
   return (
-    props.creative.status === 'Частично согласовано' ||
-    props.creative.status === 'Отклонено'
+    props.creative?.status === 'Частично согласовано' ||
+    props.creative?.status === 'Отклонено'
   )
 })
 
@@ -29,17 +29,17 @@ function handleOpenOffcanvas() {
         <p class="text-gray-600 m-0 fs_custom">
           {{ GROUP_FIELDS.idApplication }}
         </p>
-        <p class="fw-bold m-0 pe-3">{{ creative.idApplication }}</p>
+        <p class="fw-bold m-0 pe-3">{{ creative?.idApplication }}</p>
       </div>
       <div class="info_item_min">
         <p class="text-gray-600 m-0 fs_custom">{{ GROUP_FIELDS.status }}</p>
         <p class="fw-bold m-0 pe-3">
-          <CreativeStatus :status="creative.status" />
+          <CreativeStatus :status="creative?.status" />
         </p>
       </div>
       <div class="info_item_min">
         <p class="text-gray-600 m-0 fs_custom">{{ GROUP_FIELDS.type }}</p>
-        <p class="fw-bold m-0 pe-3">{{ creative.type }}</p>
+        <p class="fw-bold m-0 pe-3">{{ creative?.type }}</p>
       </div>
       <div class="info_item_max">
         <p class="text-gray-600 m-0 fs_custom">{{ GROUP_FIELDS.email }}</p>
@@ -50,9 +50,9 @@ function handleOpenOffcanvas() {
           data-bs-placement="bottom"
           data-bs-delay="300"
           data-bs-animation="true"
-          :data-bs-content="creative.email"
+          :data-bs-content="creative?.email"
         >
-          {{ creative.email }}
+          {{ creative?.email }}
         </p>
       </div>
       <div class="info_item_min">
@@ -64,9 +64,9 @@ function handleOpenOffcanvas() {
           data-bs-placement="bottom"
           data-bs-delay="300"
           data-bs-animation="true"
-          :data-bs-content="creative.account"
+          :data-bs-content="creative?.account"
         >
-          {{ creative.account }}
+          {{ creative?.account }}
         </p>
       </div>
       <div class="info_item_max">
@@ -78,9 +78,9 @@ function handleOpenOffcanvas() {
           data-bs-placement="bottom"
           data-bs-delay="300"
           data-bs-animation="true"
-          :data-bs-content="creative.advertiser"
+          :data-bs-content="creative?.advertiser"
         >
-          {{ creative.advertiser }}
+          {{ creative?.advertiser }}
         </p>
       </div>
       <div class="info_item_min">

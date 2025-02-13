@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
+import axios from 'axios'
 
 // Определение типа для одного креатива
 // interface Media {
@@ -23,7 +25,10 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     },
     auditedMedia: [],
     // auditedMedia: Media[] = [];
+    creative: null,
+    isLoading: true
   }),
+
   actions: {
     updateAuditedStatus(key, item) {
       this.auditedCreative[key] = item
@@ -65,6 +70,26 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     updateActionStatusMedia(index, item) {
       this.auditedMedia[index].userActionStatus = item
     },
+    async getCreative(id) {
+      try {
+        const url = `https://596b6b27365a5903.mokky.dev/creatives/${id}`
+        const { data } = await axios.get(url)
+        
+        this.creative = {
+          ...data,
+          timeBeforeStart: calculateTimeBetweenDates(
+            new Date(),
+            data.dateStart,
+            'DD'
+          )
+        }
+        this.isLoading = false
+      } catch (error) {
+        console.error('Ошибка получения креатива:', error.message)
+      } finally {
+        this.isLoading = false
+      }
+    }
   },
 })
 

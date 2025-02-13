@@ -48,8 +48,8 @@ const currentMedia = computed(() => {
 })
 
 const auditedMedia = computed(() => ({
-  ...currentCreative.value.media,
-  ...(currentCreative.value.status === 'На проверке'
+  ...currentCreative.value?.media,
+  ...(currentCreative.value?.status === 'На проверке'
     ? auditedCreativesStore.auditedMedia
     : {}),
 }))
@@ -233,7 +233,7 @@ watchEffect(() => {
             :checked="currentAuditedMedia?.options?.includes(option.title)"
             :disabled="
               currentAuditedMedia?.status?.length > 0 ||
-              currentCreative.status === 'Отменено'
+              currentCreative?.status === 'Отменено'
             "
           />
           <label class="form-check-label" for="firstCheckbox"
@@ -257,7 +257,7 @@ watchEffect(() => {
       <div
         v-if="
           currentAuditedMedia?.status?.length === 0 &&
-          currentCreative.status !== 'Отменено'
+          currentCreative?.status !== 'Отменено'
         "
         class="mt-4"
       >

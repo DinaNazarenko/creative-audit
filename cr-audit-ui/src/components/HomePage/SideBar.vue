@@ -42,7 +42,7 @@ const handleLogout = () => {
 function handleCheck() {
   if (
     router.currentRoute.value.name !== 'home' &&
-    currentCreative.value.status === 'На проверке'
+    currentCreative.value?.status === 'На проверке'
   ) {
     modalStore.updateModalStatus('exit')
   } else {
@@ -73,7 +73,7 @@ function handleCheck() {
           :class="{ active: isActive('Креативы') }"
           v-bind="
             router.currentRoute.value.name !== 'home' &&
-            currentCreative.status === 'На проверке'
+            currentCreative?.status === 'На проверке'
               ? {
                   'data-bs-toggle': 'modal',
                   'data-bs-target': '#staticBackdrop',

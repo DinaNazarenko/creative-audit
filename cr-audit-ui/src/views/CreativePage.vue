@@ -7,52 +7,30 @@ import FooterInfo from '@/components/CreativePage/FooterInfo.vue'
 import AlertDanger from '@/components/AlertDanger.vue'
 import AlertSuccess from '@/components/AlertSuccess.vue'
 import StaticBackdropModal from '@/components/common/StaticBackdropModal.vue'
-import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
+import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import { useModalStore } from '@/stores/modal'
 import { useRouter } from 'vue-router'
 import { usePopover } from '@/lib/utils/popover'
-import { onMounted, ref, watch, nextTick } from 'vue'
-import axios from 'axios'
+import { watchEffect, computed, watch, nextTick } from 'vue'
 
-const isLoading = ref(true)
-
-const creative = ref([])
 const router = useRouter()
 
 const modalStore = useModalStore()
+const auditedCreativesStore = useAuditedCreativesStore()
 
-const getCreative = async () => {
-  try {
-    const url = `https://596b6b27365a5903.mokky.dev/creatives/3`
+const creative = computed(() => auditedCreativesStore.creative)
 
-    const { data } = await axios.get(url)
-
-    creative.value = data
-
-    creative.value.timeBeforeStart = calculateTimeBetweenDates(
-      new Date(),
-      creative.value.dateStart,
-      'DD',
-    )
-
-    isLoading.value = false
-  } catch (error) {
-    console.error('Ошибка получения креатива:', error.message)
-    isLoading.value = false
+function handleCheck() {
+  if (creative.value?.status === 'На проверке') {
+    modalStore.updateModalStatus('exit')
+  } else {
+    router.push({ name: 'home' })
   }
 }
 
-function handleCheck() {
-  if (creative.value.status === 'На проверке') {
-    modalStore.updateModalStatus('exit')
-  } else {  router.push({ name: 'home' })}
-}
-
-onMounted(async () => {
-  await getCreative()
+watchEffect(async () => {
+  await auditedCreativesStore.getCreative(11)
 })
-
-watch(getCreative)
 const { updatePopovers } = usePopover()
 nextTick(updatePopovers)
 
@@ -75,10 +53,10 @@ watch(
               class="breadcrumb-item text_custom"
               role="button"
               :data-bs-toggle="
-                creative.status === 'На проверке' ? 'modal' : undefined
+                creative?.status === 'На проверке' ? 'modal' : undefined
               "
               :data-bs-target="
-                creative.status === 'На проверке'
+                creative?.status === 'На проверке'
                   ? '#staticBackdrop'
                   : undefined
               "
@@ -87,12 +65,12 @@ watch(
               Креативы
             </li>
             <li class="breadcrumb-item active" aria-current="page">
-              {{ creative.name }}
+              {{ creative?.name }}
             </li>
             <StaticBackdropModal />
           </ol>
         </nav>
-        <h2 class="mb-3">{{ creative.name }}</h2>
+        <h2 class="mb-3">{{ creative?.name }}</h2>
         <HeaderInfo :creative="creative" />
         <hr />
         <div

@@ -30,13 +30,13 @@ const collapseShowLink = computed(() => collapseShowStore.collapseShow)
 
 watchEffect(() => {
   currentCreative.value = props.creative
-  auditedCreativesStore.updateAuditedStatus('id', currentCreative.value.id)
-  auditedCreativesStore.updateAuditedStatus('status', currentCreative.value.status)
+  auditedCreativesStore.updateAuditedStatus('id', currentCreative.value?.id)
+  auditedCreativesStore.updateAuditedStatus('status', currentCreative.value?.status)
 })
 
 const auditedLink = computed(() => ({
-  ...currentCreative.value.linkData,
-  ...(currentCreative.value.status === 'На проверке'
+  ...currentCreative.value?.linkData,
+  ...(currentCreative.value?.status === 'На проверке'
     ? auditedCreativesStore.auditedLink
     : {})
 }))
@@ -136,12 +136,12 @@ function toggleCollapseShow() {
             </div>
             <p class="m-0">
               <a
-                :href="creative.link"
+                :href="creative?.link"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-decoration-none"
               >
-                {{ creative.link }}</a
+                {{ creative?.link }}</a
               >
             </p>
           </div>
@@ -170,7 +170,7 @@ function toggleCollapseShow() {
                 :id="item.title"
                 @change="handleCheckboxChange"
                 :checked="auditedLink.options?.includes(item.title)"
-                :disabled="auditedLink.status?.length > 0 || currentCreative.status === 'Отменено'"
+                :disabled="auditedLink.status?.length > 0 || currentCreative?.status === 'Отменено'"
               />
               <label class="form-check-label" for="firstCheckbox"
                 >{{ item.title }}<code> * </code>
@@ -187,7 +187,7 @@ function toggleCollapseShow() {
           <div class="mt-4">
             <CommentInfo :link-info="true" :current-audited-link="auditedLink"/>
           </div>
-          <div v-if="auditedLink.status?.length === 0 && currentCreative.status !== 'Отменено'" class="mt-4">
+          <div v-if="auditedLink.status?.length === 0 && currentCreative?.status !== 'Отменено'" class="mt-4">
             <ButtonOutline
               title="Принять"
               btn-outline="btn-outline-success"
@@ -202,8 +202,8 @@ function toggleCollapseShow() {
           <div
             class="mt-4"
             v-if="
-              auditedLink.status?.length > 0 &&
-              (auditedLink.userActionStatus?.length === 0 ||
+              auditedLink?.status?.length > 0 &&
+              (auditedLink?.userActionStatus?.length === 0 ||
                 auditedLink?.userActionStatus === 'saved')
             "
           >

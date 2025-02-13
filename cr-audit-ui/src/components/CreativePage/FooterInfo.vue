@@ -31,17 +31,17 @@ const currentSlide = computed(() => mediaSlideStore.currentSlide)
 function handleCheck() {
   // Всё проверено
   if (
-    auditedLink.value.status.length > 0 &&
-    auditedMedia.value.every(item => item.status.length > 0)
+    auditedLink.value?.status?.length > 0 &&
+    auditedMedia.value.every(item => item?.status?.length > 0)
   ) {
     modalStore.updateModalStatus('verified')
   }
   // Креатив не проверен
-  if (auditedMedia.value.some(item => item.status.length === 0)) {
+  if (auditedMedia.value.some(item => item?.status?.length === 0)) {
     modalStore.updateModalStatus('unverifiedCreative')
   }
   // Ссылка не проверена
-  if (auditedLink.value.status.length === 0) {
+  if (auditedLink.value?.status?.length === 0) {
     modalStore.updateModalStatus('unverifiedLink')
   }
 }
@@ -49,7 +49,7 @@ function handleCheck() {
 watchEffect(() => {
   currentCreative.value = props.creative
 
-  if (props.creative.status === 'На проверке') {
+  if (props.creative?.status === 'На проверке') {
     medias.value = auditedMedia.value
   } else {
     medias.value = props.creative?.media || []
@@ -97,8 +97,8 @@ const nextPage = () => {
           'p-0': true,
           'col-1': true,
           btn_carousel: true,
-          success_status: media.status === 'Принято',
-          danger_status: media.status === 'Отклонено',
+          success_status: media?.status === 'Принято',
+          danger_status: media?.status === 'Отклонено',
           active: currentSlide === medias.indexOf(media),
         }"
         @click="selectSlide(medias.indexOf(media))"
