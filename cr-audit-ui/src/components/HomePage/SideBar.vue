@@ -22,8 +22,9 @@ const pendingCreativesCount = computed(() => creativesStore.pendingCount)
 
 const modalStore = useModalStore()
 
-watchEffect(() => {
+watchEffect(async() => {
   currentCreative.value = props.creative
+  await creativesStore.getPendingCountCreatives()
 })
 
 function setActive(item) {

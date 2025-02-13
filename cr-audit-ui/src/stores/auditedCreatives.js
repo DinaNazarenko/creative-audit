@@ -26,7 +26,7 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     auditedMedia: [],
     // auditedMedia: Media[] = [];
     creative: null,
-    isLoading: true
+    isLoading: false
   }),
 
   actions: {
@@ -72,6 +72,8 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
     },
     async getCreative(id) {
       try {
+        this.isLoading = true
+
         const url = `https://596b6b27365a5903.mokky.dev/creatives/${id}`
         const { data } = await axios.get(url)
         
@@ -83,7 +85,6 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
             'DD'
           )
         }
-        this.isLoading = false
       } catch (error) {
         console.error('Ошибка получения креатива:', error.message)
       } finally {

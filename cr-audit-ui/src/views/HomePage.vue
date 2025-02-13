@@ -13,7 +13,7 @@ import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { useCreativesStore } from '@/stores/creatives'
 import { useTableFiltersStore } from '@/stores/tableFilters'
 import { usePopover } from '@/lib/utils/popover'
-import { onMounted, ref, reactive, watch, computed, nextTick } from 'vue'
+import { onMounted, ref, reactive, watch, computed, nextTick, watchEffect } from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -106,9 +106,6 @@ const getCreatives = async () => {
     const { data } = await axios.get(url, {
       params,
     })
-    if (filters.status === 'На проверке') {
-      creativesStore.updatedPendingCount(data)
-    }
     creatives.value = data
 
     creatives.value = creatives.value.map(item => ({
@@ -145,6 +142,10 @@ onMounted(async () => {
 })
 
 watch(filters, getCreatives)
+
+watchEffect(async () => {
+  await creativesStore.getPendingCountCreatives()
+})
 
 const handleDate = modelData => {
   if (!modelData) {

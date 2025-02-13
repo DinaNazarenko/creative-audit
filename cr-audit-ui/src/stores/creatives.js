@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
 
 export const useCreativesStore = defineStore('creatives', {
   state: () => ({
@@ -7,10 +8,22 @@ export const useCreativesStore = defineStore('creatives', {
   }),
   actions: {
     updatedCreatives(newArray) {
-        this.sortedCreatives = newArray
+      this.sortedCreatives = newArray
     },
-    updatedPendingCount(newArray) {
-      this.pendingCount = newArray.filter(item => item.status === 'На проверке').length
-  },
+    async getPendingCountCreatives() {
+      try {
+        const url = `https://596b6b27365a5903.mokky.dev/creatives`
+        const { data } = await axios.get(url)
+
+        this.pendingCount = data.filter(
+          item => item.status === 'На проверке',
+        ).length
+      } catch (error) {
+        console.error(
+          'Ошибка получения количества креативов на проверке:',
+          error.message,
+        )
+      }
+    },
   },
 })
