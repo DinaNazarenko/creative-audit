@@ -2,6 +2,7 @@
 import CopyIcon from '@/components/icons/CopyIcon.vue'
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import { formatDate } from '@/lib/utils/FormattingDates'
+import { copyToClipboard } from '@/lib/utils/copyToClipboard'
 import { getImageSize } from '@/lib/utils/getImageSize'
 import { computed, watchEffect, reactive } from 'vue'
 
@@ -16,12 +17,12 @@ watchEffect(async () => {
 
 watchEffect(async () => {
   if (!creative.value?.media) return
-  
+
   const mediaArray = creative.value.media.map(item => ({
     ...item,
-    size: item?.size || []
+    size: item?.size || [],
   }))
-  
+
   updatedMedia.splice(0, updatedMedia.length, ...mediaArray)
 
   try {
@@ -87,9 +88,15 @@ watchEffect(async () => {
             {{ creative?.linkData?.comment }}
           </p>
         </div>
-          <div v-for="item in updatedMedia" :key="item" class="mb-4">
-            <div v-if="item.comment">
-            <p class="m-0"><strong>Креатив {{ item?.mediaName }}, {{ item?.size?.width}}х{{ item?.size?.height }}:</strong></p>
+        <div v-for="item in updatedMedia" :key="item" class="mb-4">
+          <div v-if="item.comment">
+            <p class="m-0">
+              <strong
+                >Креатив {{ item?.mediaName }}, {{ item?.size?.width }}х{{
+                  item?.size?.height
+                }}:</strong
+              >
+            </p>
             <p class="m-0">
               {{ item?.comment }}
             </p>
@@ -97,7 +104,11 @@ watchEffect(async () => {
         </div>
       </div>
       <div>
-        <CopyIcon width="24px" height="24px" />
+        <CopyIcon
+          width="24px"
+          height="24px"
+          @click="copyToClipboard(creative, updatedMedia)"
+        />
       </div>
     </div>
   </div>

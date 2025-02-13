@@ -174,6 +174,12 @@ watch(
   },
   { deep: true },
 )
+watch(
+  () => activeItem,
+  () => {
+    nextTick(updatePopovers)
+  },
+)
 </script>
 <template>
   <div v-auto-animate class="d-flex">
