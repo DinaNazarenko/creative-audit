@@ -296,7 +296,7 @@ watchEffect(() => {
         </tbody>
       </table>
       <div
-        v-if="paginatedCreatives.length === 0"
+        v-if="paginatedCreatives.length === 0 && isLoading === false"
         class="d-flex align-items-center justify-content-center main_container"
       >
         <NoCreatives />
