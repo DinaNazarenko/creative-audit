@@ -13,7 +13,15 @@ import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
 import { useCreativesStore } from '@/stores/creatives'
 import { useTableFiltersStore } from '@/stores/tableFilters'
 import { usePopover } from '@/lib/utils/popover'
-import { onMounted, ref, reactive, watch, computed, nextTick, watchEffect } from 'vue'
+import {
+  onMounted,
+  ref,
+  reactive,
+  watch,
+  computed,
+  nextTick,
+  watchEffect,
+} from 'vue'
 import debounce from 'lodash.debounce'
 import axios from 'axios'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -170,7 +178,7 @@ const { updatePopovers } = usePopover()
 nextTick(updatePopovers)
 
 watch(
-  ()=> creatives,
+  () => creatives,
   () => {
     updatePopovers()
   },

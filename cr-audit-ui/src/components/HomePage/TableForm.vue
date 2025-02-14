@@ -13,6 +13,7 @@ import { exportToExcel } from '@/lib/utils/exportToExcel'
 import NoCreatives from '@/components/HomePage/NoCreatives.vue'
 import SkeletonCreatives from '@/components/HomePage/SkeletonCreatives.vue'
 import CreativeStatus from '@/components/common/CreativeStatus.vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   creatives: Array,
@@ -20,6 +21,7 @@ const props = defineProps({
   isLoading: Boolean,
 })
 
+const router = useRouter()
 const sortOrderFields = ref([])
 const selectedField = ref('')
 
@@ -111,6 +113,10 @@ const triggerExport = async () => {
   }
 }
 
+function goToCreative(id) {
+  router.push({ name: 'creative', params: { id: id } })
+}
+
 watchEffect(() => {
   if (props.isExport) {
     triggerExport()
@@ -156,7 +162,9 @@ watchEffect(() => {
         </template>
         <tbody>
           <tr v-for="item in paginatedCreatives" :key="item.id">
-            <td class="text-truncate td_id">{{ item.idApplication }}</td>
+            <td class="text-truncate td_id" @click="goToCreative(item.id)">
+              {{ item.idApplication }}
+            </td>
             <td
               class="td_add_group"
               data-bs-toggle="popover"
@@ -166,7 +174,9 @@ watchEffect(() => {
               data-bs-animation="true"
               :data-bs-content="item.nameAdGroup"
             >
-              <span class="d-inline-block text-truncate span_max">
+              <span
+                class="d-inline-block text-truncate span_max"
+              >
                 {{ item.nameAdGroup }}
               </span>
             </td>
@@ -299,6 +309,7 @@ watchEffect(() => {
 </template>
 
 <style scoped>
+@import '../../assets/main.css';
 .table_custom {
   min-height: calc(100vh - 290px);
   max-width: 95vw;
@@ -353,6 +364,7 @@ span {
 }
 td {
   padding: 6px;
+  cursor: pointer;
 }
 .th_custom {
   position: sticky;
@@ -362,6 +374,9 @@ td {
   position: sticky;
   left: 0;
   z-index: 10;
+}
+.td_id:hover {
+  color: var(--custom-color);
 }
 .th_id {
   position: sticky;
