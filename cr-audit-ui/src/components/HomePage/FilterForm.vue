@@ -312,7 +312,7 @@ button {
 }
 .ul_statuses {
   width: 242px;
-  height: 176px;
+  min-height: 176px;
 }
 .ul_types {
   width: 169px;

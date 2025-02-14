@@ -22,8 +22,8 @@ import { ru } from 'date-fns/locale'
 const creatives = ref([])
 const accounts = ref([])
 const advertisers = ref([])
-const types = ref(TYPE_SELECT)
-const statuses = ref(STATUS_SELECT)
+const types = ref([])
+const statuses = ref([])
 const isExport = ref(false)
 const isLoading = ref(true)
 
@@ -145,6 +145,8 @@ watch(filters, getCreatives)
 
 watchEffect(async () => {
   await creativesStore.getPendingCountCreatives()
+  types.value = TYPE_SELECT
+  statuses.value = STATUS_SELECT
 })
 
 const handleDate = modelData => {
