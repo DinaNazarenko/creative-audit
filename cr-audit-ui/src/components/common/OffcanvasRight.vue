@@ -4,7 +4,11 @@ import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { copyToClipboard } from '@/lib/utils/copyToClipboard'
 import { getImageSize } from '@/lib/utils/getImageSize'
+import { useRouter } from 'vue-router'
 import { computed, watchEffect, reactive } from 'vue'
+
+const router = useRouter()
+const id = router.currentRoute.value.params.id
 
 const auditedCreativesStore = useAuditedCreativesStore()
 
@@ -12,7 +16,7 @@ const creative = computed(() => auditedCreativesStore.creative)
 const updatedMedia = reactive([])
 
 watchEffect(async () => {
-  await auditedCreativesStore.getCreative(8)
+  await auditedCreativesStore.getCreative(id)
 })
 
 watchEffect(async () => {

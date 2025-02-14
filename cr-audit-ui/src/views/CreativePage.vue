@@ -14,6 +14,7 @@ import { usePopover } from '@/lib/utils/popover'
 import { watchEffect, computed, watch, nextTick } from 'vue'
 
 const router = useRouter()
+const id = router.currentRoute.value.params.id
 
 const modalStore = useModalStore()
 const auditedCreativesStore = useAuditedCreativesStore()
@@ -29,7 +30,7 @@ function handleCheck() {
 }
 
 watchEffect(async () => {
-  await auditedCreativesStore.getCreative(11)
+  await auditedCreativesStore.getCreative(id)
 })
 const { updatePopovers } = usePopover()
 nextTick(updatePopovers)

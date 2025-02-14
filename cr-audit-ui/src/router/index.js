@@ -35,9 +35,12 @@ const routes = [
     },
   },
   {
-    path: '/creative',
+    path: '/creative/:id',
     name: 'creative',
     component: CreativePage,
+    meta: {
+      auth: false,
+    },
   },
 ]
 
