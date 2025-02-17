@@ -181,6 +181,7 @@ function toggleCollapseShow() {
                   data-bs-delay="500"
                   data-bs-animation="true"
                   :data-bs-content="item.description"
+                  data-bs-custom-class="custom-popover"
               /></label>
             </div>
           </div>

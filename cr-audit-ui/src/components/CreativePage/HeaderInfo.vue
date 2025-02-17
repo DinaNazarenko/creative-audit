@@ -51,6 +51,7 @@ function handleOpenOffcanvas() {
           data-bs-delay="300"
           data-bs-animation="true"
           :data-bs-content="creative?.email"
+          data-bs-custom-class="custom-popover"
         >
           {{ creative?.email }}
         </p>
@@ -65,6 +66,7 @@ function handleOpenOffcanvas() {
           data-bs-delay="300"
           data-bs-animation="true"
           :data-bs-content="creative?.account"
+          data-bs-custom-class="custom-popover"
         >
           {{ creative?.account }}
         </p>
@@ -79,6 +81,7 @@ function handleOpenOffcanvas() {
           data-bs-delay="300"
           data-bs-animation="true"
           :data-bs-content="creative?.advertiser"
+          data-bs-custom-class="custom-popover"
         >
           {{ creative?.advertiser }}
         </p>

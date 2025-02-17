@@ -7,14 +7,18 @@ export function usePopover() {
 
   // Функция для обновления popover
   function updatePopovers() {
-    // Получаем все элементы с атрибутом data-bs-toggle="popover"
     popoverTriggerList.value = [].slice.call(
+      // Получаем все элементы с атрибутом data-bs-toggle="popover"
       document.querySelectorAll('[data-bs-toggle="popover"]'),
     )
-
     // Инициализируем новые popover
-    popoverList.value = popoverTriggerList.value.map(el => new Popover(el))
-
+    popoverList.value = popoverTriggerList.value.map(el => {
+      const customClass = el.getAttribute('data-bs-custom-class')
+      return new Popover(el, {
+        container: 'body',
+        customClass: customClass || '',
+      })
+    })
     // Обновляем все существующие popover
     popoverList.value.forEach(popover => {
       popover.update()
@@ -23,25 +27,3 @@ export function usePopover() {
 
   return { popoverTriggerList, popoverList, updatePopovers }
 }
-
-// export function usePopover() {
-//   const popoverTriggerList = ref([]);
-//   const popoverList = ref([]);
-
-//   function updatePopovers() {
-//       popoverTriggerList.value = [].slice.call(
-//           document.querySelectorAll('[data-bs-toggle="popover"]')
-//       );
-
-//       popoverList.value = popoverTriggerList.value.map(el => 
-//           new Popover(el, {
-//               delay: 500,
-//               hide: 100,
-//               trigger: 'hover focus',
-//               animation: true
-//           })
-//       );
-//   }
-
-//   return { popoverTriggerList, popoverList, updatePopovers };
-// }

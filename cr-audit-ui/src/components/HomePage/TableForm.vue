@@ -173,6 +173,7 @@ watchEffect(() => {
               data-bs-delay="500"
               data-bs-animation="true"
               :data-bs-content="item.nameAdGroup"
+              data-bs-custom-class="custom-popover-min"
             >
               <span class="d-inline-block text-truncate span_max">
                 {{ item.nameAdGroup }}
@@ -196,6 +197,7 @@ watchEffect(() => {
               data-bs-delay="500"
               data-bs-animation="true"
               :data-bs-content="item.name"
+              data-bs-custom-class="custom-popover-min"
             >
               <span class="d-inline-block text-truncate span_middle">
                 {{ item.name }}
@@ -224,6 +226,7 @@ watchEffect(() => {
               data-bs-delay="500"
               data-bs-animation="true"
               :data-bs-content="item.advertiser"
+              data-bs-custom-class="custom-popover-min"
             >
               <span class="d-inline-block text-truncate span_middle">
                 {{ item.advertiser }}
@@ -271,6 +274,7 @@ watchEffect(() => {
               data-bs-delay="500"
               data-bs-animation="true"
               :data-bs-content="item.comment"
+              data-bs-custom-class="custom-popover"
             >
               <span class="d-inline-block text-truncate span_max">
                 {{ item.comment }}
@@ -284,6 +288,7 @@ watchEffect(() => {
               data-bs-delay="500"
               data-bs-animation="true"
               :data-bs-content="item.link"
+              data-bs-custom-class="custom-popover-min"
             >
               <span class="d-inline-block text-truncate span_max">
                 {{ item.link }}

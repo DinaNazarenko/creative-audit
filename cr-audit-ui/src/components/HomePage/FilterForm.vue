@@ -191,6 +191,7 @@ watch(
               data-bs-delay="300"
               data-bs-animation="true"
               :data-bs-content="item"
+              data-bs-custom-class="custom-popover-min"
             >
               <input
                 class="form-check-input me-1"
@@ -254,6 +255,7 @@ watch(
               data-bs-delay="300"
               data-bs-animation="true"
               :data-bs-content="item"
+              data-bs-custom-class="custom-popover-min"
             >
               <input
                 class="form-check-input me-1"

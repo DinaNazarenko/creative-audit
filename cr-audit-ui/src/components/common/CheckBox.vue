@@ -33,6 +33,7 @@ watchEffect(() => {
         data-bs-delay="500"
         data-bs-animation="true"
         :data-bs-content="personalDescription"
+        data-bs-custom-class="custom-popover"
     /></label>
   </div>
 </template>
