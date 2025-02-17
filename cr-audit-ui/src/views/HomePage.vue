@@ -10,6 +10,7 @@ import AlertDanger from '@/components/AlertDanger.vue'
 import AlertSuccess from '@/components/AlertSuccess.vue'
 import { STATUS_SELECT, TYPE_SELECT } from '@/lib/constants'
 import { calculateTimeBetweenDates } from '@/lib/utils/FormattingDates'
+import { getTextToComment } from '@/lib/utils/formatedComment'
 import { useCreativesStore } from '@/stores/creatives'
 import { useTableFiltersStore } from '@/stores/tableFilters'
 import { usePopover } from '@/lib/utils/popover'
@@ -114,22 +115,24 @@ const getCreatives = async () => {
     const { data } = await axios.get(url, {
       params,
     })
-    creatives.value = data
 
-    creatives.value = creatives.value.map(item => ({
-      ...item,
-      timeBeforeStart: calculateTimeBetweenDates(
-        new Date(),
-        item.dateStart,
-        'DD',
-      ),
-      timeToConfirm: calculateTimeBetweenDates(
-        item.dateCreat,
-        item.dateAudit,
-        'DD HH',
-      ),
-      amount: item.media ? item.media.length : 0,
-    }))
+    creatives.value = await Promise.all(
+      data.map(async item => ({
+        ...item,
+        timeBeforeStart: calculateTimeBetweenDates(
+          new Date(),
+          item.dateStart,
+          'DD',
+        ),
+        timeToConfirm: calculateTimeBetweenDates(
+          item.dateCreat,
+          item.dateAudit,
+          'DD HH',
+        ),
+        amount: item.media ? item.media.length : 0,
+        comment: await getTextToComment(item),
+      })),
+    )
 
     accounts.value = Array.from(new Set(data.map(item => item.account)))
     advertisers.value = Array.from(new Set(data.map(item => item.advertiser)))

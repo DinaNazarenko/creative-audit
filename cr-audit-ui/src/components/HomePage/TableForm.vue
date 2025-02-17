@@ -72,7 +72,7 @@ const paginatedCreatives = computed(() => {
     let from = (currentPage - 1) * perPage
     let to = from + perPage
 
-    return sortedCreatives.value.slice(from, to)
+    return sortedCreatives.value?.slice(from, to)
   }
 })
 
@@ -174,9 +174,7 @@ watchEffect(() => {
               data-bs-animation="true"
               :data-bs-content="item.nameAdGroup"
             >
-              <span
-                class="d-inline-block text-truncate span_max"
-              >
+              <span class="d-inline-block text-truncate span_max">
                 {{ item.nameAdGroup }}
               </span>
             </td>
