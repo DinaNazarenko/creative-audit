@@ -3,7 +3,7 @@ import CopyIcon from '@/components/icons/CopyIcon.vue'
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { copyToClipboard } from '@/lib/utils/copyToClipboard'
-import { getImageSize } from '@/lib/utils/getSize'
+import { getImageSize, getVideoSize } from '@/lib/utils/getSize'
 import { useRouter } from 'vue-router'
 import { computed, watchEffect, reactive } from 'vue'
 
@@ -32,8 +32,15 @@ watchEffect(async () => {
   try {
     for (const item of updatedMedia) {
       if (item.mediaName) {
-        const result = await getImageSize(`/images/${item.mediaName}`)
-        item.size = result
+        const url = item?.type === 'video'
+              ? `/videos/${item?.mediaName}`
+              : `/images/${item?.mediaName}`
+
+          const resultSize = await (item?.type === 'video'
+            ? getVideoSize(url)
+            : getImageSize(url))
+            
+          item.size = resultSize
       }
     }
   } catch (error) {

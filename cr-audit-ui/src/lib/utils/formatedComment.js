@@ -1,4 +1,4 @@
-import { getImageSize } from '@/lib/utils/getSize'
+import { getImageSize, getVideoSize } from '@/lib/utils/getSize'
 
 export const formatedComment = async creative => {
   const result = {}
@@ -18,7 +18,14 @@ export const formatedComment = async creative => {
     try {
       for (const item of commentedMedia) {
         if (item.mediaName) {
-          const resultSize = await getImageSize(`/images/${item.mediaName}`)
+          const url = item?.type === 'video'
+              ? `/videos/${item?.mediaName}`
+              : `/images/${item?.mediaName}`
+
+          const resultSize = await (item?.type === 'video'
+            ? getVideoSize(url)
+            : getImageSize(url))
+            
           item.size = resultSize
         }
       }
