@@ -1,4 +1,4 @@
-import { getImageSize } from '@/lib/utils/getImageSize'
+import { getImageSize } from '@/lib/utils/getSize'
 
 export const formatedComment = async creative => {
   const result = {}

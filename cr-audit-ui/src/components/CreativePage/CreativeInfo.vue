@@ -8,7 +8,7 @@ import ButtonOutline from '@/components/common/ButtonOutline.vue'
 import ButtonChange from '@/components/common/ButtonChange.vue'
 import QuestionCircleIcon from '@/components/icons/QuestionCircleIcon.vue'
 import FullscreenIcon from '@/components/icons/FullscreenIcon.vue'
-import { getImageSize } from '@/lib/utils/getImageSize'
+import { getImageSize, getVideoSize } from '@/lib/utils/getSize'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { useMediaSlideStore } from '@/stores/mediaPagination'
 import { formatOptions } from '@/lib/utils/formatOptions'
@@ -63,6 +63,10 @@ function getImage(name) {
   return `/images/${name}`
 }
 
+function getVideo(name) {
+  return `/videos/${name}`
+}
+
 function toggleFullscreen() {
   try {
     if (!fullScreenImage.value) {
@@ -82,17 +86,24 @@ function toggleFullscreen() {
 }
 
 watchEffect(async () => {
+  size.value = null
+  
   try {
     const media = currentMedia.value
-    if (media && media?.mediaName) {
-      const result = await getImageSize(`/images/${media?.mediaName}`)
-      size.value = result
-    } else {
-      size.value = null
-    }
+    if (!media?.mediaName) return
+
+    const url = media?.type === 'video'
+      ? `/videos/${media?.mediaName}`
+      : `/images/${media?.mediaName}`
+      
+    const result = await (media?.type === 'video'
+      ? getVideoSize(url)
+      : getImageSize(url)
+    )
+
+    size.value = result
   } catch (error) {
     console.error('Ошибка при получении размера media:', error)
-    size.value = null
   }
 })
 
@@ -193,12 +204,21 @@ watchEffect(() => {
       >
         <img
           ref="fullScreenImage"
-          v-if="currentMedia"
+          v-if="currentMedia && currentMedia?.type !== 'video'"
           :src="getImage(currentMedia?.mediaName)"
           class="img-fluid"
           :alt="currentMedia?.mediaName"
           v-fullscreen="fullscreenStatus"
         />
+        <video
+          ref="fullScreenImage"
+          v-if="currentMedia && currentMedia?.type === 'video'"
+          :src="getVideo(currentMedia?.mediaName)"
+          class="video-fit"
+          :alt="currentMedia?.mediaName"
+          v-fullscreen="fullscreenStatus"
+          controls
+        ></video>
         <p class="mb-0 text-secondary p_custom">
           {{ currentMedia?.mediaName }}
         </p>
@@ -319,5 +339,9 @@ p {
 }
 .border_danger_custom {
   border-left: 4px solid #dc3545;
+}
+.video-fit {
+  max-width: 100%;
+  height: auto;
 }
 </style>

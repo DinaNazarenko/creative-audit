@@ -3,7 +3,7 @@ import CopyIcon from '@/components/icons/CopyIcon.vue'
 import { useAuditedCreativesStore } from '@/stores/auditedCreatives'
 import { formatDate } from '@/lib/utils/FormattingDates'
 import { copyToClipboard } from '@/lib/utils/copyToClipboard'
-import { getImageSize } from '@/lib/utils/getImageSize'
+import { getImageSize } from '@/lib/utils/getSize'
 import { useRouter } from 'vue-router'
 import { computed, watchEffect, reactive } from 'vue'
 
