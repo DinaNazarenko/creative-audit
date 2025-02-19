@@ -82,6 +82,7 @@ const handleStatusSelection = event => {
     filters.status = 'На проверке'
     filters.urlStatusParam = ''
     activeItem.value = 'На проверке'
+    tableFiltersStore.updateTableFilters('statuses', 'На проверке')
   } else if (tempStatus === 'Проверено') {
     filters.status = ''
     filters.urlStatusParam = `?status[]=Согласовано&status[]=Отклонено&status[]=Частично согласовано`
@@ -145,6 +146,7 @@ const getCreatives = async () => {
 
 onMounted(async () => {
   await getCreatives()
+  tableFiltersStore.updateTableFilters('statuses', 'На проверке')
 
   const newStartDate = new Date()
   const newEndDate = new Date(new Date().setDate(newStartDate.getDate() + 7))

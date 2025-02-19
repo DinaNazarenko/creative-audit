@@ -47,6 +47,9 @@ export const useAuditedCreativesStore = defineStore('auditedCreatives', {
         option => option !== item,
       )
     },
+    clearAuditedLink(item) {
+      this.auditedLink.options = item
+    },
     updateUserCommentLink(comment) {
       this.auditedLink.comment = comment
     },

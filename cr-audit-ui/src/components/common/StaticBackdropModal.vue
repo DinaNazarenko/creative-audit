@@ -83,6 +83,10 @@ const getCreativeStatus = async () => {
     goToHome()
     setTimeout(() => {
       successStore.setSuccess('Креативы успешно отправлены')
+      auditedCreativesStore.updateAuditedStatusLink('')
+      auditedCreativesStore.updateActionStatusLink('')
+      auditedCreativesStore.updateUserCommentLink('')
+      auditedCreativesStore.clearAuditedLink([])
     }, 1000)
     setTimeout(() => {
       successStore.setSuccess('')
