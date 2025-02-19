@@ -15,6 +15,9 @@ export const useTableFiltersStore = defineStore('tableFilters', {
     removeTableFilters(filterKey, key) {
       this[filterKey].delete(key)
     },
+    clearTableFilters(filterKey) {
+      this[filterKey] =  new Set()
+    },
     updateDateRange(filterKey, key) {
       if (!Array.isArray(key)) {
         return;
